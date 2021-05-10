@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_mine"
-        android:name="com.example.mywechat.ui.discover.DiscoverFragment"
+        android:name="com.example.mywechat.ui.mine.MineFragment"
         android:label="@string/title_mine"
         tools:layout="@layout/fragment_mine" />
 </navigation>

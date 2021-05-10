@@ -50,24 +50,18 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+<!--    style="@style/Base.Widget.AppCompat.Button.Borderless"-->
+    <Button
+        android:id="@+id/setting_button"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/setting_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="设置"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            app:backgroundTint="@color/white"
-            app:icon="@drawable/icons8_settings_48"
-            app:iconTint="@color/black" />
-    </LinearLayout>
+        android:text="设置"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:backgroundTint="@android:color/transparent"
+        app:icon="@drawable/icons8_settings_48"
+        app:iconTint="@color/black" />
 
 </LinearLayout>

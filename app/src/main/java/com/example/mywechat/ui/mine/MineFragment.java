@@ -2,11 +2,14 @@ package com.example.mywechat.ui.mine;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.mywechat.R;
 import com.example.mywechat.ui.discover.DiscoverFragment;
@@ -17,6 +20,7 @@ import com.example.mywechat.ui.discover.DiscoverFragment;
  * create an instance of this fragment.
  */
 public class MineFragment extends Fragment {
+    private Button settingButton;
 
     public MineFragment() {
         // Required empty public constructor
@@ -33,6 +37,13 @@ public class MineFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        settingButton = view.findViewById(R.id.setting_button);
+
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -41,7 +52,6 @@ public class MineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        System.out.println("mine");
         return inflater.inflate(R.layout.fragment_mine, container, false);
     }
 
