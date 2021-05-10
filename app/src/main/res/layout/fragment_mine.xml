@@ -50,7 +50,7 @@
         </LinearLayout>
     </LinearLayout>
 
-<!--    style="@style/Base.Widget.AppCompat.Button.Borderless"-->
+
     <Button
         android:id="@+id/setting_button"
         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
@@ -63,5 +63,6 @@
         app:backgroundTint="@android:color/transparent"
         app:icon="@drawable/icons8_settings_48"
         app:iconTint="@color/black" />
+
 
 </LinearLayout>
