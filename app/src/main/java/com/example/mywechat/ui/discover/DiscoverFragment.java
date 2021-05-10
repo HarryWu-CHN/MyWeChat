@@ -33,8 +33,7 @@ public class DiscoverFragment extends Fragment {
      * @return A new instance of fragment ExploreFragment.
      */
     public static DiscoverFragment newInstance() {
-        DiscoverFragment fragment = new DiscoverFragment();
-        return fragment;
+        return new DiscoverFragment();
     }
 
     @Override

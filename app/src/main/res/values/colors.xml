@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!--自定义色块-->
+    <color name="EMERALD">#FF2ECC71</color>
+    <color name="PETER_RIVER">#FF3498DB</color>
+    <color name="SUNFLOWER">#FFF1C40F</color>
+    <color name="CLOUDS">#FFECF0F1</color>
+    <color name="ASBESTOS">#FF7F8C8D</color>
 </resources>
