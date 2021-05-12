@@ -1,31 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
-    android:orientation="vertical"
-    android:paddingTop="20dp">
-
-    <ImageView
-        android:id="@+id/last_user_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/avatar1" />
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="200dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
@@ -33,7 +19,7 @@
             app:srcCompat="@drawable/icons8_person_64" />
 
         <EditText
-            android:id="@+id/username_input"
+            android:id="@+id/username_register"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -51,7 +37,6 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView2"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
@@ -59,7 +44,32 @@
             app:srcCompat="@drawable/icons8_lock_64" />
 
         <EditText
-            android:id="@+id/password_input"
+            android:id="@+id/password_register"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:ems="10"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+        <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/icons8_lock_64" />
+
+        <EditText
+            android:id="@+id/password_check"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -70,20 +80,21 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/register_button"
+        app:backgroundTint="@color/PETER_RIVER"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="登录"
-        app:backgroundTint="@color/EMERALD" />
+        android:text="注册" />
 
     <Button
-        android:id="@+id/register_user_button"
+        android:id="@+id/login_user_button"
+        app:backgroundTint="@color/EMERALD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="注册"
-        app:backgroundTint="@color/PETER_RIVER" />
+        android:layout_marginTop="10dp"
+        android:text="登录" />
 
 </LinearLayout>
