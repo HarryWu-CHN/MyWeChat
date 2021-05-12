@@ -31,7 +31,8 @@ result:{
 /user/addContact
 ```Json
 {
-    sendTo:
+    username:,
+    sendTo:,
 }
 result:{
     success:
@@ -65,8 +66,8 @@ result:{
 {
     // 发朋友圈
     msgType:, 
-    // 0,1,2,3,4
-    // 文本、图片、视频、地点
+    // 0,1,2,3
+    // 文本、图片、视频
     msg:, // 不同形式再定义
 }
 ```
