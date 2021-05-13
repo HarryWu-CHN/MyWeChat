@@ -28,7 +28,7 @@ result:{
 ```
 
 ## 加好友
-/user/addContact
+/contact/add
 ```Json
 {
     username:,
@@ -39,7 +39,7 @@ result:{
 }
 ```
 
-/user/agreeContact
+/contact/agree
 ```Json
 {
     sendTo:,
@@ -50,7 +50,7 @@ result:{
 }
 ```
 ## 发消息、朋友圈、加载朋友圈
-/user/send
+/chat/send
 ```Json
 {
     sendTo:,
@@ -61,7 +61,7 @@ result:{
 }
 ```
 
-/user/post
+/discover/post
 ```Json
 {
     // 发朋友圈
@@ -72,7 +72,7 @@ result:{
 }
 ```
 
-/user/getDiscover
+/discover
 ```Json
 {
     // 获取朋友圈
