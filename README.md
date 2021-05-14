@@ -7,11 +7,11 @@ api端口为8.140.133.34:7264
 /user/login
 ```Json
 {
-    username:,
-    password:
+    "username":,
+    "password":
 }
 result:{
-    success:
+    "success":
 }
 ```
 成功以后维护一个websocket
@@ -19,45 +19,51 @@ result:{
 /user/logon
 ```Json
 {
-    username:,
-    password:
+    "username":,
+    "password":
 }
 result:{
-    success:
+    "success":
 }
 ```
 
 ## 加好友
+/contact/find
+```Json
+{
+    "find":, // 想要查询的用户名字符串
+}
+```
+
 /contact/add
 ```Json
 {
-    username:,
-    sendTo:,
+    "sendTo":,
 }
 result:{
-    success:
+    "success":
 }
 ```
 
 /contact/agree
 ```Json
 {
-    sendTo:,
-    agree:,
+    "sendTo":,
+    "agree":,
 }
 result:{
-    success:
+    "success":
 }
 ```
 ## 发消息、朋友圈、加载朋友圈
 /chat/send
 ```Json
 {
-    sendTo:,
-    msgType:, 
+    "sendTo":, // 接收者名称
+    "msgType":, 
     // 0,1,2,3,4
     // 文本、图片、视频、地点
-    msg:, // 不同形式再定义
+    "msg":, // 不同形式再定义
 }
 ```
 
@@ -65,10 +71,10 @@ result:{
 ```Json
 {
     // 发朋友圈
-    msgType:, 
+    "msgType":, 
     // 0,1,2,3
     // 文本、图片、视频
-    msg:, // 不同形式再定义
+    "msg":, // 不同形式再定义
 }
 ```
 
@@ -76,10 +82,10 @@ result:{
 ```Json
 {
     // 获取朋友圈
-    msgType:, 
+    "msgType":, 
     // 0,1,2
     // 文本、图片、视频
-    msg:, // 不同形式再定义
+    "msg":, // 不同形式再定义
 }
 ```
 
