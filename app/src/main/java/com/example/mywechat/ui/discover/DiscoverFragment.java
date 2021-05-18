@@ -11,10 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
+import com.example.mywechat.ui.comment.Comment;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -66,23 +68,31 @@ public class DiscoverFragment extends Fragment {
         imageList6.add(R.drawable.image10);
         imageList6.add(R.drawable.image11);
 
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(new Comment("小陈: ", "宇哥NB"));
+        comments.add(new Comment("小伍: ", "煜宝NB"));
+        comments.add(new Comment("小杨: ", "钊钊NB"));
+
         discovers.add(new Discover(getString(R.string.nickname1), R.drawable.avatar1,
-                getString(R.string.paragraph1), "1小时前", imageList1));
+                getString(R.string.paragraph1), "1小时前", imageList1, comments));
         discovers.add(new Discover(getString(R.string.nickname2), R.drawable.avatar2,
-                getString(R.string.paragraph2), "2小时前", imageList2));
+                getString(R.string.paragraph2), "2小时前", imageList2, null));
         discovers.add(new Discover(getString(R.string.nickname3), R.drawable.avatar3,
-                getString(R.string.paragraph3), "3小时前", imageList3));
+                getString(R.string.paragraph3), "3小时前", imageList3, null));
         discovers.add(new Discover(getString(R.string.nickname4), R.drawable.avatar4,
-                getString(R.string.paragraph4), "4小时前", imageList4));
+                getString(R.string.paragraph4), "4小时前", imageList4, null));
         discovers.add(new Discover(getString(R.string.nickname5), R.drawable.avatar5,
-                getString(R.string.paragraph5), "5小时前", imageList5));
+                getString(R.string.paragraph5), "5小时前", imageList5, null));
         discovers.add(new Discover(getString(R.string.nickname6), R.drawable.avatar6,
-                getString(R.string.paragraph6), "6小时前", imageList6));
+                getString(R.string.paragraph6), "6小时前", imageList6, null));
 
         // 设置LayoutManager及Adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(new DiscoverAdapter(discovers));
+
+        // 设置朋友圈分隔线
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -96,21 +106,4 @@ public class DiscoverFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_discover, container, false);
     }
-
-//    private DiscoverViewModel discoverViewModel;
-//
-//    public View onCreateView(@NonNull LayoutInflater inflater,
-//                             ViewGroup container, Bundle savedInstanceState) {
-//        discoverViewModel =
-//                new ViewModelProvider(this).get(DiscoverViewModel.class);
-//        View root = inflater.inflate(R.layout.fragment_discover, container, false);
-//        final TextView textView = root.findViewById(R.id.text_discover);
-//        discoverViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-//        return root;
-//    }
 }

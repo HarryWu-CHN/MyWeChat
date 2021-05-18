@@ -1,5 +1,7 @@
 package com.example.mywechat.ui.discover;
 
+import com.example.mywechat.ui.comment.Comment;
+
 import java.util.ArrayList;
 
 public class Discover {
@@ -8,13 +10,16 @@ public class Discover {
     private String text; // 文字
     private String publishedTime; // 发布时间
     private ArrayList<Integer> images; // 图片
+    private ArrayList<Comment> comments; // 评论
 
-    public Discover(String nickname, int avatarIcon, String text, String publishedTime, ArrayList<Integer> images) {
+    public Discover(String nickname, int avatarIcon, String text, String publishedTime,
+                    ArrayList<Integer> images, ArrayList<Comment> comments) {
         this.nickname = nickname;
         this.avatarIcon = avatarIcon;
         this.text = text;
         this.publishedTime = publishedTime;
         this.images = images;
+        this.comments = comments;
     }
 
     public String getNickname() {
@@ -39,6 +44,10 @@ public class Discover {
 
     public int getImageCount() {
         return images.size();
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
     }
 }
 

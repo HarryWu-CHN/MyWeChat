@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,6 +53,13 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 throw new IllegalArgumentException("viewType error!");
         }
 
+        if (viewType == 0) {
+            ImageButton likeButton = mView.findViewById(R.id.likeButton);
+            likeButton.setOnClickListener(v -> {
+                //TODO: 增加后端交互
+                likeButton.setImageResource(R.drawable.icon_lick_red);
+            });
+        }
         return new DiscoverAdapter.DiscoverViewHolder(mView, viewType);
     }
 
@@ -66,7 +75,6 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         ImageView[] images = holder.getImages();
         ArrayList<Integer> imagesId = discover.getImages();
         for (int i = 0; i < holder.imageCount; i++) {
-            Log.d("ID", String.valueOf(imagesId.get(i)));
             images[i].setImageResource(imagesId.get(i));
         }
     }
