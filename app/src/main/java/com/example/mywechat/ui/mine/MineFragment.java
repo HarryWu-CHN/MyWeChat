@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.mywechat.R;
-import com.example.mywechat.ui.discover.DiscoverFragment;
 
 /**
  * A simple {@link Fragment} subclass.
