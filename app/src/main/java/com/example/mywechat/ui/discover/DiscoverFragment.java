@@ -1,9 +1,16 @@
 package com.example.mywechat.ui.discover;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,14 +76,14 @@ public class DiscoverFragment extends Fragment {
         imageList6.add(R.drawable.image11);
 
         ArrayList<Comment> comments = new ArrayList<>();
-        comments.add(new Comment("小陈: ", "宇哥NB"));
+        comments.add(new Comment("小陈: ", "海南海口宇哥NB，66666666666666666666666666666666666666666666666666666666666666666666666666，我的宝贝"));
         comments.add(new Comment("小伍: ", "煜宝NB"));
         comments.add(new Comment("小杨: ", "钊钊NB"));
 
         discovers.add(new Discover(getString(R.string.nickname1), R.drawable.avatar1,
                 getString(R.string.paragraph1), "1小时前", imageList1, comments));
         discovers.add(new Discover(getString(R.string.nickname2), R.drawable.avatar2,
-                getString(R.string.paragraph2), "2小时前", imageList2, null));
+                getString(R.string.paragraph2), "2小时前", imageList2, comments));
         discovers.add(new Discover(getString(R.string.nickname3), R.drawable.avatar3,
                 getString(R.string.paragraph3), "3小时前", imageList3, null));
         discovers.add(new Discover(getString(R.string.nickname4), R.drawable.avatar4,
@@ -93,6 +100,25 @@ public class DiscoverFragment extends Fragment {
 
         // 设置朋友圈分隔线
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+
+        // commentEditText监听
+        EditText commentEditText = view.findViewById(R.id.editCommentText);
+        commentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                view.findViewById(R.id.sendCommentButton).setEnabled(!TextUtils.isEmpty(commentEditText.getText()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override

@@ -10,4 +10,41 @@
         android:id="@+id/discover_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/commentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/CLOUDS">
+
+        <EditText
+            android:id="@+id/editCommentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="false"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/corners_text"
+            android:ems="10"
+            android:hint="评论"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/sendCommentButton"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="false"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="320dp"
+            android:layout_marginLeft="320dp"
+            android:enabled="false"
+            android:text="发送"
+            android:textSize="12sp"
+            app:backgroundTint="@color/EMERALD" />
+    </RelativeLayout>
+
 </FrameLayout>
