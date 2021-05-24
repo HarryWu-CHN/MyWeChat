@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,8 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.mywechat.InfoActivity;
 import com.example.mywechat.R;
+import com.example.mywechat.UserActivity;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +26,9 @@ import com.example.mywechat.R;
  * create an instance of this fragment.
  */
 public class MineFragment extends Fragment {
+    private ImageView myAvatar;
+    private TextView myNickName;
+    private TextView myUserName;
     private Button settingButton;
 
     public MineFragment() {
@@ -37,9 +47,15 @@ public class MineFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        myAvatar = view.findViewById(R.id.mine_avatar);
+        myNickName = view.findViewById(R.id.myNickName);
+        myUserName = view.findViewById(R.id.myUserName);
         settingButton = view.findViewById(R.id.setting_button);
 
-
+        settingButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), InfoActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
