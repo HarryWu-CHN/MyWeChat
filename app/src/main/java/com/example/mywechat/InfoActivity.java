@@ -16,6 +16,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,10 @@ public class InfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setInfoView();
+    }
+
+    private void setInfoView() {
         setContentView(R.layout.activity_user_info);
 
         backButton = findViewById(R.id.backButton);
@@ -41,10 +46,10 @@ public class InfoActivity extends AppCompatActivity {
         nickNameButton = findViewById(R.id.nickNameButton);
         testImageView = findViewById(R.id.testImageView);
 
-        initButtons();
+        initInfoButtons();
     }
 
-    private void initButtons() {
+    private void initInfoButtons() {
         backButton.setOnClickListener(v -> {
             finish();
         });
@@ -59,6 +64,22 @@ public class InfoActivity extends AppCompatActivity {
         });
 
         nickNameButton.setOnClickListener(v -> {
+            setNickNameView();
+        });
+    }
+
+    private void setNickNameView() {
+        setContentView(R.layout.fragment_edit_nickname);
+
+        Button backToInfoButton = findViewById(R.id.backToInfoButton);
+        Button saveNickNameButton = findViewById(R.id.saveNickNameButton);
+        EditText newNickNameText = findViewById(R.id.newNickNameText);
+        
+        backToInfoButton.setOnClickListener(v -> {
+            setInfoView();
+        });
+
+        saveNickNameButton.setOnClickListener(v -> {
             // TODO:
         });
     }
