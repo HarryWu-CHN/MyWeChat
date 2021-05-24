@@ -9,14 +9,17 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/discover_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <RelativeLayout
         android:id="@+id/commentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/CLOUDS">
+        android:background="@color/CLOUDS"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/editCommentText"
@@ -30,7 +33,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/corners_text"
             android:ems="10"
-            android:hint="评论"
+            android:hint="评论..."
             android:textSize="24sp" />
 
         <Button
@@ -46,5 +49,17 @@
             android:textSize="12sp"
             app:backgroundTint="@color/EMERALD" />
     </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/newDiscoverButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="80dp"
+        android:clickable="true"
+        android:src="@drawable/icon_plus"
+        app:backgroundTint="@color/PETER_RIVER" />
 
 </FrameLayout>

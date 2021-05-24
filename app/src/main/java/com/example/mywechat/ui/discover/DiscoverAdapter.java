@@ -105,6 +105,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
             View mParentParent = (View) this.mParent.getParent().getParent();
             mParentParent.findViewById(R.id.nav_view).setVisibility(View.GONE);
+            mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.GONE);
         });
 
         // 隐藏评论
@@ -115,6 +116,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
             View mParentParent = (View) this.mParent.getParent().getParent();
             mParentParent.findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+            mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.VISIBLE);
             this.mParent.findViewById(R.id.commentLayout).setVisibility(View.GONE);
         });
 

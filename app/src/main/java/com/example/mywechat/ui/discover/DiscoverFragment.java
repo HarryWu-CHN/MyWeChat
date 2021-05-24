@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.discover;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,8 +23,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.Comment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -118,6 +121,13 @@ public class DiscoverFragment extends Fragment {
             public void afterTextChanged(Editable s) {
 
             }
+        });
+
+        // 新朋友圈
+        FloatingActionButton newDiscoverButton = view.findViewById(R.id.newDiscoverButton);
+        newDiscoverButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NewDiscoverActivity.class);
+            startActivity(intent);
         });
     }
 
