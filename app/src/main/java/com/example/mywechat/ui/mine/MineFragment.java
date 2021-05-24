@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.mywechat.InfoActivity;
 import com.example.mywechat.R;
+import com.example.mywechat.UserActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +42,10 @@ public class MineFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         settingButton = view.findViewById(R.id.setting_button);
 
-
+        settingButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), InfoActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
