@@ -74,7 +74,7 @@ public class InfoActivity extends AppCompatActivity {
         Button backToInfoButton = findViewById(R.id.backToInfoButton);
         Button saveNickNameButton = findViewById(R.id.saveNickNameButton);
         EditText newNickNameText = findViewById(R.id.newNickNameText);
-        
+
         backToInfoButton.setOnClickListener(v -> {
             setInfoView();
         });
