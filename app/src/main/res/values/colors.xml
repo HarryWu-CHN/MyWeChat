@@ -11,6 +11,7 @@
     <!--自定义色块-->
     <color name="EMERALD">#FF2ECC71</color>
     <color name="PETER_RIVER">#FF3498DB</color>
+    <color name="PETER_RIVER_DARK">#FF2E86C1</color>
     <color name="SUNFLOWER">#FFF1C40F</color>
     <color name="CLOUDS">#FFECF0F1</color>
     <color name="ASBESTOS">#FF7F8C8D</color>
