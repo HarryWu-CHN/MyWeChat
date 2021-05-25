@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 public class InfoActivity extends AppCompatActivity {
     private ImageButton backButton;
@@ -33,6 +34,7 @@ public class InfoActivity extends AppCompatActivity {
     private ImageView testImageView;
     private TextView myNickName;
     private TextView myUserName;
+    private InfoViewModel infoViewModel;
 
     private static final int PHOTO = 1;
     private static final int ALBUM = 2;
@@ -42,6 +44,10 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setInfoView();
+        infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
+        infoViewModel.callExample(() -> {
+            Log.d("tes", "tes2");
+        });
     }
 
     private void setInfoView() {
