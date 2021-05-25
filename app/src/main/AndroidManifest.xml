@@ -24,6 +24,9 @@
             android:name=".FriendActivity"
             android:theme="@style/Theme.MyWeChat"/>
         <activity
+            android:name=".NewFriendActivity"
+            android:theme="@style/Theme.MyWeChat"/>
+        <activity
             android:theme="@style/Theme.MyWeChat"
             android:name=".MainActivity"
             android:label="@string/app_name">
