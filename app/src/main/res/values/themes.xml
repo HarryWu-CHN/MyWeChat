@@ -12,8 +12,14 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
-    <style name="Theme.MyWeChat.BorderlessButton">
-        <item name="android:background">@drawable/mywechat_btn_borderless</item>
+    <style name="OverflowMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:popupBackground">@color/CLOUDS</item>
+    </style>
+    <style name="OverflowButtonStyle" parent="Base.Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/icon_plus_round</item>
     </style>
 </resources>
