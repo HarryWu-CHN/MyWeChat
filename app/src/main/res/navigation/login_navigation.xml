@@ -13,6 +13,6 @@
     </fragment>
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.example.mywechat.ui.login.SignupFragment"
+        android:name="com.example.mywechat.ui.login.RegisterFragment"
         android:label="SignupFragment" />
 </navigation>

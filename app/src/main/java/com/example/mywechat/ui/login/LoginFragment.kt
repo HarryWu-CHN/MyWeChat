@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.mywechat.R
 import com.example.mywechat.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +29,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loginViewModel
         binding.loginButtonClick.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 withTimeout(10 * 1000) {
@@ -36,6 +38,9 @@ class LoginFragment : Fragment() {
                 }
                 Log.d("LoginFragment", "finished")
             }
+        }
+        binding.registerUserButtonClick.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
         }
     }
 }
