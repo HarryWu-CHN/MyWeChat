@@ -17,17 +17,22 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class InfoActivity extends AppCompatActivity {
-    private Button backButton;
+    private ImageButton backButton;
     private Button avatarButton;
     private Button nickNameButton;
+    private ImageView myAvatar;
     private ImageView testImageView;
+    private TextView myNickName;
+    private TextView myUserName;
 
     private static final int PHOTO = 1;
     private static final int ALBUM = 2;
@@ -35,6 +40,7 @@ public class InfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setInfoView();
     }
 
@@ -44,7 +50,10 @@ public class InfoActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         avatarButton = findViewById(R.id.avatarButton);
         nickNameButton = findViewById(R.id.nickNameButton);
+        myAvatar = findViewById(R.id.avatarThumbnail);
         testImageView = findViewById(R.id.testImageView);
+        myNickName = findViewById(R.id.editMyNickName);
+        myUserName = findViewById(R.id.myUserName);
 
         initInfoButtons();
     }
@@ -71,7 +80,7 @@ public class InfoActivity extends AppCompatActivity {
     private void setNickNameView() {
         setContentView(R.layout.fragment_edit_nickname);
 
-        Button backToInfoButton = findViewById(R.id.backToInfoButton);
+        ImageButton backToInfoButton = findViewById(R.id.backToInfoButton);
         Button saveNickNameButton = findViewById(R.id.saveNickNameButton);
         EditText newNickNameText = findViewById(R.id.newNickNameText);
 
@@ -80,8 +89,23 @@ public class InfoActivity extends AppCompatActivity {
         });
 
         saveNickNameButton.setOnClickListener(v -> {
+            setInfoView();
+            myNickName.setText(newNickNameText.getText());
             // TODO:
         });
+    }
+
+    private void handleStorageImage(Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getFilePath(this, uri);
+
+        Log.d("imagePath:", imagePath);
+
+        // 展示图片选择
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        myAvatar.setImageBitmap(bitmap);
+        testImageView.setImageBitmap(bitmap);
+        // TODO:
     }
 
     private void openAlbum() {
@@ -96,7 +120,7 @@ public class InfoActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case PHOTO:
-                // TODO:
+                // TODO: 拍照获取头像，暂不需要
                 break;
             case ALBUM:
                 if (resultCode == RESULT_OK) {
@@ -104,18 +128,6 @@ public class InfoActivity extends AppCompatActivity {
                 }
                 break;
         }
-    }
-
-    private void handleStorageImage(Intent data) {
-        Uri uri = data.getData();
-        String imagePath = getFilePath(this, uri);
-
-        Log.d("imagePath:", imagePath);
-
-        // 展示图片选择
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-        testImageView.setImageBitmap(bitmap);
-        // TODO:
     }
 
     private String getFilePath(Context context, Uri uri) {

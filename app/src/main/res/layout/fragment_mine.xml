@@ -55,16 +55,19 @@
 
     <Button
         android:id="@+id/setting_button"
-        android:theme="@style/Theme.MyWeChat.BorderlessButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@drawable/mywechat_btn_borderless"
+        android:drawableLeft="@drawable/icon_setting"
+        android:drawableRight="@drawable/icon_greater"
+        android:drawablePadding="20dp"
+        android:gravity="center|left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="设置"
         android:textColor="@color/black"
-        android:textSize="24sp"
-        app:backgroundTint="@android:color/white"
-        app:icon="@drawable/icons8_settings_48"
-        app:iconTint="@color/black" />
+        android:textSize="24sp" />
 
 
 </LinearLayout>

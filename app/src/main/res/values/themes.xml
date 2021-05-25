@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MyWeChat" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MyWeChat" parent="Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/PETER_RIVER_DARK</item>
         <item name="colorPrimaryVariant">@color/PETER_RIVER</item>
@@ -14,6 +14,6 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="Theme.MyWeChat.BorderlessButton">
-        <item name="android:background">@drawable/mywechat_btn_borderless_material</item>
+        <item name="android:background">@drawable/mywechat_btn_borderless</item>
     </style>
 </resources>

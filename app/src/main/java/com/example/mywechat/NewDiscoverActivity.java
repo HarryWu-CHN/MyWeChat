@@ -24,6 +24,7 @@ public class NewDiscoverActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
 
         backButton = findViewById(R.id.backButton);
@@ -39,20 +40,19 @@ public class NewDiscoverActivity extends AppCompatActivity {
 
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
         initUploadView();
-
     }
 
     private void initUploadView() {
         imageUploadRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         selectImages = new ArrayList<>();
-        adapter = new ImagePickAdapter(this, selectImages, maxImageCnt);
-        adapter.setOnItemClickListener((ImagePickAdapter.OnRecyclerViewItemClickListener) this);
-        adapter.setOnItemRemoveClick(() -> {
-            adapter.setImages(adapter.getImages());
-            adapter.notifyDataSetChanged();
-            selectImages.clear();
-            selectImages.addAll(adapter.getImages());
-        });
-        imageUploadRecyclerView.setAdapter(adapter);
+//        adapter = new ImagePickAdapter(this, selectImages, maxImageCnt);
+//        adapter.setOnItemClickListener((ImagePickAdapter.OnRecyclerViewItemClickListener) this);
+//        adapter.setOnItemRemoveClick(() -> {
+//            adapter.setImages(adapter.getImages());
+//            adapter.notifyDataSetChanged();
+//            selectImages.clear();
+//            selectImages.addAll(adapter.getImages());
+//        });
+//        imageUploadRecyclerView.setAdapter(adapter);
     }
 }
