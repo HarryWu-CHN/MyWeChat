@@ -1,22 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/CLOUDS"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/backToInfoButton"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backToInfoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/icon_less" />
+
+        <TextView
+            android:id="@+id/myNewNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="更改昵称"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/saveNickNameButton"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/EMERALD"
+            android:text="保存" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="返回" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <Button
-        android:id="@+id/saveNickNameButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="保存" />
+        <EditText
+            android:id="@+id/newNickNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OldNickName" />
 
-    <EditText
-        android:id="@+id/newNickNameText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="起一个你喜欢的名字吧！" />
+    </LinearLayout>
 </LinearLayout>

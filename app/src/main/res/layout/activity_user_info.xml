@@ -3,45 +3,147 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ASBESTOS"
+    android:background="@color/CLOUDS"
     android:divider="?android:attr/listDivider"
     android:orientation="vertical"
     android:showDividers="middle">
 
-    <Button
-        android:id="@+id/backButton"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="返回" />
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/icon_less" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="个人信息"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:divider="?android:attr/listDivider"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/avatarButton"
+        <ImageView
+            android:id="@+id/testImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="头像"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white" />
+            android:visibility="gone"
+            app:srcCompat="@drawable/avatar1" />
 
-        <Button
-            android:id="@+id/nickNameButton"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/white">
+
+            <Button
+                android:id="@+id/avatarButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@drawable/mywechat_btn_borderless"
+                android:drawableRight="@drawable/icon_greater"
+                android:gravity="center|left"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:stateListAnimator="@null"
+                android:text="头像"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/avatarThumbnail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignRight="@id/avatarButton"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                android:layout_marginRight="50dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/avatar1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="昵称"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white" />
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/nickNameButton"
+                android:stateListAnimator="@null"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mywechat_btn_borderless"
+                android:drawableRight="@drawable/icon_greater"
+                android:gravity="center|left"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="昵称"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/editMyNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                android:layout_marginRight="50dp"
+                android:gravity="center"
+                android:text="NickName"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/userNameButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mywechat_btn_borderless"
+                android:gravity="center|left"
+                android:paddingLeft="20dp"
+                android:stateListAnimator="@null"
+                android:text="账号"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/myUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                android:layout_marginRight="50dp"
+                android:gravity="center"
+                android:text="UserName"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/testImageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/avatar1" />
 </LinearLayout>
