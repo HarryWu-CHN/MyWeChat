@@ -1,10 +1,14 @@
 package com.example.mywechat.ui.mine;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -47,6 +51,8 @@ public class MineFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        hideActionBar(view);
+
         myAvatar = view.findViewById(R.id.mine_avatar);
         myNickName = view.findViewById(R.id.myNickName);
         myUserName = view.findViewById(R.id.myUserName);
@@ -71,4 +77,11 @@ public class MineFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_mine, container, false);
     }
 
+    private void hideActionBar(@NonNull View view) {
+        Context context = view.getContext();
+        while (!(context instanceof Activity)) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        ((AppCompatActivity) context).getSupportActionBar().hide();
+    }
 }

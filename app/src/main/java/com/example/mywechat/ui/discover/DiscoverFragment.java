@@ -1,6 +1,8 @@
 package com.example.mywechat.ui.discover;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -50,6 +53,7 @@ public class DiscoverFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        hideActionBar(view);
         recyclerView = view.findViewById(R.id.discover_recyclerview);
 
         // 添加数据
@@ -141,5 +145,13 @@ public class DiscoverFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_discover, container, false);
+    }
+
+    private void hideActionBar(@NonNull View view) {
+        Context context = view.getContext();
+        while (!(context instanceof Activity)) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        ((AppCompatActivity) context).getSupportActionBar().hide();
     }
 }

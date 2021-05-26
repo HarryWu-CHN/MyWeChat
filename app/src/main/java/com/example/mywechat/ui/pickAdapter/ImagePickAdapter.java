@@ -4,36 +4,24 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.SelectedPicViewHolder> {
+public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.ImagePickViewHolder> {
     private int maxImgCount;
     private Context mContext;
-    private List<Object> mData;
+    private List<ImagePick> mData;
     private LayoutInflater mInflater;
     private OnRecyclerViewItemClickListener listener;
     private boolean isAdded;   //是否额外添加了最后一个图片
-    private OnItemRemoveClick onItemRemoveClick;
-
-    public boolean isAdded() {
-        return isAdded;
-    }
-
-    public void setAdded(boolean added) {
-        isAdded = added;
-    }
-
-    public void setOnItemRemoveClick(OnItemRemoveClick onItemRemoveClick) {
-        this.onItemRemoveClick = onItemRemoveClick;
-    }
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -43,32 +31,41 @@ public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.Sele
         this.listener = listener;
     }
 
-    public void setImages(List<Object> data) {
+    public boolean isAdded() {
+        return isAdded;
+    }
+
+    public void setAdded(boolean added) {
+        isAdded = added;
+    }
+
+    public void setImages(List<ImagePick> data) {
         mData = new ArrayList<>(data);
         if (getItemCount() < maxImgCount) {
-            mData.add(new Object());
+            mData.add(new ImagePick(mContext));
             isAdded = true;
         } else {
             isAdded = false;
         }
         notifyDataSetChanged();
     }
+
     public void addImg() {
         if (getItemCount() < maxImgCount) {
-            mData.add(new Object());
+            mData.add(new ImagePick(mContext));
             isAdded = true;
         } else {
             isAdded = false;
         }
     }
 
-    public List<Object> getImages() {
+    public List<ImagePick> getImages() {
         //由于图片未选满时，最后一张显示添加图片，因此这个方法返回真正的已选图片
         if (isAdded) return new ArrayList<>(mData.subList(0, mData.size() - 1));
         else return mData;
     }
 
-    public ImagePickAdapter(Context mContext, List<Object> data, int maxImgCount) {
+    public ImagePickAdapter(Context mContext, List<ImagePick> data, int maxImgCount) {
         this.mContext = mContext;
         this.maxImgCount = maxImgCount;
         this.mInflater = LayoutInflater.from(mContext);
@@ -76,55 +73,40 @@ public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.Sele
     }
 
     @Override
-    public SelectedPicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SelectedPicViewHolder(mInflater.inflate(R.layout.item_list_upload_image, parent, false));
-    }
-
-    @Override
-    public void onBindViewHolder(SelectedPicViewHolder holder, int position) {
-        holder.bind(position);
-    }
-
-    @Override
     public int getItemCount() {
         return mData.size();
     }
 
-    public class SelectedPicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public ImagePickViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ImagePickViewHolder(mInflater.inflate(R.layout.item_list_upload_image, parent, false));
+    }
 
-        private RelativeLayout cancelImg;
+    @Override
+    public void onBindViewHolder(ImagePickViewHolder holder, int position) {
+        holder.bind(position);
+    }
+
+    public class ImagePickViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private int clickPosition;
-        private ImageView iv_img;
+        private ImageView newImageView;
 
-        public SelectedPicViewHolder(View itemView) {
+        public ImagePickViewHolder(View itemView) {
             super(itemView);
-//            iv_img = (ImageView) itemView.findViewById(R.id.iv_img);
-//            cancelImg = ((RelativeLayout) itemView.findViewById(R.id.item_upload_image_cancelImg));
+            newImageView = itemView.findViewById(R.id.newImageView);
         }
 
         public void bind(final int position) {
             //设置条目的点击事件
             itemView.setOnClickListener(this);
             //根据条目位置设置图片
-//            ImageItem item = mData.get(position);
-//            if (isAdded && position == getItemCount() - 1) {
-//                iv_img.setScaleType(ImageView.ScaleType.FIT_XY);
-//                cancelImg.setVisibility(View.INVISIBLE);
-//                iv_img.setImageResource(R.mipmap.img_add);
-//                clickPosition = UploadMoreImagesActivity.IMAGE_ITEM_ADD;
-//            } else {
-//                iv_img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                cancelImg.setVisibility(View.VISIBLE);
-//                ImagePicker.getInstance().getImageLoader().displayImage((Activity) mContext, item.path, iv_img, 0, 0);
-//                clickPosition = position;
-//            }
-            cancelImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeItem(position);
-                    onItemRemoveClick.onItemRemoveClick();
-                }
-            });
+            if (isAdded && position == getItemCount() - 1) {
+                newImageView.setImageResource(R.drawable.icon_plus_rect);
+                clickPosition = NewDiscoverActivity.IMAGE_ITEM_ADD;
+            } else {
+                newImageView.setImageBitmap(mData.get(position).getImage());
+                clickPosition = position;
+            }
         }
 
         @Override
@@ -132,18 +114,4 @@ public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.Sele
             if (listener != null) listener.onItemClick(v, clickPosition);
         }
     }
-
-    /**
-     * 删除某条item
-     * @param position
-     */
-    public void removeItem(int position){
-        mData.remove(position);
-//        notifyItemRemoved(position);
-    }
-
-    public interface OnItemRemoveClick {
-        public void onItemRemoveClick();
-    }
-
 }

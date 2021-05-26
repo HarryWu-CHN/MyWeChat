@@ -1,6 +1,8 @@
 package com.example.mywechat.ui.dialog;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +12,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mywechat.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
@@ -40,7 +45,8 @@ public class DialogFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
+        showActionBar(view);
         listView = getView().findViewById(R.id.listview);
         Context context = getActivity();
 
@@ -72,5 +78,13 @@ public class DialogFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_dialog, container, false);
+    }
+
+    private void showActionBar(@NonNull View view) {
+        Context context = view.getContext();
+        while (!(context instanceof Activity)) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        ((AppCompatActivity) context).getSupportActionBar().show();
     }
 }
