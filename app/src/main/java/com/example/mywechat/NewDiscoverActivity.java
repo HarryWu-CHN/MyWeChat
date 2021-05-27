@@ -27,6 +27,7 @@ public class NewDiscoverActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
 
+
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
             // TODO: 草稿功能
@@ -39,6 +40,7 @@ public class NewDiscoverActivity extends AppCompatActivity {
         });
 
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
+        imageUploadRecyclerView.setAdapter(adapter);
         initUploadView();
     }
 

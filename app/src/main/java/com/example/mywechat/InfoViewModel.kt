@@ -1,6 +1,7 @@
 package com.example.mywechat
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,15 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 @FlowPreview
+@ExperimentalCoroutinesApi
 class InfoViewModel @Inject constructor(
         private val userEditRepository: UserEditRepository,
 ) : ViewModel() {
-    val liveData = MutableLiveData<Boolean?>(null)
+    private val liveData = MutableLiveData<Boolean?>(null)
     private suspend fun userEdit(nickname : String?, icon: Bitmap?) {
-        liveData.value = null
+        liveData.postValue(null)
         try {
             val response = userEditRepository.userEdit(nickname, icon)
             liveData.postValue(response.success)
+            // Log.d("")
         }catch (e: IOException){
             liveData.postValue(false)
         }

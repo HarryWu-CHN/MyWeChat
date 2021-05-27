@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.mywechat.MainActivity
 import com.example.mywechat.R
 import com.example.mywechat.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +34,14 @@ class LoginFragment : Fragment() {
         binding.loginButtonClick.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 withTimeout(10 * 1000) {
-                    val result = loginViewModel.login(binding.loginUsernameTextEdit.text.toString(), binding.loginPasswordTextEdit.text.toString())
+                    loginViewModel.login(binding.loginUsernameTextEdit.text.toString(), binding.loginPasswordTextEdit.text.toString()) {
+                        when (it) {
+                            true ->{
+
+                                (requireActivity() as MainActivity).jumpToUser()
+                            }
+                        }
+                    }
                     Log.d("LoginFragment", "login succeeded.")
                 }
                 Log.d("LoginFragment", "finished")

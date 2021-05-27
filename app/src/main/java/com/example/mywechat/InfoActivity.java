@@ -26,6 +26,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class InfoActivity extends AppCompatActivity {
     private ImageButton backButton;
     private Button avatarButton;
@@ -45,9 +48,10 @@ public class InfoActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setInfoView();
         infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
-        infoViewModel.callExample(() -> {
-            Log.d("tes", "tes2");
-        });
+
+//        infoViewModel.callExample(() -> {
+//            Log.d("tes", "tes2");
+//        });
     }
 
     private void setInfoView() {
@@ -97,8 +101,9 @@ public class InfoActivity extends AppCompatActivity {
         saveNickNameButton.setOnClickListener(v -> {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
-            // TODO:
+            infoViewModel.callUserEdit(myNickName.getText().toString(), null);
         });
+        
     }
 
     private void handleStorageImage(Intent data) {
@@ -111,7 +116,7 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         testImageView.setImageBitmap(bitmap);
-        // TODO:
+        infoViewModel.callUserEdit(null, bitmap);
     }
 
     private void openAlbum() {
