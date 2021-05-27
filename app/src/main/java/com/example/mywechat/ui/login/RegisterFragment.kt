@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.mywechat.R
 import com.example.mywechat.databinding.FragmentRegisterBinding
@@ -37,7 +38,7 @@ class RegisterFragment : Fragment() {
 
             registerViewModel.register(binding.usernameRegister.text.toString(), binding.passwordRegister.text.toString())
         }
-        registerViewModel.liveData.observe(viewLifecycleOwner, {
+        registerViewModel.liveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
                     true -> goToLogin()
@@ -45,7 +46,7 @@ class RegisterFragment : Fragment() {
                 }
                 registerViewModel.liveData.value = null
             }
-        })
+        }
     }
 
     private fun goToLogin() {
