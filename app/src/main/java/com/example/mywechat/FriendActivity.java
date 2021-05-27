@@ -2,6 +2,7 @@ package com.example.mywechat;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,11 +13,12 @@ public class FriendActivity extends AppCompatActivity {
     private TextView friendNickName;
     private TextView friendUserName;
     private Button sendMessageButton;
-    private Button backToContactButton;
+    private ImageButton backToContactButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_friend);
 
         friendAvatar = findViewById(R.id.friend_avatar);

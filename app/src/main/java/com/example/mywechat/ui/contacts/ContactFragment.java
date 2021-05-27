@@ -1,16 +1,18 @@
 package com.example.mywechat.ui.contacts;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +47,8 @@ public class ContactFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.contacts_recylerview);
+        showActionBar(view);
+        recyclerView = view.findViewById(R.id.contacts_recyclerview);
 
         // 添加数据，为recyclerView绑定Adapter、LayoutManager
         // 添加数据的样例代码如下:
@@ -68,6 +71,7 @@ public class ContactFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(new ContactAdapter(contacts));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -77,20 +81,11 @@ public class ContactFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contacts, container, false);
     }
 
-//    private ContactViewModel contactViewModel;
-
-//    public View onCreateView(@NonNull LayoutInflater inflater,
-//                             ViewGroup container, Bundle savedInstanceState) {
-//        contactViewModel =
-//                new ViewModelProvider(this).get(ContactViewModel.class);
-//        View root = inflater.inflate(R.layout.fragment_contacts, container, false);
-//        final TextView textView = root.findViewById(R.id.text_contacts);
-//        contactViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-//        return root;
-//    }
+    private void showActionBar(@NonNull View view) {
+        Context context = view.getContext();
+        while (!(context instanceof Activity)) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        ((AppCompatActivity) context).getSupportActionBar().show();
+    }
 }

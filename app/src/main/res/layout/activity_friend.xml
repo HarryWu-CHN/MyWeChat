@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/CLOUDS"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/backToContactButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/icon_less" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +38,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:layout_weight="0.5"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/avatar1" />
 
         <LinearLayout
@@ -51,15 +70,32 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/friendDiscoverButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/mywechat_btn_borderless"
+        android:drawableLeft="@drawable/icon_round"
+        android:drawablePadding="10dp"
+        android:gravity="center|left"
+        android:paddingLeft="140dp"
+        android:text="朋友圈"
+        android:textColor="@color/PETER_RIVER_DARK"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <Button
         android:id="@+id/sendMessageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="发消息" />
-
-    <Button
-        android:id="@+id/backToContactButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="返回" />
+        android:background="@drawable/mywechat_btn_borderless"
+        android:drawableLeft="@drawable/icon_message"
+        android:drawablePadding="10dp"
+        android:gravity="center|left"
+        android:paddingLeft="140dp"
+        android:text="发消息"
+        android:textColor="@color/PETER_RIVER_DARK"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 </LinearLayout>
