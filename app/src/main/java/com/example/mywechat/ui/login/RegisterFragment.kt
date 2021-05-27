@@ -48,7 +48,7 @@ class RegisterFragment : Fragment() {
         })
     }
 
-    fun goToLogin() {
+    private fun goToLogin() {
         findNavController().popBackStack()
     }
 }

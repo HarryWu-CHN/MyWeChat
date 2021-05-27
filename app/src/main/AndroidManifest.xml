@@ -27,7 +27,6 @@
         <activity
             android:name=".InfoActivity"
             android:theme="@style/Theme.MyWeChat" />
-        <activity android:name=".LoginActivity" />
         <activity
             android:name=".FriendActivity"
             android:theme="@style/Theme.MyWeChat" />

@@ -49,6 +49,7 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
 
+
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
             // TODO: 草稿功能，暂时不实现
@@ -61,6 +62,7 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         });
 
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
+        imageUploadRecyclerView.setAdapter(adapter);
         initUploadView();
     }
 
