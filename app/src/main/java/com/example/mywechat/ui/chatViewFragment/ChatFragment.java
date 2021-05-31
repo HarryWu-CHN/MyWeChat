@@ -35,6 +35,7 @@ public class ChatFragment extends Fragment {
     private LinkedList<ChatBubble> data;
     private ListView listView;
 
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -52,7 +53,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         showActionBar(view);
-        listView = getView().findViewById(R.id.chatList);
+        listView = view.findViewById(R.id.chatList);
         Context context = getActivity();
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
@@ -72,7 +73,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dialog, container, false);
+        return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
     private void showActionBar(@NonNull View view) {
@@ -82,4 +83,5 @@ public class ChatFragment extends Fragment {
         }
         ((AppCompatActivity) context).getSupportActionBar().show();
     }
+
 }

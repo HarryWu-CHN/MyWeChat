@@ -26,6 +26,7 @@
         android:layout_toEndOf="@+id/chatIcon"
         android:background="@drawable/bubble_bg1"
         android:gravity="center"
+        android:maxWidth="280dp"
         android:padding="10dp"
         android:paddingStart="20dp"
         android:text="qw速度速度多少e"

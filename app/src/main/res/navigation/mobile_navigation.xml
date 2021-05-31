@@ -9,23 +9,39 @@
         android:id="@+id/navigation_dialog"
         android:name="com.example.mywechat.ui.dialog.DialogFragment"
         android:label="@string/title_dialog"
-        tools:layout="@layout/fragment_dialog" />
+        tools:layout="@layout/fragment_dialog" >
+        <action
+            android:id="@+id/action_navigation_dialog_to_navigation_contacts"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_contacts"
         android:name="com.example.mywechat.ui.contacts.ContactFragment"
         android:label="@string/title_contacts"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_contacts" >
+        <action
+            android:id="@+id/action_navigation_contacts_to_navigation_discover"
+            app:destination="@id/navigation_discover" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_discover"
         android:name="com.example.mywechat.ui.discover.DiscoverFragment"
         android:label="@string/title_discover"
-        tools:layout="@layout/fragment_discover" />
+        tools:layout="@layout/fragment_discover" >
+        <action
+            android:id="@+id/action_navigation_discover_to_navigation_mine"
+            app:destination="@id/navigation_mine" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_mine"
         android:name="com.example.mywechat.ui.mine.MineFragment"
         android:label="@string/title_mine"
-        tools:layout="@layout/fragment_mine" />
+        tools:layout="@layout/fragment_mine" >
+        <action
+            android:id="@+id/action_navigation_mine_to_navigation_dialog"
+            app:destination="@id/navigation_dialog" />
+    </fragment>
 </navigation>

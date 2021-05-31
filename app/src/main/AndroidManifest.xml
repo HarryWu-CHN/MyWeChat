@@ -3,7 +3,6 @@
     package="com.example.mywechat">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -17,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyWeChat"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".ChatActivity"></activity>
         <activity
             android:name=".UserActivity"
             android:theme="@style/Theme.MyWeChat" />
@@ -32,11 +31,11 @@
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".NewFriendActivity"
-            android:theme="@style/Theme.MyWeChat"/>
+            android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:theme="@style/Theme.MyWeChat"
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MyWeChat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,6 +43,5 @@
             </intent-filter>
         </activity>
     </application>
-
 
 </manifest>

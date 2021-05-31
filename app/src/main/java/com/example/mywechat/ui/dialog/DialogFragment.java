@@ -1,31 +1,37 @@
 package com.example.mywechat.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.mywechat.ChatActivity;
+import com.example.mywechat.NewFriendActivity;
 import com.example.mywechat.R;
+import com.example.mywechat.ui.chatViewFragment.ChatAdapter;
+import com.example.mywechat.ui.chatViewFragment.ChatFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
 public class DialogFragment extends Fragment {
-
-    private DialogAdapter chatAdapter;
+    private FragmentManager fm;
+    private DialogAdapter dialogAdapter;
     private LinkedList<Dialog> data;
     private ListView listView;
 
@@ -64,8 +70,21 @@ public class DialogFragment extends Fragment {
         data.add(new Dialog(getString(R.string.nickname10), R.drawable.avatar10, getString(R.string.sentence10), "2021/01/10"));
         data.add(new Dialog(getString(R.string.nickname11), R.drawable.avatar11, getString(R.string.sentence11), "2021/01/11"));
         data.add(new Dialog(getString(R.string.nickname12), R.drawable.avatar12, getString(R.string.sentence12), "2021/01/12"));
-        chatAdapter = new DialogAdapter(data, context);
-        listView.setAdapter(chatAdapter);
+        dialogAdapter = new DialogAdapter(data, context);
+        listView.setAdapter(dialogAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Dialog dialog = (Dialog) dialogAdapter.getItem(position);
+                String nickname = dialog.getNickname();
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                startActivity(intent);
+//                fm = getActivity().getSupportFragmentManager();
+//                ChatFragment chatFragment = new ChatFragment();
+//                fm.beginTransaction().replace(R.layout.fragment_dialog, chatFragment).commit();
+            }
+        });
     }
 
     @Override
@@ -87,4 +106,5 @@ public class DialogFragment extends Fragment {
         }
         ((AppCompatActivity) context).getSupportActionBar().show();
     }
+
 }

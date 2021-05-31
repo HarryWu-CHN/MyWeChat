@@ -3,6 +3,7 @@ package com.example.mywechat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,8 +16,11 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
+import com.example.mywechat.ui.chatViewFragment.ChatFragment;
+import com.example.mywechat.ui.dialog.DialogFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.lang.reflect.Method;
