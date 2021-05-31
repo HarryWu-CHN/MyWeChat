@@ -78,11 +78,13 @@ public class DialogFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dialog dialog = (Dialog) dialogAdapter.getItem(position);
                 String nickname = dialog.getNickname();
+                int icon = dialog.getAvatarIcon();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("nickname", nickname);
+                bundle.putInt("icon", icon);
+                intent.putExtras(bundle);
                 startActivity(intent);
-//                fm = getActivity().getSupportFragmentManager();
-//                ChatFragment chatFragment = new ChatFragment();
-//                fm.beginTransaction().replace(R.layout.fragment_dialog, chatFragment).commit();
             }
         });
     }

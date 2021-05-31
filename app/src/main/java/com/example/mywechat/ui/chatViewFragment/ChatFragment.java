@@ -52,7 +52,6 @@ public class ChatFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
-        showActionBar(view);
         listView = view.findViewById(R.id.chatList);
         Context context = getActivity();
 
@@ -75,13 +74,4 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
-
-    private void showActionBar(@NonNull View view) {
-        Context context = view.getContext();
-        while (!(context instanceof Activity)) {
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        ((AppCompatActivity) context).getSupportActionBar().show();
-    }
-
 }

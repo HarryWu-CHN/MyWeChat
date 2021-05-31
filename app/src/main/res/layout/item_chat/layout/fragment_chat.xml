@@ -7,8 +7,7 @@
     <ListView
         android:id="@+id/chatList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textInput" />
+        android:layout_height="wrap_content" />
     <!-- 用来输入文本的 -->
     <EditText
         android:id="@+id/textInput"
@@ -24,7 +23,7 @@
         android:id="@+id/sendBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="发送"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
+        android:text="发送" />
 </RelativeLayout>
