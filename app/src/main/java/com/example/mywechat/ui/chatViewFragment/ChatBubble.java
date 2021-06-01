@@ -3,12 +3,14 @@ package com.example.mywechat.ui.chatViewFragment;
 public class ChatBubble {
     private final String time; // 发送时间
     private final String content; // 发送内容
-    private final boolean speaker; // 发送者
+    private final int icon;
+    private final MsgType msgType;
 
-    public ChatBubble(String time, String content, boolean speaker) {
+    public ChatBubble(String time, String content, int icon, MsgType msgType) {
         this.time = time;
         this.content = content;
-        this.speaker = speaker;
+        this.icon = icon;
+        this.msgType = msgType;
     }
 
     public String getTime() {
@@ -17,7 +19,10 @@ public class ChatBubble {
     public String getContent() {
         return content;
     }
-    public boolean isSpeaker() {
-        return speaker;
+    public int getIcon() {
+        return icon;
+    }
+    public int getIntMsgType() {
+        return msgType.ordinal();
     }
 }

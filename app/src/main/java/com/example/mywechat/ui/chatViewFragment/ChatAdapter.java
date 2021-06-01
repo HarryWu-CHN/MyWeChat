@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.chatViewFragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,46 +10,85 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.mywechat.FriendActivity;
 import com.example.mywechat.R;
+import com.example.mywechat.ui.contacts.ContactAdapter;
 import com.example.mywechat.ui.dialog.Dialog;
 
 import java.util.LinkedList;
 
-public class ChatAdapter extends BaseAdapter {
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     private LinkedList<ChatBubble> data;
-    private Context context;
 
-    public ChatAdapter(LinkedList<ChatBubble> data, Context context) {
+    public ChatAdapter(LinkedList<ChatBubble> data) {
         this.data = data;
-        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View mView;
+        switch (viewType){
+            case 0:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
+                break;
+            case 1:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
+                break;
+            default:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
+                break;
+        }
+        return new ChatAdapter.ChatViewHolder(mView);
     }
 
     @Override
-    public int getCount() {
-        return data.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return data.get(position);
+    public void onBindViewHolder(@NonNull ChatAdapter.ChatViewHolder holder, int position) {
+        ChatBubble chatBubble = data.get(position);
+        holder.getChatTimeView().setText(chatBubble.getTime());
+        holder.getChatContentView().setText(chatBubble.getContent());
+        holder.getChatIconView().setImageResource(chatBubble.getIcon());
     }
 
     @Override
     public long getItemId(int position) {
         return 0;
     }
+    @Override
+    public int getItemViewType(int position) {
+        return data.get(position).getIntMsgType();
+    }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ChatBubble chatBubble = data.get(position);
-        if (chatBubble.isSpeaker())
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_chat_user2, parent, false);
-        else
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_chat_user1, parent, false);
-        TextView chatTimeView = convertView.findViewById(R.id.chatTime);
-        chatTimeView.setText(chatBubble.getTime());
-        TextView chatContentView = convertView.findViewById(R.id.chatContent);
-        chatContentView.setText(chatBubble.getContent());
-        return convertView;
+    public int getItemCount() {
+        return data.size();
+    }
+
+    public static class ChatViewHolder extends RecyclerView.ViewHolder {
+        private final TextView chatTimeView;
+        private final TextView chatContentView;
+        private final ImageView chatIconView;
+
+        public ChatViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.chatTimeView = itemView.findViewById(R.id.chatTime);
+            this.chatContentView = itemView.findViewById(R.id.chatContent);
+            this.chatIconView = itemView.findViewById(R.id.chatIcon);
+        }
+
+        public TextView getChatTimeView() {
+            return chatTimeView;
+        }
+
+        public TextView getChatContentView() {
+            return chatContentView;
+        }
+
+        public ImageView getChatIconView() {
+            return chatIconView;
+        }
     }
 }

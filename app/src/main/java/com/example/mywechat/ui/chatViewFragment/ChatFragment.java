@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.mywechat.R;
+import com.example.mywechat.ui.contacts.ContactAdapter;
 import com.example.mywechat.ui.dialog.Dialog;
 import com.example.mywechat.ui.dialog.DialogAdapter;
 import com.example.mywechat.ui.dialog.DialogFragment;
@@ -33,7 +37,7 @@ public class ChatFragment extends Fragment {
 
     private ChatAdapter chatAdapter;
     private LinkedList<ChatBubble> data;
-    private ListView listView;
+    private RecyclerView recyclerView;
 
 
     public ChatFragment() {
@@ -52,15 +56,16 @@ public class ChatFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
-        listView = view.findViewById(R.id.chatList);
+        recyclerView = view.findViewById(R.id.chatList);
         Context context = getActivity();
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        data.add(new ChatBubble("2021/01/01", getString(R.string.sentence1), false));
-        data.add(new ChatBubble("2021/12/01", getString(R.string.paragraph2), true));
-        chatAdapter = new ChatAdapter(data, context);
-        listView.setAdapter(chatAdapter);
+        data.add(new ChatBubble("2021/01/01", getString(R.string.sentence1), R.drawable.avatar5,MsgType.USER_TEXT));
+        data.add(new ChatBubble("2021/12/01", getString(R.string.paragraph2), R.drawable.avatar6,MsgType.RCV_TEXT));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(new ChatAdapter(data));
     }
 
     @Override
