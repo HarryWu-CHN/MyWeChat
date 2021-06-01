@@ -17,13 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.mywechat.ChatActivity;
-import com.example.mywechat.NewFriendActivity;
 import com.example.mywechat.R;
-import com.example.mywechat.ui.chatViewFragment.ChatAdapter;
-import com.example.mywechat.ui.chatViewFragment.ChatFragment;
 
 import org.jetbrains.annotations.NotNull;
 

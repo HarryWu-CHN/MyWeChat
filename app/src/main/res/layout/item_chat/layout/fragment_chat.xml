@@ -9,29 +9,42 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatList"
-        app:layout_constraintBottom_toTopOf="@id/textInput"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_height="0dp"
-        android:layout_width="0dp" />
-    <!-- 用来输入文本的 -->
-    <EditText
-        android:id="@+id/textInput"
+        android:layout_width="0dp" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:autofillHints="少时诵诗书"
-        android:inputType="text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sendBtn"
+        android:background="#EAEAEA"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="LabelFor" />
-    <!-- 用于发送的按钮 -->
-    <Button
-        android:id="@+id/sendBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="发送"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:autofillHints="少时诵诗书"
+            android:background="@drawable/corners_text"
+            android:inputType="text"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/sendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

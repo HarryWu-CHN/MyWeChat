@@ -108,7 +108,7 @@ data class ContactFindRequest(
 data class ContactFindResponse(
         val success : Boolean,
         val userNames : ArrayList<String>,
-        val userIcons : ArrayList<Bitmap>,
+        val userIcons : ArrayList<String>,
 )
 
 @JsonClass(generateAdapter = true)
