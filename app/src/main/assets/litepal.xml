@@ -7,6 +7,7 @@
 
     <!--映射模型-->
     <list>
-
+        <mapping class="com.example.mywechat.model.FriendRecord" />
+        <mapping class="com.example.mywechat.model.ChatRecord" />
     </list>
 </litepal>
