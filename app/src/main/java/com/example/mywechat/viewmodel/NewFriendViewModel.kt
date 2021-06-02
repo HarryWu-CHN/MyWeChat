@@ -18,7 +18,6 @@ import javax.inject.Inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 @HiltViewModel
-
 // liveData params got what the response is, you can get it at fragment/activity, according to RegisterFragment : liveData.observe()
 class NewFriendViewModel @Inject constructor(
         private val friendRepository: FriendRepository,

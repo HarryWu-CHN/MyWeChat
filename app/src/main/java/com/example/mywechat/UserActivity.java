@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mywechat.Activities.NewFriendActivity;
+import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.lang.reflect.Method;

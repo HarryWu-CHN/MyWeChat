@@ -32,7 +32,7 @@
             android:name=".FriendActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".Activities.NewFriendActivity"
+            android:name=".Activities.NewFriend.NewFriendActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".MainActivity"

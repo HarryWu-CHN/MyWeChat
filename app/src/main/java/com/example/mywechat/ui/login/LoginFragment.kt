@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -37,8 +38,10 @@ class LoginFragment : Fragment() {
                     loginViewModel.login(binding.loginUsernameTextEdit.text.toString(), binding.loginPasswordTextEdit.text.toString()) {
                         when (it) {
                             true ->{
-
                                 (requireActivity() as MainActivity).jumpToUser()
+                            }
+                            false -> {
+                                AlertDialog.Builder(requireContext()).setTitle("用户名或密码错误！").show()
                             }
                         }
                     }
