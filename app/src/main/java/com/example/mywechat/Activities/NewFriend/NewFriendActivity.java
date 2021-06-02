@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,8 @@ import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import javax.annotation.Nullable;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -53,18 +56,19 @@ public class NewFriendActivity extends AppCompatActivity {
     }
 
     private void findFriend() {
-        String friendToFind = (String) friendNameText.getText();
+        String friendToFind = friendNameText.getText().toString();
         NfViewModel.contactFind(friendToFind);
-        MutableLiveData<ContactFindResponse> liveData = NfViewModel.getLiveData();
-        ContactFindResponse response = liveData.getValue();
-        ArrayList<String> usernames = new ArrayList<>();
-        ArrayList<String> usericon = new ArrayList<>();
-        if (response != null) {
-            usernames = response.component2();
-            usericon = response.component3();
-        }
-        Log.d("FindFriend", usernames.toString());
-        Log.d("FindFriend Icon", usericon.toString());
+        final Observer<ContactFindResponse> nameObserver = response -> {
+            // Update the UI, in this case, a TextView.
+            if (response == null) {
+                return;
+            }
+            ArrayList<String> usernames = response.component3();
+            ArrayList<String> usericon = response.component4();
+            Log.d("FindFriend", usernames.toString());
+            Log.d("FindFriend Icon", usericon.toString());
+        };
+        NfViewModel.getLiveData().observe(this, nameObserver);
 //        recyclerView = findViewById(R.id.recyclerView);
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        recyclerView.setLayoutManager(linearLayoutManager);

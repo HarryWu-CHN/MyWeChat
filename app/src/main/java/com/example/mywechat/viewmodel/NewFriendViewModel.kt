@@ -35,4 +35,11 @@ class NewFriendViewModel @Inject constructor(private val friendRepository: Frien
             } catch (e: IOException) {}
         }
     }
+    fun contactAgree(sendTo: String, agree: Boolean) {
+        viewModelScope.launch (Dispatchers.IO) {
+            try {
+                friendRepository.contactAgree(sendTo, agree)
+            } catch (e: IOException) {}
+        }
+    }
 }

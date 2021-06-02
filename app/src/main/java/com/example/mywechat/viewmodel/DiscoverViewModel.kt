@@ -21,7 +21,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @HiltViewModel
 // liveData params got what the response is, you can get it at fragment/activity, according to RegisterFragment : liveData.observe()
-class ChatSendViewModel @Inject constructor(
+class DiscoverViewModel @Inject constructor(
         private val chatRepository: ChatRepository,
 ) : ViewModel() {
     private val liveData = MutableLiveData<BooleanResponse?>(null)
