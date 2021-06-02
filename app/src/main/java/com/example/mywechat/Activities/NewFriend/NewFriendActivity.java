@@ -12,14 +12,17 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.InfoViewModel;
 import com.example.mywechat.R;
 import com.example.mywechat.api.ContactFindResponse;
+import com.example.mywechat.repository.FriendRepository;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class NewFriendActivity extends AppCompatActivity {
     private ImageButton backToUserButton;
     private Button newFriendButton;
@@ -34,9 +37,8 @@ public class NewFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_friend);
-        NfViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
+        NfViewModel = new ViewModelProvider(this)
                 .get(NewFriendViewModel.class);
-
         backToUserButton = findViewById(R.id.backToUserButton);
         newFriendButton = findViewById(R.id.newFriendButton);
         friendNameText = findViewById(R.id.friendNameText);
