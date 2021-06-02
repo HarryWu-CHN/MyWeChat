@@ -63,8 +63,8 @@ public class NewFriendActivity extends AppCompatActivity {
             if (response == null) {
                 return;
             }
-            ArrayList<String> usernames = response.component3();
-            ArrayList<String> usericon = response.component4();
+            String[] usernames = response.component3();
+            String[] usericon = response.component4();
             Log.d("FindFriend", usernames.toString());
             Log.d("FindFriend Icon", usericon.toString());
         };

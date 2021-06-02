@@ -107,9 +107,9 @@ data class ContactFindRequest(
 @JsonClass(generateAdapter = true)
 data class ContactFindResponse(
         val success : Boolean,
-        val time : Int,
-        val userNames : ArrayList<String>,
-        val userIcons : ArrayList<String>,
+        val time : String,
+        val userNames : Array<String>,
+        val userIcons : Array<String>,
 )
 
 @JsonClass(generateAdapter = true)
