@@ -73,11 +73,11 @@ public class DialogFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dialog dialog = (Dialog) dialogAdapter.getItem(position);
-                String nickname = dialog.getNickname();
+                String username = dialog.getNickname();
                 int icon = dialog.getAvatarIcon();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("nickname", nickname);
+                bundle.putString("username", username);
                 bundle.putInt("icon", icon);
                 intent.putExtras(bundle);
                 startActivity(intent);

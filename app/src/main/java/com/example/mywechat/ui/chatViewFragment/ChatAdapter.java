@@ -33,10 +33,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         View mView;
         switch (viewType){
             case 0:
-                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
                 break;
             case 1:
-                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
                 break;
             default:
                 mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
@@ -61,10 +61,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public int getItemViewType(int position) {
         return data.get(position).getIntMsgType();
     }
-
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void addData(int position, ChatBubble bubble) {
+        data.add(bubble);
+        notifyItemInserted(position);
+    }
+    public void removeData(int position) {
+        data.remove(position);
+        //删除动画
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
