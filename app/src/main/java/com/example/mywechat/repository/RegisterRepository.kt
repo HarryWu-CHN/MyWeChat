@@ -16,4 +16,13 @@ class RegisterRepository @Inject constructor(
                     password = password,
             )
     )
+    suspend fun httpLogin (
+        username: String,
+        password: String,
+    ) = apiService.httpLogin(
+            LoginRequest(
+                    username = username,
+                    password = password,
+            )
+    )
 }
