@@ -79,9 +79,8 @@ data class SignUpRequest(
 @JsonClass(generateAdapter = true)
 data class BooleanResponse (
     val success : Boolean,
+    val time : Long,
 )
-
-
 
 @JsonClass(generateAdapter = true)
 data class UserGetRequest(
