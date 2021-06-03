@@ -96,7 +96,7 @@ public class NewFriendActivity extends AppCompatActivity {
     }
 
 
-    private Handler handler = new Handler(Looper.myLooper()) 
+    private Handler handler = new Handler(Looper.myLooper()) {
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
