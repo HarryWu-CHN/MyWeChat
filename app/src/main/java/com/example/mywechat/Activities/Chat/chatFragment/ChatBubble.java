@@ -1,4 +1,4 @@
-package com.example.mywechat.ui.chatViewFragment;
+package com.example.mywechat.Activities.Chat.chatFragment;
 
 public class ChatBubble {
     private final String time; // 发送时间

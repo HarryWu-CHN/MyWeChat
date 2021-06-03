@@ -32,7 +32,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = data.get(position);
-        holder.getAvatar().setImageResource(contact.getAvatarIcon());
+        holder.getAvatar().setImageBitmap(contact.getAvatarIcon());
         holder.getNickname().setText(contact.getNickname());
 
         holder.getItemView().setOnClickListener(v -> {

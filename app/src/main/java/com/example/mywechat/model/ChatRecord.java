@@ -12,6 +12,8 @@ public class ChatRecord extends LitePalSupport {
     private String friendName;
     private List<String> msgs = new ArrayList<>();
     private List<String> msgTypes = new ArrayList<>();
+    private List<String> times = new ArrayList<>();
+    private List<Boolean> isUser = new ArrayList<>();
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -43,5 +45,21 @@ public class ChatRecord extends LitePalSupport {
 
     public List<String> getMsgTypes() {
         return msgTypes;
+    }
+
+    public List<Boolean> getIsUser() {
+        return isUser;
+    }
+
+    public void setIsUser(List<Boolean> isUser) {
+        this.isUser = isUser;
+    }
+
+    public List<String> getTimes() {
+        return times;
+    }
+
+    public void setTimes(List<String> times) {
+        this.times = times;
     }
 }

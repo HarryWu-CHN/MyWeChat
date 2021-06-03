@@ -1,4 +1,4 @@
-package com.example.mywechat.ui.chatViewFragment;
+package com.example.mywechat.Activities.Chat.chatFragment;
 
 public enum MsgType {
     USER_TEXT,

@@ -17,7 +17,7 @@
         android:theme="@style/Theme.MyWeChat"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ChatActivity"
+            android:name=".Activities.Chat.ChatActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".UserActivity"

@@ -1,10 +1,12 @@
-package com.example.mywechat;
+package com.example.mywechat.Activities.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.example.mywechat.R;
 
 import java.util.Objects;
 

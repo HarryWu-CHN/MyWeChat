@@ -1,22 +1,15 @@
-package com.example.mywechat.ui.chatViewFragment;
+package com.example.mywechat.Activities.Chat.chatFragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.FriendActivity;
 import com.example.mywechat.R;
-import com.example.mywechat.ui.contacts.ContactAdapter;
-import com.example.mywechat.ui.dialog.Dialog;
 
 import java.util.LinkedList;
 

@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.mywechat.ChatActivity;
+import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.R;
 
 import org.jetbrains.annotations.NotNull;
