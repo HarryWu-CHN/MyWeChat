@@ -1,9 +1,6 @@
 package com.example.mywechat.repository
 
-import com.example.mywechat.api.ApiService
-import com.example.mywechat.api.ContactAddRequest
-import com.example.mywechat.api.ContactAgreeRequest
-import com.example.mywechat.api.ContactFindRequest
+import com.example.mywechat.api.*
 import javax.inject.Inject
 
 class FriendRepository @Inject constructor(
@@ -35,5 +32,11 @@ class FriendRepository @Inject constructor(
             )
     )
 
+    suspend fun contactWaited (
 
+    ) = apiService.contactWaited(
+            ContactWaitedText(
+                    username = "yang",
+            )
+    )
 }

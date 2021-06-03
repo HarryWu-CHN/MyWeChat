@@ -1,5 +1,6 @@
 package com.example.mywechat.Activities.NewFriend;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
+import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
 
 import java.util.LinkedList;
 
@@ -32,6 +34,13 @@ public class NewFriendAdapter extends RecyclerView.Adapter<NewFriendAdapter.Cont
         NewFriend newFriend = data.get(position);
         holder.getAvatar().setImageBitmap(newFriend.getAvatarIcon());
         holder.getNickname().setText(newFriend.getNickname());
+
+        holder.getItemView().setOnClickListener(v -> {
+            Intent intent = new Intent(holder.getItemView().getContext(), SendFriendApplyActivity.class);
+            intent.putExtra("friendUserName", newFriend.getNickname());
+            intent.putExtra("friendAvatar", newFriend.getAvatarIcon());
+            holder.getItemView().getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -39,10 +48,11 @@ public class NewFriendAdapter extends RecyclerView.Adapter<NewFriendAdapter.Cont
         return data.size();
     }
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder {
+    public static class ContactViewHolder extends RecyclerView.ViewHolder{
         private final ImageView contactAvatarView;
         private final TextView contactNicknameView;
         private final View itemView;
+        private int clickPosition;
 
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -58,7 +58,6 @@ public class NewFriendActivity extends AppCompatActivity {
         backToUserButton = findViewById(R.id.backToUserButton);
         newFriendButton = findViewById(R.id.newFriendButton);
         friendNameText = findViewById(R.id.friendNameText);
-        newFriends = new LinkedList<>();
 
         backToUserButton.setOnClickListener(v -> {
             finish();
@@ -72,15 +71,13 @@ public class NewFriendActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-    }
 
-    private void findFriend() {
-        String friendToFind = friendNameText.getText().toString();
-        NfViewModel.contactFind(friendToFind);
         NfViewModel.getLiveData().observe(this, response -> {
             if (response == null) {
                 return;
             }
+
+            newFriends = new LinkedList<>();
             List<String> usernames = response.component3();
             for (String username : usernames) {
                 NewFriend newFriend = new NewFriend(username);
@@ -91,22 +88,15 @@ public class NewFriendActivity extends AppCompatActivity {
         });
     }
 
-    private void setAddFriendView() {
-        setContentView(R.layout.fragment_new_friend);
+    private void findFriend() {
+        String friendToFind = friendNameText.getText().toString();
+        NfViewModel.contactFind(friendToFind);
 
-        ImageView newFriendAvatar = findViewById(R.id.newFriendAvatar);
-        TextView newFriendNickName = findViewById(R.id.newFriendNickName);
-        TextView newFriendUserName = findViewById(R.id.newFriendUserName);
-        Button addNewFriendButton = findViewById(R.id.addNewFriendButton);
-
-        // TODO: 初始化朋友信息
-
-        addNewFriendButton.setOnClickListener(v -> {
-            // TODO: 添加好友
-        });
+        // TODO recyclerView.add
     }
 
-    private Handler handler = new Handler(Looper.myLooper()) {
+
+    private Handler handler = new Handler(Looper.myLooper()) 
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
