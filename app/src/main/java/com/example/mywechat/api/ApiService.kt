@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.annotation.BoolRes
 import com.squareup.moshi.JsonClass
 import dagger.hilt.internal.GeneratedEntryPoint
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.*
 import java.io.File
 import java.sql.Time
 
@@ -15,8 +15,10 @@ interface ApiService {
     @POST("user/logon")
     suspend fun register(@Body request: SignUpRequest) : BooleanResponse
 
+    @Multipart
     @POST("user/edit")
-    suspend fun userEdit(@Body request: UserEditRequest) : BooleanResponse
+    suspend fun userEdit(@Part("nickname") nickname: RequestBody?,
+                         @Part icon: MultipartBody.Part?) : BooleanResponse
 
     @POST("user/get")
     suspend fun userGet(@Body request: UserGetRequest) : UserGetResponse
@@ -66,7 +68,6 @@ interface ApiService {
     @POST("discover/user")
     suspend fun discoverUser(@Body request: DiscoverUserRequest) : DiscoverUserResponse
 
-
 }
 
 @JsonClass(generateAdapter = true)
@@ -81,11 +82,6 @@ data class BooleanResponse (
 )
 
 
-@JsonClass(generateAdapter = true)
-data class UserEditRequest(
-        val nickname : String?,
-        val icon : Bitmap?,
-)
 
 @JsonClass(generateAdapter = true)
 data class UserGetRequest(

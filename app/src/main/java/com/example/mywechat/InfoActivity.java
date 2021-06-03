@@ -21,10 +21,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.io.File;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -116,7 +123,8 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         testImageView.setImageBitmap(bitmap);
-        infoViewModel.callUserEdit(null, bitmap);
+        File file = new File(imagePath);
+        infoViewModel.callUserEdit(null, file);
     }
 
     private void openAlbum() {
