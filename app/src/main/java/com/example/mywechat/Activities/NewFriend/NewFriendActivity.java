@@ -57,7 +57,6 @@ public class NewFriendActivity extends AppCompatActivity {
         backToUserButton = findViewById(R.id.backToUserButton);
         newFriendButton = findViewById(R.id.newFriendButton);
         friendNameText = findViewById(R.id.friendNameText);
-        newFriends = new LinkedList<>();
 
         backToUserButton.setOnClickListener(v -> {
             finish();
@@ -71,15 +70,13 @@ public class NewFriendActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-    }
 
-    private void findFriend() {
-        String friendToFind = friendNameText.getText().toString();
-        NfViewModel.contactFind(friendToFind);
         NfViewModel.getLiveData().observe(this, response -> {
             if (response == null) {
                 return;
             }
+
+            newFriends = new LinkedList<>();
             List<String> usernames = response.component3();
             for (String username : usernames) {
                 NewFriend newFriend = new NewFriend(username);
@@ -90,24 +87,16 @@ public class NewFriendActivity extends AppCompatActivity {
             Log.d("FindFriend Icon", usericon.toString());
             getIcons(usericon);
         });
+    }
+
+    private void findFriend() {
+        String friendToFind = friendNameText.getText().toString();
+        NfViewModel.contactFind(friendToFind);
+
         // TODO recyclerView.add
     }
 
-    private void setAddFriendView() {
-        setContentView(R.layout.fragment_new_friend);
-
-        ImageView newFriendAvatar = findViewById(R.id.newFriendAvatar);
-        TextView newFriendNickName = findViewById(R.id.newFriendNickName);
-        TextView newFriendUserName = findViewById(R.id.newFriendUserName);
-        Button addNewFriendButton = findViewById(R.id.addNewFriendButton);
-
-        // TODO: 初始化朋友信息
-
-        addNewFriendButton.setOnClickListener(v -> {
-            // TODO: 添加好友
-        });
-    }
-
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
         @Override
@@ -121,7 +110,8 @@ public class NewFriendActivity extends AppCompatActivity {
                     for (int i=0; i<bitmaps.size(); i++) {
                         newFriends.get(i).setAvatarIcon(bitmaps.get(i));
                     }
-                    recyclerView.setAdapter(new NewFriendAdapter(newFriends));
+                    NewFriendAdapter adapter = new NewFriendAdapter(newFriends);
+                    recyclerView.setAdapter(adapter);
                     break;
                 case 1:
                     Log.d("InternetImageView", "NETWORK_ERROR");

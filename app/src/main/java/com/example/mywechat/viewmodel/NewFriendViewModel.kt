@@ -1,5 +1,6 @@
 package com.example.mywechat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,8 @@ import javax.inject.Inject
 // liveData params got what the response is, you can get it at fragment/activity, according to RegisterFragment : liveData.observe()
 class NewFriendViewModel @Inject constructor(private val friendRepository: FriendRepository) : ViewModel() {
     val liveData = MutableLiveData<ContactFindResponse?>(null)
+    val appliesData = MutableLiveData<ContactFindResponse?>(null)
+
     fun contactFind(friendToFind : String) {
         viewModelScope.launch (Dispatchers.IO) {
             try {
@@ -28,6 +31,7 @@ class NewFriendViewModel @Inject constructor(private val friendRepository: Frien
             }
         }
     }
+
     fun contactAdd(sendTo: String) {
         viewModelScope.launch (Dispatchers.IO) {
             try {
@@ -35,11 +39,29 @@ class NewFriendViewModel @Inject constructor(private val friendRepository: Frien
             } catch (e: IOException) {}
         }
     }
+
     fun contactAgree(sendTo: String, agree: Boolean) {
         viewModelScope.launch (Dispatchers.IO) {
             try {
                 friendRepository.contactAgree(sendTo, agree)
             } catch (e: IOException) {}
+        }
+    }
+
+    fun contactWaited() {
+        viewModelScope.launch (Dispatchers.IO) {
+            try {
+                val response = friendRepository.contactWaited()
+                appliesData.postValue(response)
+            } catch (e : IOException) {
+                // ignore
+            }
+        }
+    }
+
+    fun contactTest() {
+        viewModelScope.launch (Dispatchers.IO) {
+            Log.d("test", "test")
         }
     }
 }

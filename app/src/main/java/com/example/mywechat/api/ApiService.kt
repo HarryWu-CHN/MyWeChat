@@ -3,6 +3,7 @@ package com.example.mywechat.api
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.annotation.BoolRes
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import dagger.hilt.internal.GeneratedEntryPoint
 import retrofit2.http.Body
@@ -30,6 +31,9 @@ interface ApiService {
 
     @POST("contact/agree")
     suspend fun contactAgree(@Body request: ContactAgreeRequest) : BooleanResponse
+
+    @POST("contact/waited")
+    suspend fun contactWaited(@Body request: ContactWaitedText) : ContactFindResponse
 
     //群聊相关
     @POST("group/create")
@@ -122,6 +126,11 @@ data class ContactAddRequest(
 data class ContactAgreeRequest(
         val sendTo : String,
         val agree : Boolean,
+)
+
+@JsonClass(generateAdapter = true)
+data class ContactWaitedText(
+        val username: String,
 )
 
 @JsonClass(generateAdapter = true)
