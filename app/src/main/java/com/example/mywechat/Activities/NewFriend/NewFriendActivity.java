@@ -1,6 +1,11 @@
 package com.example.mywechat.Activities.NewFriend;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -11,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
@@ -18,8 +25,13 @@ import com.example.mywechat.api.ContactFindResponse;
 import com.example.mywechat.repository.FriendRepository;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -45,6 +57,7 @@ public class NewFriendActivity extends AppCompatActivity {
         backToUserButton = findViewById(R.id.backToUserButton);
         newFriendButton = findViewById(R.id.newFriendButton);
         friendNameText = findViewById(R.id.friendNameText);
+        newFriends = new LinkedList<>();
 
         backToUserButton.setOnClickListener(v -> {
             finish();
@@ -53,27 +66,30 @@ public class NewFriendActivity extends AppCompatActivity {
         newFriendButton.setOnClickListener(v -> {
             findFriend();
         });
+
+        recyclerView = findViewById(R.id.recyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     private void findFriend() {
         String friendToFind = friendNameText.getText().toString();
         NfViewModel.contactFind(friendToFind);
-        final Observer<ContactFindResponse> nameObserver = response -> {
-            // Update the UI, in this case, a TextView.
+        NfViewModel.getLiveData().observe(this, response -> {
             if (response == null) {
                 return;
             }
-            String[] usernames = response.component3();
-            String[] usericon = response.component4();
+            List<String> usernames = response.component3();
+            for (String username : usernames) {
+                NewFriend newFriend = new NewFriend(username);
+                newFriends.add(newFriend);
+            }
+            List<String> usericon = response.component4();
             Log.d("FindFriend", usernames.toString());
             Log.d("FindFriend Icon", usericon.toString());
-        };
-        NfViewModel.getLiveData().observe(this, nameObserver);
-//        recyclerView = findViewById(R.id.recyclerView);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        recyclerView.setAdapter(new NewFriendAdapter(newFriends));
-//        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+            getIcons(usericon);
+        });
         // TODO recyclerView.add
     }
 
@@ -91,8 +107,8 @@ public class NewFriendActivity extends AppCompatActivity {
             // TODO: 添加好友
         });
     }
-    /**
-    private final Handler handler = new Handler() {
+
+    private Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
@@ -100,14 +116,17 @@ public class NewFriendActivity extends AppCompatActivity {
             // 并正确处理 SUCCESS、NETWORK_ERROR、SERVER_ERROR 类型的消息
             // 提示：使用 setImageBitmap() 来将Bitmap对象显示到UI上
             switch (msg.what){
-                case SUCCESS:
-                    Bitmap bitmap = (Bitmap) msg.obj;
-                    setImageBitmap(bitmap);
+                case 0:
+                    List<Bitmap> bitmaps = (List<Bitmap>) msg.obj;
+                    for (int i=0; i<bitmaps.size(); i++) {
+                        newFriends.get(i).setAvatarIcon(bitmaps.get(i));
+                    }
+                    recyclerView.setAdapter(new NewFriendAdapter(newFriends));
                     break;
-                case NETWORK_ERROR:
+                case 1:
                     Log.d("InternetImageView", "NETWORK_ERROR");
                     break;
-                case SERVER_ERROR:
+                case 2:
                     Log.d("InternetImageView", "SERVER_ERROR");
                     break;
                 default:
@@ -117,37 +136,43 @@ public class NewFriendActivity extends AppCompatActivity {
         }
     };
 
-    public void setImageURL(final String path) {
+    public void getIcons(final List<String> usericon) {
         //开启一个线程用于联网
         new Thread(() -> {
-            try {
-                //通过HTTP请求下载图片
-                URL url = new URL(path);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(10000);
-                //获取返回码
-                int code = connection.getResponseCode();
-                if (code == 200) {
-                    InputStream inputStream = connection.getInputStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    // TODO
-                    // 利用Message把图片发给Handler
-                    // Message的obj成员变量可以用来传递对象
-                    Message msg = new Message();
-                    msg.what = SUCCESS;
-                    msg.obj = bitmap;
-                    handler.sendMessage(msg);
-                    // TODO 部分结束
-                    inputStream.close();
-                } else {
-                    handler.sendEmptyMessage(SERVER_ERROR);
+            List<Bitmap> bitmaps = new ArrayList<>();
+            int arg1 = 0;
+            for (String path : usericon) {
+                path = "http://8.140.133.34:7262/" + path;
+                try {
+                    //通过HTTP请求下载图片
+                    URL url = new URL(path);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        InputStream inputStream = connection.getInputStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        // 利用Message把图片发给Handler
+                        // Message的obj成员变量可以用来传递对象
+                        bitmaps.add(bitmap);
+                        inputStream.close();
+                    } else {
+                        arg1 = 1;
+                        bitmaps.add(null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    bitmaps.add(null);
+                    arg1 = 2;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                handler.sendEmptyMessage(NETWORK_ERROR);
             }
+            Message msg = new Message();
+            msg.what = 0;
+            msg.arg1 = arg1;
+            msg.obj = bitmaps;
+            handler.sendMessage(msg);
         }).start();
     }
-     */
 }

@@ -4,10 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mywechat.api.BooleanResponse
-import com.example.mywechat.api.ContactFindResponse
-import com.example.mywechat.api.UserGetResponse
 import com.example.mywechat.repository.ChatRepository
-import com.example.mywechat.repository.FriendRepository
 import com.example.mywechat.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +25,7 @@ class DiscoverViewModel @Inject constructor(
     fun chatSend(sendTo : String, msgType : String, msg : String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = chatRepository.chatSend(sendTo, msgType, msg)
+                val response = chatRepository.chatSend(sendTo, msgType, msg, null)
                 liveData.postValue(response)
             } catch (ignored : IOException){}
         }

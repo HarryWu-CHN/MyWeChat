@@ -8,6 +8,7 @@ import dagger.hilt.internal.GeneratedEntryPoint
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import java.io.File
 import java.sql.Time
 
 interface ApiService {
@@ -101,15 +102,15 @@ data class UserGetResponse(
 
 @JsonClass(generateAdapter = true)
 data class ContactFindRequest(
-        val find : String,
+        val userToFind : String,
 )
 
 @JsonClass(generateAdapter = true)
 data class ContactFindResponse(
         val success : Boolean,
         val time : String,
-        val userNames : Array<String>,
-        val userIcons : Array<String>,
+        val userNames : List<String>,
+        val userIcons : List<String>,
 )
 
 @JsonClass(generateAdapter = true)
@@ -126,7 +127,7 @@ data class ContactAgreeRequest(
 @JsonClass(generateAdapter = true)
 data class GroupCreateRequest(
         val groupName : String,
-        val membersName : ArrayList<String>,
+        val membersName : List<String>,
 )
 
 @JsonClass(generateAdapter = true)
@@ -167,8 +168,9 @@ data class GroupDelRequest(
 @JsonClass(generateAdapter = true)
 data class ChatSendRequest(
         val sendTo: String,
-        val msgTpye: String,
+        val msgType: String,
         val msg: String,
+        val file: File?
 )
 
 @JsonClass(generateAdapter = true)
@@ -185,7 +187,7 @@ data class DiscoverRequest(
 @JsonClass(generateAdapter = true)
 data class DiscoverResponse(
         val success : Boolean,
-        val discoverList: ArrayList<DiscoverInfo>,
+        val discoverList: List<DiscoverInfo>,
 )
 
 @JsonClass(generateAdapter = true)
@@ -193,15 +195,15 @@ data class DiscoverInfo(
         val id: String,
         val text : String,
         val discoverType: String,
-        val urlList : ArrayList<String>,
+        val urlList : List<String>,
         val time: Long,
-        val chatRecords : ArrayList<String>,
+        val chatRecords : List<String>,
 )
 
 @JsonClass(generateAdapter = true)
 data class DiscoverUserRequest(
         val discoverUser : String,
-        val timePeriod : ArrayList<TimePair>
+        val timePeriod : List<TimePair>
 )
 
 @JsonClass(generateAdapter = true)
@@ -213,5 +215,5 @@ data class TimePair(
 @JsonClass(generateAdapter = true)
 data class DiscoverUserResponse(
         val success: Boolean,
-        val discoverList : ArrayList<DiscoverInfo>,
+        val discoverList : List<DiscoverInfo>,
 )

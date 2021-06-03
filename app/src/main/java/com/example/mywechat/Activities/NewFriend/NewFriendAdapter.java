@@ -31,7 +31,7 @@ public class NewFriendAdapter extends RecyclerView.Adapter<NewFriendAdapter.Cont
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         NewFriend newFriend = data.get(position);
-        holder.getAvatar().setImageResource(newFriend.getAvatarIcon());
+        holder.getAvatar().setImageBitmap(newFriend.getAvatarIcon());
         holder.getNickname().setText(newFriend.getNickname());
     }
 

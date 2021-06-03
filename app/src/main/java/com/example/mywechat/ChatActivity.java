@@ -1,13 +1,17 @@
 package com.example.mywechat;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
 import java.util.Objects;
 
-public class ChatActivity extends AppCompatActivity {
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
+public class ChatActivity extends FragmentActivity {
     private TextView topName;
 
     @Override

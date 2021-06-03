@@ -10,10 +10,10 @@ class FriendRepository @Inject constructor(
         private val apiService: ApiService
 ) {
     suspend fun contactFind (
-            find : String,
+            userToFind : String,
     ) = apiService.contactFind(
             ContactFindRequest(
-                    find = find
+                    userToFind = userToFind
             )
     )
 
