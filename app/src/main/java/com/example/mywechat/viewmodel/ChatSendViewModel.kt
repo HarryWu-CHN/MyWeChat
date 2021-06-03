@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -20,8 +21,8 @@ import javax.inject.Inject
 class ChatSendViewModel @Inject constructor(
         private val chatRepository: ChatRepository,
 ) : ViewModel() {
-    private val liveData = MutableLiveData<BooleanResponse?>(null)
-    fun chatSend(sendTo : String, msgType : String, msg : String) {
+    val liveData = MutableLiveData<BooleanResponse?>(null)
+    fun chatSend(sendTo : String, msgType : String, msg : String, file : File?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = chatRepository.chatSend(sendTo, msgType, msg, null)

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
@@ -83,8 +84,6 @@ public class NewFriendActivity extends AppCompatActivity {
                 newFriends.add(newFriend);
             }
             List<String> usericon = response.component4();
-            Log.d("FindFriend", usernames.toString());
-            Log.d("FindFriend Icon", usericon.toString());
             getIcons(usericon);
         });
     }
@@ -96,8 +95,8 @@ public class NewFriendActivity extends AppCompatActivity {
         // TODO recyclerView.add
     }
 
-    @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
+
+    private Handler handler = new Handler(Looper.myLooper()) 
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
@@ -106,12 +105,16 @@ public class NewFriendActivity extends AppCompatActivity {
             // 提示：使用 setImageBitmap() 来将Bitmap对象显示到UI上
             switch (msg.what){
                 case 0:
-                    List<Bitmap> bitmaps = (List<Bitmap>) msg.obj;
+                    List<Bitmap> bitmaps = (List) msg.obj;
                     for (int i=0; i<bitmaps.size(); i++) {
                         newFriends.get(i).setAvatarIcon(bitmaps.get(i));
                     }
-                    NewFriendAdapter adapter = new NewFriendAdapter(newFriends);
-                    recyclerView.setAdapter(adapter);
+                    if (msg.arg1 == 1) {
+                        Log.d("InternetIcon View", "NETWORK_ERROR");
+                    } else if (msg.arg1 == 2) {
+                        Log.d("InternetIcon View", "IOException");
+                    }
+                    recyclerView.setAdapter(new NewFriendAdapter(newFriends));
                     break;
                 case 1:
                     Log.d("InternetImageView", "NETWORK_ERROR");
@@ -144,8 +147,6 @@ public class NewFriendActivity extends AppCompatActivity {
                     if (code == 200) {
                         InputStream inputStream = connection.getInputStream();
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        // 利用Message把图片发给Handler
-                        // Message的obj成员变量可以用来传递对象
                         bitmaps.add(bitmap);
                         inputStream.close();
                     } else {

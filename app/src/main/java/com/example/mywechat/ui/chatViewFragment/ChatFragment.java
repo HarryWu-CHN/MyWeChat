@@ -1,6 +1,9 @@
 package com.example.mywechat.ui.chatViewFragment;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,6 +14,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +25,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.mywechat.Activities.NewFriend.NewFriend;
+import com.example.mywechat.Activities.NewFriend.NewFriendAdapter;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.contacts.ContactAdapter;
 import com.example.mywechat.ui.dialog.Dialog;
@@ -32,7 +40,9 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -69,20 +79,25 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.chatList);
-        chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
-        data = new LinkedList<>();
-        textInputView = view.findViewById(R.id.textInput);
-        sendBtn = view.findViewById(R.id.sendBtn);
-        sendBtn.setOnClickListener(v -> {
-            sendMsg(textInputView.getText().toString());
-        });
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
+        data = new LinkedList<>();
         data.add(new ChatBubble("2021/01/01", getString(R.string.sentence1), R.drawable.avatar5,MsgType.USER_TEXT));
         data.add(new ChatBubble("2021/12/01", getString(R.string.paragraph2), R.drawable.avatar6,MsgType.RCV_TEXT));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new ChatAdapter(data));
+        chatAdapter = new ChatAdapter(data);
+        recyclerView.setAdapter(chatAdapter);
+        // View bind
+        textInputView = view.findViewById(R.id.textInput);
+        sendBtn = view.findViewById(R.id.sendBtn);
+        sendBtn.setOnClickListener(v -> {
+            sendMsg(textInputView.getText().toString());
+            textInputView.setText("");
+        });
+        // ViewModel bind
+        chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+
     }
 
     @Override
@@ -98,9 +113,41 @@ public class ChatFragment extends Fragment {
     }
 
     public void sendMsg(@NotNull String msg) {
+        Log.d("Sending Msg:", msg);
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         String time = sdf.format(new Date().getTime());
-        data.add(new ChatBubble(time, msg, R.drawable.avatar5, MsgType.USER_TEXT));
-        recyclerView.setAdapter(new ChatAdapter(data));
+        TextView topName = requireActivity().findViewById(R.id.topName);
+        chatSendViewModel.chatSend(topName.getText().toString(), "0", msg, null);
+        chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
+            if (response == null) {
+                return;
+            }
+            if (response.component1()) {
+                Message aMsg = new Message();
+                aMsg.what = 0;
+                aMsg.obj = new ChatBubble(time, msg, R.drawable.avatar5, MsgType.USER_TEXT);
+                handler.sendMessage(aMsg);
+            }
+        });
     }
+
+    private Handler handler = new Handler(Looper.myLooper()) {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            // 通过Handler设置图片
+            // 并正确处理 SUCCESS、NETWORK_ERROR、SERVER_ERROR 类型的消息
+            // 提示：使用 setImageBitmap() 来将Bitmap对象显示到UI上
+            switch (msg.what){
+                case 0:
+                    ChatBubble bubble = (ChatBubble) msg.obj;
+                    chatAdapter.addData(data.size(), bubble);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    };
+
 }

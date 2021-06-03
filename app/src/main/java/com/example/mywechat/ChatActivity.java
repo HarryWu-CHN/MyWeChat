@@ -20,9 +20,13 @@ public class ChatActivity extends FragmentActivity {
 //        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
         Bundle bundle = getIntent().getExtras();
-        String nickname = bundle.getString("nickname");
+        String nickname = bundle.getString("username");
         int icon = bundle.getInt("icon");
         topName = findViewById(R.id.topName);
         topName.setText(nickname);
+    }
+
+    public String getSendTo() {
+        return topName.getText().toString();
     }
 }

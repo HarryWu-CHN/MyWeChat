@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mywechat.repository.UserEditRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class InfoViewModel @Inject constructor(
         private val userEditRepository: UserEditRepository,
 ) : ViewModel() {
     private val liveData = MutableLiveData<Boolean?>(null)
-    private suspend fun userEdit(nickname : String?, icon: Bitmap?) {
+    private suspend fun userEdit(nickname : String?, icon: File?) {
         liveData.postValue(null)
         try {
             val response = userEditRepository.userEdit(nickname, icon)
@@ -28,7 +29,7 @@ class InfoViewModel @Inject constructor(
         }
     }
 
-    fun callUserEdit(nickname: String?, icon: Bitmap?) {
+    fun callUserEdit(nickname: String?, icon: File?) {
         viewModelScope.launch (Dispatchers.IO) {
             userEdit(nickname, icon)
         }

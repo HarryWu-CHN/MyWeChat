@@ -10,7 +10,8 @@ import java.util.List;
 public class ChatRecord extends LitePalSupport {
     private String userName;
     private String friendName;
-    private List<Pair<String, MessageType>> messages = new ArrayList<>();
+    private List<String> msgs = new ArrayList<>();
+    private List<String> msgTypes = new ArrayList<>();
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -18,10 +19,6 @@ public class ChatRecord extends LitePalSupport {
 
     public void setFriendName(String friendName) {
         this.friendName = friendName;
-    }
-
-    public void setMessages(List<Pair<String, MessageType>> messages) {
-        this.messages = messages;
     }
 
     public String getUserName() {
@@ -32,7 +29,19 @@ public class ChatRecord extends LitePalSupport {
         return friendName;
     }
 
-    public List<Pair<String, MessageType>> getMessages() {
-        return messages;
+    public void setMsgs(List<String> msgs) {
+        this.msgs = msgs;
+    }
+
+    public void setMsgTypes(List<String> msgTypes) {
+        this.msgTypes = msgTypes;
+    }
+
+    public List<String> getMsgs() {
+        return msgs;
+    }
+
+    public List<String> getMsgTypes() {
+        return msgTypes;
     }
 }
