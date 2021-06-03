@@ -20,7 +20,6 @@ public class NewFriendAdapter extends RecyclerView.Adapter<NewFriendAdapter.Cont
         this.data = data;
     }
 
-
     @NonNull
     @Override
     public NewFriendAdapter.ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -3,10 +3,12 @@ package com.example.mywechat.ui.contacts;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,12 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.Activities.NewFriend.FriendApplyActivity;
 import com.example.mywechat.R;
 
 import java.util.LinkedList;
 
 public class ContactFragment extends Fragment {
 
+    private Button friendApplyButton;
     private RecyclerView recyclerView;
 
     public ContactFragment() {
@@ -48,6 +52,14 @@ public class ContactFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         showActionBar(view);
+
+        friendApplyButton = view.findViewById(R.id.friendApplyButton);
+
+        friendApplyButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), FriendApplyActivity.class);
+            startActivity(intent);
+        });
+
         recyclerView = view.findViewById(R.id.contacts_recyclerview);
 
         // 添加数据，为recyclerView绑定Adapter、LayoutManager

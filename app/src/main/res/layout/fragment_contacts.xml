@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.contacts.ContactFragment">
+
+    <Button
+        android:id="@+id/friendApplyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mywechat_btn_borderless"
+        android:drawableLeft="@drawable/icon_people_add"
+        android:drawablePadding="20dp"
+        android:gravity="center|left"
+        android:paddingLeft="10dp"
+        android:text="好友申请"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/myGroupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mywechat_btn_borderless"
+        android:drawableLeft="@drawable/icon_people_add"
+        android:drawablePadding="20dp"
+        android:gravity="center|left"
+        android:paddingLeft="10dp"
+        android:text="我的群聊"
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contacts_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
