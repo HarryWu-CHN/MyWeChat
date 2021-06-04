@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.mywechat.MainActivity
 import com.example.mywechat.R
@@ -17,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import kotlin.math.log
 
 
 @AndroidEntryPoint
@@ -34,11 +36,13 @@ class LoginFragment : Fragment() {
         loginViewModel
         binding.loginButtonClick.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
+                loginViewModel.httpLogin(binding.loginUsernameTextEdit.text.toString(), binding.loginPasswordTextEdit.text.toString())
                 withTimeout(10 * 1000) {
                     loginViewModel.login(binding.loginUsernameTextEdit.text.toString(), binding.loginPasswordTextEdit.text.toString()) {
                         when (it) {
                             true ->{
-                                (requireActivity() as MainActivity).jumpToUser()
+                                val loginStatus = LoginStatus(true, loginViewModel.successfulLogin.value!!.httpLogin)
+                                loginViewModel.successfulLogin.postValue(loginStatus)
                             }
                             false -> {
                                 AlertDialog.Builder(requireContext()).setTitle("用户名或密码错误！").show()
@@ -49,6 +53,12 @@ class LoginFragment : Fragment() {
                 }
                 Log.d("LoginFragment", "finished")
             }
+        }
+        loginViewModel.successfulLogin.observe(viewLifecycleOwner) {
+            if(it.httpLogin and it.wsLogin) {
+                    (requireActivity() as MainActivity).jumpToUser()
+            }
+
         }
         binding.registerUserButtonClick.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
