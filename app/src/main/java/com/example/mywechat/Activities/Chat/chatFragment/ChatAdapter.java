@@ -23,17 +23,27 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @NonNull
     @Override
     public ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View mView;
-        switch (viewType){
-            case 0:
-                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
-                break;
-            case 1:
-                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
-                break;
-            default:
-                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
-                break;
+        View mView = null;
+        if (viewType < 0) {
+            switch (viewType) {
+                case -1:
+                    mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
+                    break;
+                case -2:
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (viewType) {
+                case 1:
+                    mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
         }
         return new ChatAdapter.ChatViewHolder(mView);
     }
@@ -52,7 +62,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     }
     @Override
     public int getItemViewType(int position) {
-        return data.get(position).getIntMsgType();
+        if (!data.get(position).isUser()) {
+            return -data.get(position).getIntMsgType()-1;
+        } else {
+            return data.get(position).getIntMsgType()+1;
+        }
     }
     @Override
     public int getItemCount() {

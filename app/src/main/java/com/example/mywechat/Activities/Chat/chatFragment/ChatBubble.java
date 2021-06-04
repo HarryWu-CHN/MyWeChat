@@ -1,15 +1,19 @@
 package com.example.mywechat.Activities.Chat.chatFragment;
 
+import com.example.mywechat.model.MessageType;
+
 public class ChatBubble {
     private final String time; // 发送时间
     private final String content; // 发送内容
     private final int icon;
-    private final MsgType msgType;
+    private final boolean isUser;
+    private final String msgType;
 
-    public ChatBubble(String time, String content, int icon, MsgType msgType) {
+    public ChatBubble(String time, String content, int icon, boolean isUser, String msgType) {
         this.time = time;
         this.content = content;
         this.icon = icon;
+        this.isUser = isUser;
         this.msgType = msgType;
     }
 
@@ -22,7 +26,12 @@ public class ChatBubble {
     public int getIcon() {
         return icon;
     }
+
+    public boolean isUser() {
+        return isUser;
+    }
+
     public int getIntMsgType() {
-        return msgType.ordinal();
+        return Integer.parseInt(msgType);
     }
 }

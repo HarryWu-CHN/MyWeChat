@@ -20,10 +20,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.model.ChatRecord;
 import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.model.MessageType;
 import com.example.mywechat.viewmodel.ChatSendViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,17 +74,18 @@ public class ChatFragment extends Fragment {
         recyclerView = view.findViewById(R.id.chatList);
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
-        App app = (App) getActivity().getApplication();
-        ChatRecord chatRecord = LitePal.where("userName = ?", app.getUsername()).find(ChatRecord.class).get(0);
+        ChatActivity activity = (ChatActivity) getActivity();
+        App app = (App) activity.getApplication();
+        ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).find(ChatRecord.class).get(0);
         List<String> msgs = chatRecord.getMsgs();
         List<String> msgTypes = chatRecord.getMsgTypes();
         List<String> times = chatRecord.getTimes();
         List<Boolean> isUser = chatRecord.getIsUser();
         data = new LinkedList<>();
-        // TODO 根据User决定在左还是在右显示
+        // TODO icon 变成从文件读入 bitmap格式
         for (int i=0; i<msgTypes.size(); i++) {
             data.add(new ChatBubble(times.get(i), msgs.get(i),
-                    isUser.get(i) ? R.drawable.avatar5 : R.drawable.avatar6, MsgType.values()[Integer.parseInt(msgTypes.get(i))]));
+                    isUser.get(i) ? R.drawable.avatar5 : R.drawable.avatar6, isUser.get(i), msgTypes.get(i)));
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -125,7 +128,7 @@ public class ChatFragment extends Fragment {
             if (response.component1()) {
                 Message aMsg = new Message();
                 aMsg.what = 0;
-                aMsg.obj = new ChatBubble(time, msg, R.drawable.avatar5, MsgType.USER_TEXT);
+                aMsg.obj = new ChatBubble(time, msg, R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
                 handler.sendMessage(aMsg);
             }
         });
