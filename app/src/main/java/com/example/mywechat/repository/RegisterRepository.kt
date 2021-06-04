@@ -1,6 +1,7 @@
 package com.example.mywechat.repository
 
 import com.example.mywechat.api.ApiService
+import com.example.mywechat.api.HttpLoginRequest
 import com.example.mywechat.api.SignUpRequest
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class RegisterRepository @Inject constructor(
         username: String,
         password: String,
     ) = apiService.httpLogin(
-            LoginRequest(
+            HttpLoginRequest(
                     username = username,
                     password = password,
             )
