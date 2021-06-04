@@ -2,6 +2,7 @@ package com.example.mywechat.Activities.Chat.chatFragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,10 +15,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
@@ -101,6 +106,35 @@ public class ChatFragment extends Fragment {
         // ViewModel bind
         chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
 
+    }
+
+    private void setDialog() {
+        Dialog bottom_dialog = new Dialog(getActivity(), R.style.BottomDialog);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(getActivity()).inflate(
+                R.layout.bottom_dialog_chat, null);
+        //初始化视图
+        root.findViewById(R.id.btn_img).setOnClickListener(v -> {
+
+        });
+        root.findViewById(R.id.btn_video).setOnClickListener(v -> {
+
+        });
+        root.findViewById(R.id.btn_location).setOnClickListener(v -> {
+
+        });
+        bottom_dialog.setContentView(root);
+        Window dialogWindow = bottom_dialog.getWindow();
+        dialogWindow.setGravity(Gravity.BOTTOM);
+//        dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+        lp.width = (int) getResources().getDisplayMetrics().widthPixels; // 宽度
+        root.measure(0, 0);
+        lp.height = root.getMeasuredHeight();
+        lp.alpha = 9f; // 透明度
+        dialogWindow.setAttributes(lp);
+        bottom_dialog.show();
     }
 
     @Override

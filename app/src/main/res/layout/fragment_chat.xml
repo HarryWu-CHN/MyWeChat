@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#558658">
     <!-- 用来显示消息的列表 -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatList"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_width="0dp" >
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -22,7 +23,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#EAEAEA"
+        android:background="#A88B63"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
