@@ -70,7 +70,7 @@ class AppModule {
     @Singleton
     fun provideApiService(okHttpClient: OkHttpClient): ApiService {
         val httpLoggingInterceptor =
-                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
+                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS }
 
         val client = OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
@@ -103,7 +103,8 @@ class AppModule {
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
                 .followRedirects(false)
-                .cookieJar(cookieJar).build()
+                .cookieJar(cookieJar)
+                .build()
     }
 
 

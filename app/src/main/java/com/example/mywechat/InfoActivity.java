@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,9 +27,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.Cookie;
 
 @AndroidEntryPoint
 public class InfoActivity extends AppCompatActivity {
@@ -40,6 +47,7 @@ public class InfoActivity extends AppCompatActivity {
     private TextView myNickName;
     private TextView myUserName;
     private InfoViewModel infoViewModel;
+    SharedPreferences sharedPreferences;
 
     private static final int PHOTO = 1;
     private static final int ALBUM = 2;
@@ -50,6 +58,17 @@ public class InfoActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setInfoView();
         infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
+        sharedPreferences = getApplication().getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
+        List<Cookie> cookies = new ArrayList<>(sharedPreferences.getAll().size());
+
+        for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
+            String serializedCookie = (String) entry.getValue();
+            Cookie cookie = new SerializableCookie().decode(serializedCookie);
+            if (cookie != null) {
+                cookies.add(cookie);
+            }
+        }
+        Log.d("Cookies" , cookies.toString());
 
 //        infoViewModel.callExample(() -> {
 //            Log.d("tes", "tes2");
@@ -72,6 +91,15 @@ public class InfoActivity extends AppCompatActivity {
 
     private void initInfoButtons() {
         backButton.setOnClickListener(v -> {
+            List<Cookie> cookies = new ArrayList<>(sharedPreferences.getAll().size());
+            for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
+                String serializedCookie = (String) entry.getValue();
+                Cookie cookie = new SerializableCookie().decode(serializedCookie);
+                if (cookie != null) {
+                    cookies.add(cookie);
+                }
+            }
+            Log.d("Cookies" , cookies.toString());
             finish();
         });
 
