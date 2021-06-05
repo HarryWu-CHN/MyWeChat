@@ -2,6 +2,7 @@ package com.example.mywechat.module
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.example.mywechat.BuildConfig
 import com.example.mywechat.api.ApiService
 import com.example.mywechat.repository.MyWeChatService
@@ -20,6 +21,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cookie
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -69,16 +72,9 @@ class AppModule {
     @Provides
     @Singleton
     fun provideApiService(okHttpClient: OkHttpClient): ApiService {
-        val httpLoggingInterceptor =
-                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
-
-        val client = OkHttpClient.Builder()
-                .addInterceptor(httpLoggingInterceptor)
-                .build()
-
         val retrofit = Retrofit.Builder()
                 .baseUrl("http://8.140.133.34:7264/")
-                .client(client)
+                .client(okHttpClient)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build()
         return retrofit.create(ApiService::class.java)
@@ -89,7 +85,13 @@ class AppModule {
     fun providePersistentCookieJar(
         @ApplicationContext context: Context
     ): PersistentCookieJar {
-        return PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+        return object: PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context)) {
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return super.loadForRequest(url).apply {
+                    Log.d("Cookie", "$url, $this")
+                }
+            }
+        }
     }
 
     @Singleton
