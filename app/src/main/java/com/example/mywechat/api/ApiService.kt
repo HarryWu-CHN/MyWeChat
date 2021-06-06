@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.annotation.BoolRes
 import com.squareup.moshi.Json
+import com.example.mywechat.repository.LoginRequest
 import com.squareup.moshi.JsonClass
 import dagger.hilt.internal.GeneratedEntryPoint
 import okhttp3.MultipartBody
@@ -15,6 +16,8 @@ import java.sql.Time
 interface ApiService {
     @POST("user/logon")
     suspend fun register(@Body request: SignUpRequest) : BooleanResponse
+    @POST("user/login")
+    suspend fun httpLogin(@Body request: HttpLoginRequest) : BooleanResponse
 
     @Multipart
     @POST("user/edit")
@@ -78,6 +81,12 @@ interface ApiService {
 data class SignUpRequest(
     val username : String,
     val password : String,
+)
+
+@JsonClass(generateAdapter = true)
+data class HttpLoginRequest(
+        val username : String,
+        val password : String,
 )
 
 @JsonClass(generateAdapter = true)

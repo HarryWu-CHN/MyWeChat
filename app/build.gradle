@@ -49,6 +49,8 @@ dependencies {
     def lifecycle_version = "2.3.1"
     def scarlet='0.1.12'
 
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
     implementation 'com.squareup.moshi:moshi-kotlin:1.11.0'
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
     implementation 'com.squareup.moshi:moshi:1.11.0'
