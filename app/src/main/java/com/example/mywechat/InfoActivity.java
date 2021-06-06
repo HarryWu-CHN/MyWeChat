@@ -58,21 +58,7 @@ public class InfoActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setInfoView();
         infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
-        sharedPreferences = getApplication().getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
-        List<Cookie> cookies = new ArrayList<>(sharedPreferences.getAll().size());
 
-        for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
-            String serializedCookie = (String) entry.getValue();
-            Cookie cookie = new SerializableCookie().decode(serializedCookie);
-            if (cookie != null) {
-                cookies.add(cookie);
-            }
-        }
-        Log.d("Cookies" , cookies.toString());
-
-//        infoViewModel.callExample(() -> {
-//            Log.d("tes", "tes2");
-//        });
     }
 
     private void setInfoView() {

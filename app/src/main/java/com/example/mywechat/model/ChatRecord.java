@@ -15,6 +15,11 @@ public class ChatRecord extends LitePalSupport {
     private List<String> times = new ArrayList<>();
     private List<Boolean> isUser = new ArrayList<>();
 
+    public ChatRecord(String userName, String friendName) {
+        this.userName = userName;
+        this.friendName = friendName;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

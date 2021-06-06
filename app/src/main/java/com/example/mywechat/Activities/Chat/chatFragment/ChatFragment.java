@@ -3,8 +3,14 @@ package com.example.mywechat.Activities.Chat.chatFragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,11 +28,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
+import com.example.mywechat.FileUtil;
 import com.example.mywechat.R;
 import com.example.mywechat.model.ChatRecord;
 import com.example.mywechat.model.FriendRecord;
@@ -44,6 +52,8 @@ import java.util.Locale;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ChatFragment#newInstance} factory method to
@@ -56,8 +66,10 @@ public class ChatFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView textInputView;
     private Button sendBtn;
+    private ImageButton moreBtn;
 
     private ChatSendViewModel chatSendViewModel;
+    private ActivityResultLauncher<Integer> launcherImg;
 
 
     public ChatFragment() {
@@ -78,19 +90,32 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.chatList);
 
-        // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         ChatActivity activity = (ChatActivity) getActivity();
         App app = (App) activity.getApplication();
-        ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).find(ChatRecord.class).get(0);
-        List<String> msgs = chatRecord.getMsgs();
-        List<String> msgTypes = chatRecord.getMsgTypes();
-        List<String> times = chatRecord.getTimes();
-        List<Boolean> isUser = chatRecord.getIsUser();
+        String username = app.getUsername();
+        String sendTo = activity.getSendTo();
+        ChatRecord nChatRecord = new ChatRecord(username, sendTo);
+        nChatRecord.save();
+
+        List<ChatRecord> chatRecords = null;
+        try {
+            chatRecords = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).find(ChatRecord.class);
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        }
+        // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        // TODO icon 变成从文件读入 bitmap格式
-        for (int i=0; i<msgTypes.size(); i++) {
-            data.add(new ChatBubble(times.get(i), msgs.get(i),
-                    isUser.get(i) ? R.drawable.avatar5 : R.drawable.avatar6, isUser.get(i), msgTypes.get(i)));
+        if (chatRecords != null && chatRecords.size() > 0) {
+            ChatRecord chatRecord = chatRecords.get(0);
+            List<String> msgs = chatRecord.getMsgs();
+            List<String> msgTypes = chatRecord.getMsgTypes();
+            List<String> times = chatRecord.getTimes();
+            List<Boolean> isUser = chatRecord.getIsUser();
+            // TODO icon 变成从文件读入 bitmap格式
+            for (int i = 0; i < msgTypes.size(); i++) {
+                data.add(new ChatBubble(times.get(i), msgs.get(i),
+                        isUser.get(i) ? R.drawable.avatar5 : R.drawable.avatar6, isUser.get(i), msgTypes.get(i)));
+            }
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -103,9 +128,19 @@ public class ChatFragment extends Fragment {
             sendMsg(textInputView.getText().toString());
             textInputView.setText("");
         });
+        moreBtn = (ImageButton) view.findViewById(R.id.moreBtn);
+        moreBtn.setOnClickListener(v -> {
+            setDialog();
+        });
         // ViewModel bind
         chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        // launcher
+        launcherImg = registerForActivityResult(new ResultContract(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String imagePath) {
 
+            }
+        });
     }
 
     private void setDialog() {
@@ -114,7 +149,9 @@ public class ChatFragment extends Fragment {
                 R.layout.bottom_dialog_chat, null);
         //初始化视图
         root.findViewById(R.id.btn_img).setOnClickListener(v -> {
-
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            launcherImg.launch(2);
         });
         root.findViewById(R.id.btn_video).setOnClickListener(v -> {
 
@@ -135,6 +172,23 @@ public class ChatFragment extends Fragment {
         lp.alpha = 9f; // 透明度
         dialogWindow.setAttributes(lp);
         bottom_dialog.show();
+    }
+
+    class ResultContract extends ActivityResultContract<Integer, String> {
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, Integer requestCode) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            return intent;
+        }
+
+        @Override
+        public String parseResult(int resultCode, @Nullable Intent intent) {
+            if (resultCode == RESULT_OK && intent != null)
+                return FileUtil.handleStorageImage(getActivity(), intent);
+            return null;
+        }
     }
 
     @Override

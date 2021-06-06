@@ -13,7 +13,7 @@ import java.util.Objects;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ChatActivity extends FragmentActivity {
+public class ChatActivity extends AppCompatActivity {
     private TextView topName;
 
     @Override
