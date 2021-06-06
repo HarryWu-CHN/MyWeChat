@@ -105,6 +105,7 @@ class AppModule {
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
                 .followRedirects(false)
+                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
                 .cookieJar(cookieJar)
                 .build()
     }
