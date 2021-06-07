@@ -1,5 +1,6 @@
 package com.example.mywechat.Activities.Chat.chatFragment;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,35 +25,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @Override
     public ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mView = null;
-        if (viewType < 0) {
-            switch (viewType) {
-                case -1:
-                    mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
-                    break;
-                case -2:
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (viewType) {
-                case 1:
-                    mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
-                    break;
-                case 2:
-                    break;
-                default:
-                    break;
-            }
+        switch (viewType) {
+            case -1:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user1, parent, false);
+                break;
+            case -2:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_img_user1, parent, false);
+                break;
+            case 1:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user2, parent, false);
+                break;
+            case 2:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_img_user2, parent, false);
+                break;
+            default:
+                break;
         }
-        return new ChatAdapter.ChatViewHolder(mView);
+
+        return new ChatAdapter.ChatViewHolder(mView, Math.abs(viewType)-1);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatAdapter.ChatViewHolder holder, int position) {
         ChatBubble chatBubble = data.get(position);
+        if (chatBubble.getIntMsgType() == 0) {
+            holder.getChatContentView().setText((String) chatBubble.getContent());
+        } else if (chatBubble.getIntMsgType() == 1){
+            holder.getChatImgView().setImageBitmap((Bitmap) chatBubble.getContent());
+        }
         holder.getChatTimeView().setText(chatBubble.getTime());
-        holder.getChatContentView().setText(chatBubble.getContent());
         holder.getChatIconView().setImageResource(chatBubble.getIcon());
     }
 
@@ -86,14 +87,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         private final TextView chatTimeView;
-        private final TextView chatContentView;
+        private TextView chatContentView;
         private final ImageView chatIconView;
+        private ImageView chatImgView;
 
-        public ChatViewHolder(@NonNull View itemView) {
+        public ChatViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
             this.chatTimeView = itemView.findViewById(R.id.chatTime);
-            this.chatContentView = itemView.findViewById(R.id.chatContent);
             this.chatIconView = itemView.findViewById(R.id.chatIcon);
+            switch (viewType) {
+                case 0:
+                    this.chatContentView = itemView.findViewById(R.id.chatContent);
+                    break;
+                case 1:
+                    this.chatImgView = itemView.findViewById(R.id.chatContent);
+                    break;
+            }
         }
 
         public TextView getChatTimeView() {
@@ -106,6 +115,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
         public ImageView getChatIconView() {
             return chatIconView;
+        }
+
+        public ImageView getChatImgView() {
+            return chatImgView;
         }
     }
 }

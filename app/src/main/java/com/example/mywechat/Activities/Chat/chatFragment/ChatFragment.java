@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -44,11 +46,14 @@ import com.example.mywechat.viewmodel.ChatSendViewModel;
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -67,6 +72,8 @@ public class ChatFragment extends Fragment {
     private TextView textInputView;
     private Button sendBtn;
     private ImageButton moreBtn;
+    private String username;
+    private String sendTo;
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
@@ -92,8 +99,8 @@ public class ChatFragment extends Fragment {
 
         ChatActivity activity = (ChatActivity) getActivity();
         App app = (App) activity.getApplication();
-        String username = app.getUsername();
-        String sendTo = activity.getSendTo();
+        username = app.getUsername();
+        sendTo = activity.getSendTo();
         ChatRecord nChatRecord = new ChatRecord(username, sendTo);
         nChatRecord.save();
 
@@ -134,11 +141,34 @@ public class ChatFragment extends Fragment {
         });
         // ViewModel bind
         chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
+            if (response == null) {
+                return;
+            }
+            if (response.component1()) {
+                SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+                String time = sdf.format(response.component2());
+                ChatBubble bubble = null;
+                switch (response.getMsgType()) {
+                    case "0":
+                        bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                        break;
+                    case "1":
+                        Log.d("LiveData Observe", Objects.requireNonNull(response.getFile()).getPath());
+                        Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
+                        bubble = new ChatBubble(time, bitmap, R.drawable.avatar5, true, Integer.valueOf(MessageType.IMAGE.ordinal()).toString());
+                        break;
+                }
+                if (bubble != null)
+                    chatAdapter.addData(data.size(), bubble);
+            }
+        });
         // launcher
         launcherImg = registerForActivityResult(new ResultContract(), new ActivityResultCallback<String>() {
             @Override
             public void onActivityResult(String imagePath) {
-
+                if (imagePath == null) return;
+                sendImg(imagePath);
             }
         });
     }
@@ -152,6 +182,7 @@ public class ChatFragment extends Fragment {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             launcherImg.launch(2);
+            bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_video).setOnClickListener(v -> {
 
@@ -209,17 +240,13 @@ public class ChatFragment extends Fragment {
         String time = sdf.format(new Date().getTime());
         TextView topName = requireActivity().findViewById(R.id.topName);
         chatSendViewModel.chatSend(topName.getText().toString(), "0", msg, null);
-        chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
-            if (response == null) {
-                return;
-            }
-            if (response.component1()) {
-                Message aMsg = new Message();
-                aMsg.what = 0;
-                aMsg.obj = new ChatBubble(time, msg, R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
-                handler.sendMessage(aMsg);
-            }
-        });
+    }
+
+    public void sendImg(String imagePath) {
+        Log.d("Sending Img", imagePath);
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        File file = new File(imagePath);
+        chatSendViewModel.chatSend(sendTo, "1", null, file);
     }
 
     private Handler handler = new Handler(Looper.myLooper()) {

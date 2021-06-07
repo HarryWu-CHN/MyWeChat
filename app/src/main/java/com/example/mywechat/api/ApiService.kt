@@ -63,8 +63,12 @@ interface ApiService {
     suspend fun groupDel(@Body request : GroupDelRequest) : BooleanResponse
 
     //发消息，朋友圈相关
+    @Multipart
     @POST("chat/send")
-    suspend fun chatSend(@Body request : ChatSendRequest) : BooleanResponse
+    suspend fun chatSend(@Part("sendTo") sendTo: RequestBody,
+                         @Part("msg") msg: RequestBody?,
+                         @Part("msgType") msgType: RequestBody,
+                         @Part file: MultipartBody.Part?) : BooleanResponse
 
     @POST("discover/post")
     suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
@@ -138,6 +142,15 @@ data class ContactWaitedText(
 )
 
 @JsonClass(generateAdapter = true)
+data class ChatSendResponse(
+        val success: Boolean,
+        val time : Long,
+        val msgType : String,
+        val msg : String?,
+        val file : File?
+)
+
+@JsonClass(generateAdapter = true)
 data class GroupCreateRequest(
         val groupName : String,
         val membersName : List<String>,
@@ -176,14 +189,6 @@ data class GroupExitRequest(
 @JsonClass(generateAdapter = true)
 data class GroupDelRequest(
         val groupId : String,
-)
-
-@JsonClass(generateAdapter = true)
-data class ChatSendRequest(
-        val sendTo: String,
-        val msgType: String,
-        val msg: String,
-        val file: File?
 )
 
 @JsonClass(generateAdapter = true)

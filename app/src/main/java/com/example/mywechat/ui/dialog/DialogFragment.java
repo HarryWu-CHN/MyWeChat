@@ -54,7 +54,7 @@ public class DialogFragment extends Fragment {
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        data.add(new Dialog(getString(R.string.nickname1), R.drawable.avatar1, getString(R.string.sentence1), "2021/01/01"));
+        data.add(new Dialog("b", R.drawable.avatar1, getString(R.string.sentence1), "2021/01/01"));
         data.add(new Dialog(getString(R.string.nickname2), R.drawable.avatar2, getString(R.string.sentence2), "2021/01/02"));
         data.add(new Dialog(getString(R.string.nickname3), R.drawable.avatar3, getString(R.string.sentence3), "2021/01/03"));
         data.add(new Dialog(getString(R.string.nickname4), R.drawable.avatar4, getString(R.string.sentence4), "2021/01/04"));
