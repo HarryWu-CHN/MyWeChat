@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -77,6 +79,7 @@ public class ChatFragment extends Fragment {
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
+    private ActivityResultLauncher<Integer> launcherVideo;
 
 
     public ChatFragment() {
@@ -171,6 +174,14 @@ public class ChatFragment extends Fragment {
                 sendImg(imagePath);
             }
         });
+        launcherVideo = registerForActivityResult(new ResultContractVideo(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String videoPath) {
+                if (videoPath == null) return;
+                sendVideo(videoPath);
+            }
+        });
+
     }
 
     private void setDialog() {
@@ -181,11 +192,12 @@ public class ChatFragment extends Fragment {
         root.findViewById(R.id.btn_img).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            launcherImg.launch(2);
+            launcherImg.launch(0);
             bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_video).setOnClickListener(v -> {
-
+            launcherVideo.launch(1);
+            bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_location).setOnClickListener(v -> {
 
@@ -222,6 +234,24 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    class ResultContractVideo extends ActivityResultContract<Integer, String> {
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, Integer requestCode) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("video/*");
+            return intent;
+        }
+
+        @Override
+        public String parseResult(int resultCode, @Nullable Intent intent) {
+            if (resultCode == RESULT_OK && intent != null) {
+                return FileUtil.handleStorageImage(getActivity(), intent);
+            }
+            return null;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -247,6 +277,11 @@ public class ChatFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         File file = new File(imagePath);
         chatSendViewModel.chatSend(sendTo, "1", null, file);
+    }
+
+    public void sendVideo(String videoPath) {
+        File file = new File(videoPath);
+        chatSendViewModel.chatSend(sendTo, "2", null, file);
     }
 
     private Handler handler = new Handler(Looper.myLooper()) {
