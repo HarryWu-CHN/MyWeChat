@@ -193,8 +193,9 @@ data class GroupDelRequest(
 
 @JsonClass(generateAdapter = true)
 data class DiscoverPostRequest(
-        val msgTpye: String,
+        val msgType: String,
         val msg: String,
+        val files: List<File>,
 )
 
 @JsonClass(generateAdapter = true)

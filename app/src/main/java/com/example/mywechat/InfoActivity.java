@@ -62,6 +62,8 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void setInfoView() {
+        // TODO: 新增一个按钮，点击后才发送个人信息的修改
+
         setContentView(R.layout.activity_user_info);
 
         backButton = findViewById(R.id.backButton);
@@ -117,6 +119,8 @@ public class InfoActivity extends AppCompatActivity {
         saveNickNameButton.setOnClickListener(v -> {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
+
+            // TODO: 这里保存昵称修改之后直接就发送请求了，重写逻辑
             infoViewModel.callUserEdit(myNickName.getText().toString(), null);
         });
         
@@ -132,6 +136,8 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         testImageView.setImageBitmap(bitmap);
+
+        // TODO: 这里更新图片之后直接就往后端发请求了，重写一下逻辑
         File file = new File(imagePath);
         infoViewModel.callUserEdit(null, file);
     }

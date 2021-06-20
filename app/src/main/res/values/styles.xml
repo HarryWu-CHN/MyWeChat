@@ -22,4 +22,11 @@
         <item name="android:windowEnterAnimation">@anim/dialog_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_out</item>
     </style>
+    <!-- 图片预览 -->
+    <style name="FullActivity" parent="Theme.MyWeChat">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/ASBESTOS</item>
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
 </resources>
