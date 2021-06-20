@@ -3,6 +3,7 @@ package com.example.mywechat.repository
 import android.util.Log
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,10 +16,36 @@ class WSRepository @Inject constructor(
 ) {
     init {
         GlobalScope.launch(Dispatchers.IO) {
-            myWeChatService.observeEvents().consumeEach {
+            myWeChatService.observeEvents().consumeEach {0
                 Log.d("webSocket event", "$it")
             }
         }
+    }
+
+    fun newMessage() : ReceiveChannel<NewMessage> {
+        return myWeChatService.observeNewMessage()
+    }
+
+    fun newFriendApply() : ReceiveChannel<Array<NewFriendApply>> {
+        val it = myWeChatService.observeNewFriendApply()
+        Log.d("test2", it.toString())
+        return it
+    }
+
+    fun friendApplyResponse() : ReceiveChannel<FriendApplyResponse>{
+        return myWeChatService.observeFriendApplyResponse()
+    }
+
+    fun newGroupInvite() : ReceiveChannel<NewGroupInvite>{
+        return myWeChatService.observeNewGroupInvite()
+    }
+
+    fun getKickOut() : ReceiveChannel<GetKickOut>{
+        return myWeChatService.observeGetKickOut()
+    }
+
+    fun newDiscover() : ReceiveChannel<NewDiscover>{
+        return myWeChatService.observeNewDiscover()
     }
 
     suspend fun login(username: String, password: String, onResponse: (Boolean) -> Unit) {
@@ -27,6 +54,9 @@ class WSRepository @Inject constructor(
             }) {
                 val channel = myWeChatService.observeLoginResponse()
                 channel.consumeEach {
+                    Log.d("test1", it.toString())
+                    println("test1.1")
+                    println(it.toString())
                     continuation.resume(onResponse(it.success))
                     channel.cancel()
                 }
