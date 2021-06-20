@@ -24,13 +24,24 @@ import javax.inject.Inject
 class DiscoverViewModel @Inject constructor(
         private val discoverRepository: DiscoverRepository,
 ) : ViewModel() {
-    private val liveData = MutableLiveData<BooleanResponse?>(null)
-    fun discoverPost(msgType: String, text: String, files: List<File>) {
+    val liveData = MutableLiveData<BooleanResponse?>(null)
+    val discoverData = MutableLiveData<DiscoverResponse?>(null)
+
+    fun discoverPost(msgType: String, text: String, files: List<File>?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = discoverRepository.discoverPost(msgType, text, files)
                 liveData.postValue(response)
             } catch (ignored : IOException){}
+        }
+    }
+
+    fun discover(lastUpdateTime: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = discoverRepository.discover(lastUpdateTime)
+                discoverData.postValue(response)
+            } catch (ignored : IOException) {}
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.discover;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -80,9 +81,9 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         holder.getPublishedTime().setText(discover.getPublishedTime());
 
         ImageView[] images = holder.getImages();
-        ArrayList<Integer> imagesId = discover.getImages();
+        ArrayList<Bitmap> imagesId = discover.getImages();
         for (int i = 0; i < holder.imageCount; i++) {
-            images[i].setImageResource(imagesId.get(i));
+            images[i].setImageBitmap(imagesId.get(i));
         }
 
         // 点赞按钮

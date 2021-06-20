@@ -195,7 +195,7 @@ data class GroupDelRequest(
 data class DiscoverPostRequest(
         val msgType: String,
         val msg: String,
-        val files: List<File>,
+        val files: List<File>?,
 )
 
 @JsonClass(generateAdapter = true)
@@ -212,11 +212,12 @@ data class DiscoverResponse(
 @JsonClass(generateAdapter = true)
 data class DiscoverInfo(
         val id: String,
+        val username: String,
         val text : String,
         val discoverType: String,
-        val urlList : List<String>,
-        val time: Long,
-        val chatRecords : List<String>,
+        val urlList : List<String>?,
+        val time: String,
+        val discoverComments: List<String>?,
 )
 
 @JsonClass(generateAdapter = true)

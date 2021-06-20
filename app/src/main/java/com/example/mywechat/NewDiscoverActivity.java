@@ -19,32 +19,41 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.ui.pickAdapter.ImagePick;
 import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
+import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class NewDiscoverActivity extends AppCompatActivity implements ImagePickAdapter.OnRecyclerViewItemClickListener {
     private ImageButton backButton;
     private Button postDiscoverButton;
     private RecyclerView imageUploadRecyclerView;
     private int maxImageCnt = 9;
+    private EditText contentText;
     private List<ImagePick> selectImages;
     private List<File> selectFiles;
     private ImagePickAdapter adapter;
     private ImageView previewImage;
     private Dialog previewDialog;
+    private DiscoverViewModel discoverViewModel;
 
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;
@@ -55,6 +64,8 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
+
+        contentText = findViewById(R.id.newDiscoverContent);
 
         /* 图片预览Dialog */
         previewDialog = new Dialog(this, R.style.FullActivity);
@@ -76,7 +87,16 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
 
         postDiscoverButton = findViewById(R.id.postDiscoverButton);
         postDiscoverButton.setOnClickListener(v -> {
-            // TODO: 发送朋友圈
+            String msgType;
+            if (this.selectFiles.size() == 0) {
+                msgType = "0";
+                discoverViewModel.discoverPost(msgType, contentText.getText().toString(), null);
+            } else {
+                msgType = "1";
+                discoverViewModel.discoverPost(msgType, contentText.getText().toString(), selectFiles);
+            }
+            discoverViewModel.discover(0);
+            // TODO: 发送视频
         });
 
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
@@ -85,6 +105,8 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     }
 
     private void initUploadView() {
+        discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
+        selectFiles = new LinkedList<>();
         imageUploadRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         selectImages = new ArrayList<>();
         adapter = new ImagePickAdapter(this, selectImages, maxImageCnt);

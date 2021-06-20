@@ -10,7 +10,7 @@ class DiscoverRepository @Inject constructor(
     suspend fun discoverPost(
             msgType: String,
             text: String,
-            files: List<File>,
+            files: List<File>?,
     ) = apiService.discoverPost(
             DiscoverPostRequest(
                     msgType, text, files
