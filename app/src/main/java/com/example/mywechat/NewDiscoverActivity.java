@@ -46,7 +46,7 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     private ImageButton backButton;
     private Button postDiscoverButton;
     private RecyclerView imageUploadRecyclerView;
-    private int maxImageCnt = 9;
+    private int maxImageCnt = 4;
     private EditText contentText;
     private List<ImagePick> selectImages;
     private List<File> selectFiles;
@@ -100,14 +100,14 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         });
 
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
-        imageUploadRecyclerView.setAdapter(adapter);
+        //imageUploadRecyclerView.setAdapter(adapter);
         initUploadView();
     }
 
     private void initUploadView() {
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
         selectFiles = new LinkedList<>();
-        imageUploadRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        imageUploadRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         selectImages = new ArrayList<>();
         adapter = new ImagePickAdapter(this, selectImages, maxImageCnt);
         adapter.setOnItemClickListener(this);

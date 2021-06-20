@@ -25,16 +25,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.CommentAdapter;
+import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
     private LinkedList<Discover> data;
     private View mParent;
+    private DiscoverViewModel discoverViewModel;
 
-    public DiscoverAdapter(LinkedList<Discover> data) {
+    public DiscoverAdapter(LinkedList<Discover> data, DiscoverViewModel discoverViewModel) {
         this.data = data;
+        this.discoverViewModel = discoverViewModel;
     }
 
     @Override

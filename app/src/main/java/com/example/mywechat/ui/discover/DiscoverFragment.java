@@ -182,7 +182,7 @@ public class DiscoverFragment extends Fragment {
                         discovers.add(new Discover(nickName, R.drawable.avatar1, text,
                                 time, images, null));
                     }
-                    recyclerView.setAdapter(new DiscoverAdapter(discovers));
+                    recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel));
                     break;
                 case 1:
                     Log.d("InternetImageView", "NETWORK_ERROR");

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.mywechat.Activities.Group.NewGroupActivity;
 import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
 import com.example.mywechat.viewmodel.ChatSendViewModel;
 import com.example.mywechat.viewmodel.MainActivityViewModel;
@@ -75,12 +76,15 @@ public class UserActivity extends AppCompatActivity {
     @Override
     @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.newFriendItem:
-                Intent intent = new Intent(this, NewFriendActivity.class);
+                intent = new Intent(this, NewFriendActivity.class);
                 startActivity(intent);
                 break;
             case R.id.newGroupItem:
+                intent = new Intent(this, NewGroupActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;

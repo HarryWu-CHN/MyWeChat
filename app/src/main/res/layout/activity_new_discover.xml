@@ -72,9 +72,9 @@
             android:layout_height="wrap_content"
             android:fadingEdge="none"
             android:padding="5dp"
-            tools:listitem="@layout/item_list_upload_image"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3" />
+            app:spanCount="2"
+            tools:listitem="@layout/item_list_upload_image" />
 
     </LinearLayout>
 

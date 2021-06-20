@@ -25,6 +25,28 @@ class DiscoverRepository @Inject constructor(
             )
     )
 
+    suspend fun thumb(
+            discoverId : String,
+            thumb : String,
+    ) = apiService.thumb(
+            ThumbRequest(
+                    discoverId,
+                    thumb
+            )
+    )
+
+    suspend fun comment(
+            discoverId: String,
+            sendTo: String,
+            msg: String,
+    ) = apiService.comment(
+            CommentRequest(
+                    discoverId,
+                    sendTo,
+                    msg,
+            )
+    )
+
     suspend fun discoverUser(
             discoverUser : String,
             timePeriod : ArrayList<TimePair>
