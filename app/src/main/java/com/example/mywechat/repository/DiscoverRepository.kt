@@ -1,6 +1,7 @@
 package com.example.mywechat.repository
 
 import com.example.mywechat.api.*
+import java.io.File
 import javax.inject.Inject
 
 class DiscoverRepository @Inject constructor(
@@ -8,10 +9,11 @@ class DiscoverRepository @Inject constructor(
 ) {
     suspend fun discoverPost(
             msgType: String,
-            msg : String,
+            text: String,
+            files: List<File>,
     ) = apiService.discoverPost(
             DiscoverPostRequest(
-                    msgType, msg,
+                    msgType, text, files
             )
     )
 

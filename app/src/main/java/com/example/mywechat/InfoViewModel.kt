@@ -24,7 +24,7 @@ class InfoViewModel @Inject constructor(
             val response = userEditRepository.userEdit(nickname, icon)
             liveData.postValue(response.success)
             // Log.d("")
-        }catch (e: IOException){
+        } catch (e: IOException){
             liveData.postValue(false)
         }
     }

@@ -1,6 +1,7 @@
 package com.example.mywechat;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +17,10 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mywechat.ui.pickAdapter.ImagePick;
 import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +41,10 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     private RecyclerView imageUploadRecyclerView;
     private int maxImageCnt = 9;
     private List<ImagePick> selectImages;
+    private List<File> selectFiles;
     private ImagePickAdapter adapter;
+    private ImageView previewImage;
+    private Dialog previewDialog;
 
     public static final int IMAGE_ITEM_ADD = -1;
     public static final int REQUEST_CODE_SELECT = 100;
@@ -49,6 +56,17 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
 
+        /* 图片预览Dialog */
+        previewDialog = new Dialog(this, R.style.FullActivity);
+        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+        attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
+        attributes.height = WindowManager.LayoutParams.MATCH_PARENT;
+        previewDialog.getWindow().setAttributes(attributes);
+
+        previewImage = new ImageView(this);
+        previewImage.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
 
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
@@ -86,7 +104,10 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
                 openAlbum();
                 break;
             default:
-                // TODO: 打开预览
+                Bitmap previewBitmap = selectImages.get(position).getImage();
+                previewImage.setImageBitmap(previewBitmap);
+                previewDialog.setContentView(previewImage);
+                previewDialog.show();
                 break;
         }
     }
@@ -94,17 +115,12 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_SELECT:
-                if (data != null && resultCode == RESULT_OK) {
-                    Bitmap bitmap = getStorageImageBitMap(data);
-                    selectImages.add(new ImagePick(bitmap));
-                    adapter.setImages(selectImages);
-                }
-                break;
-            case REQUEST_CODE_PREVIEW:
-                // TODO: 预览
-                break;
+        if (requestCode == REQUEST_CODE_SELECT) {
+            if (data != null && resultCode == RESULT_OK) {
+                Bitmap bitmap = getStorageImageBitMap(data);
+                selectImages.add(new ImagePick(bitmap));
+                adapter.setImages(selectImages);
+            }
         }
     }
 
@@ -117,7 +133,7 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     private Bitmap getStorageImageBitMap(Intent data) {
         Uri uri = data.getData();
         String imagePath = getFilePath(this, uri);
-
+        selectFiles.add(new File(imagePath));
         Log.d("imagePath:", imagePath);
 
         return BitmapFactory.decodeFile(imagePath);
