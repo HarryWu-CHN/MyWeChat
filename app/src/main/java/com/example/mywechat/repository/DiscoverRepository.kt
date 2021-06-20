@@ -10,7 +10,7 @@ class DiscoverRepository @Inject constructor(
     suspend fun discoverPost(
             msgType: String,
             text: String,
-            files: List<File>,
+            files: List<File>?,
     ) = apiService.discoverPost(
             DiscoverPostRequest(
                     msgType, text, files
@@ -22,6 +22,28 @@ class DiscoverRepository @Inject constructor(
     ) = apiService.discover(
             DiscoverRequest(
                     lastUpdateTime
+            )
+    )
+
+    suspend fun thumb(
+            discoverId : String,
+            thumb : String,
+    ) = apiService.thumb(
+            ThumbRequest(
+                    discoverId,
+                    thumb
+            )
+    )
+
+    suspend fun comment(
+            discoverId: String,
+            sendTo: String,
+            msg: String,
+    ) = apiService.comment(
+            CommentRequest(
+                    discoverId,
+                    sendTo,
+                    msg,
             )
     )
 

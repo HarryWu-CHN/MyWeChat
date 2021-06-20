@@ -76,6 +76,12 @@ interface ApiService {
     @POST("discover")
     suspend fun discover(@Body request: DiscoverRequest) : DiscoverResponse
 
+    @POST("discover/thumb")
+    suspend fun thumb(@Body request: ThumbRequest) : BooleanResponse
+
+    @POST("discover/comment")
+    suspend fun comment(@Body request: CommentRequest) : BooleanResponse
+
     @POST("discover/user")
     suspend fun discoverUser(@Body request: DiscoverUserRequest) : DiscoverUserResponse
 
@@ -195,7 +201,7 @@ data class GroupDelRequest(
 data class DiscoverPostRequest(
         val msgType: String,
         val msg: String,
-        val files: List<File>,
+        val files: List<File>?,
 )
 
 @JsonClass(generateAdapter = true)
@@ -212,11 +218,25 @@ data class DiscoverResponse(
 @JsonClass(generateAdapter = true)
 data class DiscoverInfo(
         val id: String,
+        val username: String,
         val text : String,
         val discoverType: String,
-        val urlList : List<String>,
-        val time: Long,
-        val chatRecords : List<String>,
+        val urlList : List<String>?,
+        val time: String,
+        val discoverComments: List<String>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class ThumbRequest(
+        val discoverId: String,
+        val thumb: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class CommentRequest(
+        val discoverId: String,
+        val sendTo: String,
+        val msg: String,
 )
 
 @JsonClass(generateAdapter = true)

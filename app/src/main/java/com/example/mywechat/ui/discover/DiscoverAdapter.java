@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.discover;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,16 +25,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.CommentAdapter;
+import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
     private LinkedList<Discover> data;
     private View mParent;
+    private DiscoverViewModel discoverViewModel;
 
-    public DiscoverAdapter(LinkedList<Discover> data) {
+    public DiscoverAdapter(LinkedList<Discover> data, DiscoverViewModel discoverViewModel) {
         this.data = data;
+        this.discoverViewModel = discoverViewModel;
     }
 
     @Override
@@ -80,9 +86,9 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         holder.getPublishedTime().setText(discover.getPublishedTime());
 
         ImageView[] images = holder.getImages();
-        ArrayList<Integer> imagesId = discover.getImages();
+        ArrayList<Bitmap> imagesId = discover.getImages();
         for (int i = 0; i < holder.imageCount; i++) {
-            images[i].setImageResource(imagesId.get(i));
+            images[i].setImageBitmap(imagesId.get(i));
         }
 
         // 点赞按钮
