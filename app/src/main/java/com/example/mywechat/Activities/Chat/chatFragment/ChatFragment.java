@@ -166,6 +166,9 @@ public class ChatFragment extends Fragment {
                         bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
                         break;
                 }
+                ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
+                chatRecord.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
+                chatRecord.save();
                 if (bubble != null)
                     chatAdapter.addData(data.size(), bubble);
             }
