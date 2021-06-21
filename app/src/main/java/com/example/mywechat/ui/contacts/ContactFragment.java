@@ -150,7 +150,7 @@ public class ContactFragment extends Fragment {
                 recyclerView.setAdapter(new ContactAdapter(contacts));
                 for (Contact contact : contacts) {
                     FriendRecord friendRecord = new FriendRecord(contact.getNickname(), bitmap2byte(contact.getAvatarIcon()));
-                    friendRecord.saveOrUpdate();
+                    friendRecord.save();
                 }
             }
         }
