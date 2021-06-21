@@ -157,9 +157,13 @@ public class ChatFragment extends Fragment {
                         bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
                         break;
                     case "1":
-                        Log.d("LiveData Observe", Objects.requireNonNull(response.getFile()).getPath());
+                        Log.d("LiveData Observe Img", Objects.requireNonNull(response.getFile()).getPath());
                         Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
                         bubble = new ChatBubble(time, bitmap, R.drawable.avatar5, true, Integer.valueOf(MessageType.IMAGE.ordinal()).toString());
+                        break;
+                    case "2":
+                        Log.d("LiveData Observe Video", Objects.requireNonNull(response.getFile()).getPath());
+                        bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
                         break;
                 }
                 if (bubble != null)
@@ -174,14 +178,17 @@ public class ChatFragment extends Fragment {
                 sendImg(imagePath);
             }
         });
-        launcherVideo = registerForActivityResult(new ResultContractVideo(), new ActivityResultCallback<String>() {
+        launcherVideo = registerForActivityResult(new ResultContract(), new ActivityResultCallback<String>() {
             @Override
             public void onActivityResult(String videoPath) {
                 if (videoPath == null) return;
                 sendVideo(videoPath);
             }
         });
-
+        /* TODO
+        videoView.requestFocus();
+        videoView.start();
+         */
     }
 
     private void setDialog() {
@@ -222,7 +229,11 @@ public class ChatFragment extends Fragment {
         @Override
         public Intent createIntent(@NonNull Context context, Integer requestCode) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
+            if (requestCode.equals(0)) {
+                intent.setType("image/*");
+            } else if (requestCode.equals(1)){
+                intent.setType("video/*");
+            }
             return intent;
         }
 
@@ -230,24 +241,6 @@ public class ChatFragment extends Fragment {
         public String parseResult(int resultCode, @Nullable Intent intent) {
             if (resultCode == RESULT_OK && intent != null)
                 return FileUtil.handleStorageImage(getActivity(), intent);
-            return null;
-        }
-    }
-
-    class ResultContractVideo extends ActivityResultContract<Integer, String> {
-        @NonNull
-        @Override
-        public Intent createIntent(@NonNull Context context, Integer requestCode) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("video/*");
-            return intent;
-        }
-
-        @Override
-        public String parseResult(int resultCode, @Nullable Intent intent) {
-            if (resultCode == RESULT_OK && intent != null) {
-                return FileUtil.handleStorageImage(getActivity(), intent);
-            }
             return null;
         }
     }
