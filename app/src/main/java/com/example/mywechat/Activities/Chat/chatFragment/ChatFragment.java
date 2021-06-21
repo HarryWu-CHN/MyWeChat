@@ -49,6 +49,10 @@ import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.BitSet;
 import java.util.Date;
@@ -104,19 +108,15 @@ public class ChatFragment extends Fragment {
         App app = (App) activity.getApplication();
         username = app.getUsername();
         sendTo = activity.getSendTo();
-        ChatRecord nChatRecord = new ChatRecord(username, sendTo);
-        nChatRecord.save();
-
-        List<ChatRecord> chatRecords = null;
+        ChatRecord chatRecord = null;
         try {
-            chatRecords = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).find(ChatRecord.class);
+            chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
         } catch (Exception e) {
             Log.d("Exception", e.toString());
         }
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        if (chatRecords != null && chatRecords.size() > 0) {
-            ChatRecord chatRecord = chatRecords.get(0);
+        if (chatRecord != null) {
             List<String> msgs = chatRecord.getMsgs();
             List<String> msgTypes = chatRecord.getMsgTypes();
             List<String> times = chatRecord.getTimes();
@@ -165,17 +165,34 @@ public class ChatFragment extends Fragment {
                     bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
                     break;
             }
-            ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
-            chatRecord.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
-            chatRecord.save();
+            ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
+            chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
+            chatRecord2.save();
             if (bubble != null)
                 chatAdapter.addData(data.size(), bubble);
         });
         chatSendViewModel.observeNewMsg();
         chatSendViewModel.getNewMsgLiveData().observe(requireActivity(), response -> {
             if (response == null) return;
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+            String time = sdf.format(new Date().getTime());
+            if (response.component1() == 0 && response.getFrom().equals(sendTo)) {
+                ChatBubble bubble = null;
+                switch (response.getMsgType()) {
+                    case "0":
+                        bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar6, false, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                        chatAdapter.addData(data.size(), bubble);
+                        break;
+                    case "1":
+                        getWebImg(time, response.getMsg(), R.drawable.avatar6);
+                        break;
+                }
+            }
             if (response.component1() == 0) {
                 Log.d("ChatFragment", "Receive New Msg" + response.toString());
+                ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
+                chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, false);
+                chatRecord2.save();
             }
         });
         // launcher
@@ -305,4 +322,29 @@ public class ChatFragment extends Fragment {
         }
     };
 
+    public void getWebImg(String time, String imgPath, int avatar) {
+        new Thread(() -> {
+            String path = "http://8.140.133.34:7262/" + imgPath;
+            try {
+                URL url = new URL(path);
+                Bitmap bitmap = null;
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(10000);
+                //获取返回码
+                int code = connection.getResponseCode();
+                if (code == 200) {
+                    InputStream inputStream = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                    inputStream.close();
+                }
+                Message msg = new Message();
+                msg.what = 0;
+                msg.obj = new ChatBubble(time, bitmap, avatar, false, "1");
+                handler.sendMessage(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 }
