@@ -3,6 +3,7 @@ package com.example.mywechat.ui.discover;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -38,19 +40,31 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
     private View mParent;
     private LinkedList<Discover> data;
-    private String mName;
     private String commentId;
-    private DiscoverViewModel discoverViewModel;
+    private final String mName;
+    private final DiscoverViewModel discoverViewModel;
 
-    public DiscoverAdapter(LinkedList<Discover> data, DiscoverViewModel discoverViewModel, String mName) {
-        this.data = data;
+    public DiscoverAdapter(DiscoverViewModel discoverViewModel, String mName) {
         this.discoverViewModel = discoverViewModel;
         this.mName = mName;
     }
 
+    public void setDiscoverData(LinkedList<Discover> data) {
+        this.data = new LinkedList<>(data);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return this.data.get(position).getImageCount();
+        switch (this.data.get(position).getDiscoverType()) {
+            case "ONLY_TEXT":
+                return 0;
+            case "PHOTO":
+                return this.data.get(position).getImageCount();
+            case "VIDEO":
+                return 5;
+        }
+        return -1;
     }
 
     @NonNull
@@ -75,6 +89,9 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             case 4:
                 mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_discover_4, parent, false);
                 break;
+            case 5:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_discover_video, parent, false);
+                break;
             default:
                 Log.d("viewType", "" + viewType);
                 throw new IllegalArgumentException("viewType error!");
@@ -92,10 +109,22 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         holder.getPostText().setText(discover.getText());
         holder.getPublishedTime().setText(discover.getPublishedTime());
 
-        ImageView[] images = holder.getImages();
-        ArrayList<Bitmap> imagesId = discover.getImages();
-        for (int i = 0; i < holder.imageCount; i++) {
-            images[i].setImageBitmap(imagesId.get(i));
+        // 设置图片或视频
+        if (holder.imageCount < 5) {
+            ImageView[] images = holder.getImages();
+            //ArrayList<Bitmap> imagesId = discover.getImages();
+            //ArrayList<String> imagesUri = discover.getObjects();
+            for (int i = 0; i < holder.imageCount; i++) {
+                //images[i].setImageURI(Uri.parse("http://8.140.133.34:7262/" + imagesUri.get(i)));
+                //images[i].setImageBitmap(imagesId.get(i));
+            }
+        } else {
+            Log.d("VIDEO", "setUri");
+            VideoView video = holder.getDiscoverVideo();
+            String videoUrl = discover.getVideoUrl();
+            video.setVideoURI(Uri.parse("http://8.140.133.34:7262/" + videoUrl));
+            video.start();
+            //video.seekTo(100);
         }
 
         // 点赞按钮
@@ -116,7 +145,6 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
                 discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "1");
             }
-            //discoverViewModel.discover(0);
         });
 
         // 评论按钮
@@ -210,7 +238,10 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
     @Override
     public int getItemCount() {
-        return this.data.size();
+        if (this.data != null) {
+            return this.data.size();
+        }
+        return 0;
     }
 
     public static class DiscoverViewHolder extends RecyclerView.ViewHolder {
@@ -220,6 +251,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         private final TextView discoverNickname;
         private final TextView discoverText;
         private final TextView discoverPublishedTime;
+        private final VideoView discoverVideo;
         private final ImageView[] discoverImages;
         private final ImageButton likeButton;
         private final ImageButton commentButton;
@@ -230,16 +262,22 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
         private final View itemView;
 
-        public DiscoverViewHolder(@NonNull View itemView, int imageCount) {
+        public DiscoverViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
-            this.imageCount = imageCount;
+            this.imageCount = viewType;
             this.discoverAvatarView = itemView.findViewById(R.id.avatar_icon);
             this.discoverNickname = itemView.findViewById(R.id.nickname);
             this.discoverText = itemView.findViewById(R.id.text);
             this.discoverPublishedTime = itemView.findViewById(R.id.publishedTime);
-            this.discoverImages = new ImageView[imageCount];
-            for (int i = 0; i < imageCount; i++) {
-                this.discoverImages[i] = itemView.findViewById(imagesId[i]);
+            if (imageCount < 5) {
+                this.discoverVideo = null;
+                this.discoverImages = new ImageView[imageCount];
+                for (int i = 0; i < imageCount; i++) {
+                    this.discoverImages[i] = itemView.findViewById(imagesId[i]);
+                }
+            } else {
+                this.discoverImages = null;
+                this.discoverVideo = itemView.findViewById(R.id.videoView);
             }
 
             this.likeButton = itemView.findViewById(R.id.likeButton);
@@ -271,6 +309,10 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
         public TextView getPublishedTime() {
             return this.discoverPublishedTime;
+        }
+
+        public VideoView getDiscoverVideo() {
+            return discoverVideo;
         }
 
         public ImageView[] getImages() {
