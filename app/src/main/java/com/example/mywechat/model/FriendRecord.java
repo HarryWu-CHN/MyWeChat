@@ -2,12 +2,14 @@ package com.example.mywechat.model;
 
 import android.util.Pair;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendRecord extends LitePalSupport {
+    @Column(unique = true)
     private String userName;
     private List<String> friendsName = new ArrayList<>();
     private List<String> friendsIcon = new ArrayList<>();

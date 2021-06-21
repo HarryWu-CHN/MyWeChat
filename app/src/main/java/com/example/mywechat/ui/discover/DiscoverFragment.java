@@ -187,8 +187,6 @@ public class DiscoverFragment extends Fragment {
                     }
 
                     Activity mAct = getActivity();
-                    App mApp = (App)mAct.getApplication();
-                    String mName = ((App) getActivity().getApplication()).getUsername();
                     recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel,
                             ((App) getActivity().getApplication()).getUsername()));
                     break;
