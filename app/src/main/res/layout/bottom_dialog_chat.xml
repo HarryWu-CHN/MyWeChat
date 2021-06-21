@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
     android:orientation="vertical"
     android:paddingLeft="22.5dp"
@@ -10,11 +10,22 @@
     android:paddingBottom="20dp">
 
     <Button
+        android:id="@+id/btn_take"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@drawable/corners_bg"
+        android:gravity="center"
+        android:text="拍摄"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <Button
         android:id="@+id/btn_img"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:background="@drawable/corners_bg"
         android:gravity="center"
+        android:layout_marginTop="16dp"
         android:text="图片"
         android:textColor="@color/black"
         android:textSize="18sp" />

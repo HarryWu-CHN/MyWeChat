@@ -9,7 +9,7 @@ public class ChatBubble {
     private final boolean isUser;
     private final String msgType;
 
-    public ChatBubble(String time, String content, int icon, boolean isUser, String msgType) {
+    public ChatBubble(String time, String content, int icon, Boolean isUser, String msgType) {
         this.time = time;
         this.content = content;
         this.icon = icon;
@@ -17,7 +17,7 @@ public class ChatBubble {
         this.msgType = msgType;
     }
 
-    public ChatBubble(String time, Bitmap bitmap, int icon, boolean isUser, String msgType) {
+    public ChatBubble(String time, Bitmap bitmap, int icon, Boolean isUser, String msgType) {
         this.time = time;
         this.content = bitmap;
         this.icon = icon;

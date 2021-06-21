@@ -72,6 +72,9 @@ interface ApiService {
                          @Part("msgType") msgType: RequestBody,
                          @Part file: MultipartBody.Part?) : BooleanResponse
 
+    @POST("chat")
+    suspend fun chatRecordGet(@Body request : ChatRecordGetRequest) : ChatRecordGetResponse
+
     @Multipart
     @POST("discover/post")
     suspend fun discoverPost(@Part("msgType") msgType: RequestBody,
@@ -167,6 +170,26 @@ data class ChatSendResponse(
         val msgType : String,
         val msg : String?,
         val file : File?
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatRecordGetRequest(
+        val sendTo: String
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatRecordGetResponse(
+        val success: Boolean,
+        val time : Long,
+        val recordList : List<ChatRecordBody>
+)
+@JsonClass(generateAdapter = true)
+data class ChatRecordBody(
+        val content: String?,
+        val messageType: String,
+        val read: Boolean,
+        val senderName: String,
+        val time: String
 )
 
 @JsonClass(generateAdapter = true)

@@ -17,7 +17,10 @@
         android:textColor="#7C7A7A"
         android:textSize="12sp" />
 
-    <LinearLayout
+    <!-- 文字内容 -->
+
+    <ImageView
+        android:id="@+id/chatContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/chatIcon"
@@ -28,20 +31,12 @@
         android:layout_toStartOf="@+id/chatIcon"
         android:adjustViewBounds="true"
         android:background="@drawable/bubble_bg"
-        android:orientation="vertical"
+        android:gravity="center"
         android:maxWidth="280dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
+        android:padding="10dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="10dp">
-
-        <VideoView
-            android:id="@+id/chatContent"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
-    </LinearLayout>
-
-
+        android:textSize="16sp"
+        tools:srcCompat="@drawable/image5" />
 
     <ImageView
         android:id="@+id/chatIcon"

@@ -3,6 +3,7 @@ package com.example.mywechat.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mywechat.api.ChatRecordGetResponse
 import com.example.mywechat.api.ChatSendResponse
 import com.example.mywechat.repository.ChatRepository
 import com.example.mywechat.repository.NewMessage
@@ -50,6 +51,17 @@ class ChatSendViewModel @Inject constructor(
                 for (newMsg in it) {
                     newMsgLiveData.postValue(newMsg)
                 }
+            }
+        }
+    }
+    val chatGetLiveDate = MutableLiveData<ChatRecordGetResponse?>(null)
+    fun chatRecordGet(sendTo: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = chatRepository.chatRecordGet(sendTo)
+                chatGetLiveDate.postValue(response)
+            } catch (ignored : IOException){
+                chatGetLiveDate.postValue(null)
             }
         }
     }
