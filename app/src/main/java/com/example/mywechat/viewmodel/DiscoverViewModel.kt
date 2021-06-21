@@ -27,12 +27,21 @@ class DiscoverViewModel @Inject constructor(
     val liveData = MutableLiveData<BooleanResponse?>(null)
     val discoverData = MutableLiveData<DiscoverResponse?>(null)
 
-    fun discoverPost(msgType: String, text: String, files: List<File>?) {
+    fun discoverPost(msgType: String, text: String, file: File?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = discoverRepository.discoverPost(msgType, text, files)
+                val response = discoverRepository.discoverPost(msgType, text, file)
                 liveData.postValue(response)
-            } catch (ignored : IOException){}
+            } catch (ignored : IOException) {}
+        }
+    }
+
+    fun discoverMulPost(msgType: String, text: String, files: List<File>?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = discoverRepository.discoverMulPost(msgType, text, files)
+                liveData.postValue(response)
+            } catch (ignored : IOException) {}
         }
     }
 

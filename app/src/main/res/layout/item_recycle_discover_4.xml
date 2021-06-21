@@ -43,24 +43,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="0.5"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/image_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/image6" />
 
             <ImageView
                 android:id="@+id/image_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/image7" />
@@ -68,27 +69,28 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
+            android:layout_weight="0.5"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/image_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/image8" />
 
             <ImageView
                 android:id="@+id/image_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/image9" />

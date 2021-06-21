@@ -16,6 +16,18 @@ class DiscoverRepository @Inject constructor(
     suspend fun discoverPost(
             msgType: String,
             text: String,
+            file: File?,
+    ) = apiService.discoverPost(
+            msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
+            text.toRequestBody("text/plain".toMediaTypeOrNull()),
+            file?.let {
+                MultipartBody.Part.createFormData("file", it.name, it.asRequestBody("multipart/form-data".toMediaTypeOrNull()))
+            }
+    )
+
+    suspend fun discoverMulPost(
+            msgType: String,
+            text: String,
             files: List<File>?,
     ): BooleanResponse {
         files?.let {
@@ -25,13 +37,13 @@ class DiscoverRepository @Inject constructor(
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("files", file.name, requestBody)
                 (parts as ArrayList<MultipartBody.Part>).add(part)
             }
-            return apiService.discoverPost(
+            return apiService.discoverMulPost(
                 msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
                 text.toRequestBody("text/plain".toMediaTypeOrNull()),
                 parts
             )
         }
-        return apiService.discoverPost(
+        return apiService.discoverMulPost(
             msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
             text.toRequestBody("text/plain".toMediaTypeOrNull()),
             ArrayList(0)
