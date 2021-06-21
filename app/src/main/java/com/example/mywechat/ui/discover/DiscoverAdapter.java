@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.discover;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Editable;
@@ -114,7 +115,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
                 discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "1");
             }
-            discoverViewModel.discover(0);
+            //discoverViewModel.discover(0);
         });
 
         // 评论按钮
@@ -151,7 +152,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.VISIBLE);
             this.mParent.findViewById(R.id.commentLayout).setVisibility(View.GONE);
 
-            discoverViewModel.discover(0);
+            //discoverViewModel.discover(0);
         });
 
         // 点击外部隐藏评论输入框

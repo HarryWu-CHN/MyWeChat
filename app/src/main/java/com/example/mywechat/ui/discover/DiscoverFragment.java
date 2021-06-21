@@ -82,6 +82,10 @@ public class DiscoverFragment extends Fragment {
 
         discoverViewModel.discover(0);
 
+        discoverViewModel.getLiveData().observe(getViewLifecycleOwner(), response -> {
+            discoverViewModel.discover(0);
+        });
+
         discoverViewModel.getDiscoverData().observe(getViewLifecycleOwner(), response -> {
             if (response == null) {
                 return;
