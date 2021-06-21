@@ -17,7 +17,7 @@ interface MyWeChatService {
     fun observeLoginResponse(): ReceiveChannel<LoginSuccessResponse>
 
     @Receive
-    fun observeNewMessage(): ReceiveChannel<NewMessage>
+    fun observeNewMessage(): ReceiveChannel<Array<NewMessage>>
 
     @Receive
     fun observeNewFriendApply(): ReceiveChannel<Array<NewFriendApply>>

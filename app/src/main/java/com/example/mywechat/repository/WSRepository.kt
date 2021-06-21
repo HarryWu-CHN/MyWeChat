@@ -22,13 +22,13 @@ class WSRepository @Inject constructor(
         }
     }
 
-    fun newMessage() : ReceiveChannel<NewMessage> {
+    fun newMessage() : ReceiveChannel<Array<NewMessage>> {
         return myWeChatService.observeNewMessage()
     }
 
     fun newFriendApply() : ReceiveChannel<Array<NewFriendApply>> {
         val it = myWeChatService.observeNewFriendApply()
-        Log.d("test2", it.toString())
+        Log.d("Repository", "New Friend Apply$it")
         return it
     }
 
