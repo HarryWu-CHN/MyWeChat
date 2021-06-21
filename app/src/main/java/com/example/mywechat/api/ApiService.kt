@@ -28,6 +28,8 @@ interface ApiService {
     suspend fun userGet(@Body request: UserGetRequest) : UserGetResponse
 
     // 好友相关
+    @POST("contact/get")
+    suspend fun contactGet() : ContactGetResponse
     @POST("contact/find")
     suspend fun contactFind(@Body request: ContactFindRequest) : ContactFindResponse
 
@@ -120,6 +122,13 @@ data class UserGetResponse(
         val username : String,
         val icon : Bitmap,
         val joinTime : String,
+)
+
+@JsonClass(generateAdapter = true)
+data class ContactGetResponse(
+        val friendNames: List<String>,
+        val friendTypes: List<String>,
+        val friendIcons: List<String>,
 )
 
 @JsonClass(generateAdapter = true)
