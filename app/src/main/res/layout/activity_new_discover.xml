@@ -54,12 +54,6 @@
         android:orientation="vertical"
         android:showDividers="middle">
 
-        <VideoView
-            android:id="@+id/discoverVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
         <EditText
             android:id="@+id/newDiscoverContent"
             android:layout_width="match_parent"
@@ -71,6 +65,14 @@
             android:hint="分享你的故事..."
             android:padding="10dp"
             android:textSize="24sp" />
+
+        <VideoView
+            android:id="@+id/discoverVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imageUploadRecyclerView"

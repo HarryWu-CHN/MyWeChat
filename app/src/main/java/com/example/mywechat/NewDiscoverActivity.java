@@ -16,12 +16,15 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,10 +53,12 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     private RecyclerView imageUploadRecyclerView;
     private int maxImageCnt = 4;
     private EditText contentText;
+    private boolean selectVideo = false;
     private List<ImagePick> selectImages;
     private List<File> selectFiles;
     private ImagePickAdapter adapter;
     private ImageView previewImage;
+    private VideoView previewVideo;
     private Dialog previewDialog;
     private DiscoverViewModel discoverViewModel;
 
@@ -72,9 +77,10 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
 
         /* 图片预览Dialog */
         previewDialog = new Dialog(this, R.style.FullActivity);
-        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+        WindowManager.LayoutParams attributes = previewDialog.getWindow().getAttributes();
         attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
         attributes.height = WindowManager.LayoutParams.MATCH_PARENT;
+        //attributes.gravity = Gravity.CENTER_VERTICAL;
         previewDialog.getWindow().setAttributes(attributes);
 
         previewImage = new ImageView(this);
@@ -88,24 +94,38 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
             finish();
         });
 
-        discoverViewModel.getLiveData().observe(this, response -> {
-            discoverViewModel.discover(0);
-        });
-
         postDiscoverButton = findViewById(R.id.postDiscoverButton);
         postDiscoverButton.setOnClickListener(v -> {
             String msgType;
             if (this.selectFiles.size() == 0) {
                 msgType = "0";
                 discoverViewModel.discoverPost(msgType, contentText.getText().toString(), null);
-            } else {
+            } else if (!selectVideo) {
                 msgType = "1";
                 discoverViewModel.discoverPost(msgType, contentText.getText().toString(), selectFiles);
+            } else {
+                msgType = "2";
+                discoverViewModel.discoverPost(msgType, contentText.getText().toString(), selectFiles);
             }
-            // TODO: 发送视频
+            finish();
         });
 
         uploadVideo = findViewById(R.id.discoverVideo);
+        previewVideo = new VideoView(this);
+//        RelativeLayout.LayoutParams LayoutParams = new RelativeLayout.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT);
+//        LayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        previewVideo.setLayoutParams(LayoutParams);
+        uploadVideo.setOnClickListener(v -> {
+            previewDialog.setContentView(previewVideo);
+            previewVideo.setVisibility(View.VISIBLE);
+            previewDialog.show();
+            previewVideo.start();
+        });
+        previewVideo.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
+
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
         //imageUploadRecyclerView.setAdapter(adapter);
         initUploadView();
@@ -154,13 +174,19 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
                 String filePath = file.getFilePath(this, uri);
                 switch (file.selectType) {
                     case FileUtil.IMAGE:
+                        selectFiles.add(new File(filePath));
                         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
                         selectImages.add(new ImagePick(bitmap));
                         adapter.setImages(selectImages);
                         break;
                     case FileUtil.VIDEO:
+                        selectVideo = true;
+                        selectFiles = new LinkedList<>();
+                        selectFiles.add(new File(filePath));
                         imageUploadRecyclerView.setVisibility(View.GONE);
                         uploadVideo.setVideoPath(filePath);
+                        uploadVideo.seekTo(100);
+                        previewVideo.setVideoPath(filePath);
                         uploadVideo.setVisibility(View.VISIBLE);
                         break;
                 }
