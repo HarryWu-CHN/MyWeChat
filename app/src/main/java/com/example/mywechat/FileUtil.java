@@ -16,7 +16,16 @@ import android.util.Log;
 import java.io.File;
 
 public class FileUtil {
-    static public String getFilePath(Context context, Uri uri) {
+    static public final int IMAGE = 1;
+    static public final int VIDEO = 2;
+    static public final int AUDIO = 3;
+    public int selectType;
+
+    public FileUtil() {
+        // ignored
+    }
+
+    public String getFilePath(Context context, Uri uri) {
         String selection = null;
         String[] selectionArgs = null;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
@@ -24,7 +33,9 @@ public class FileUtil {
             if (isExternalStorageDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
-                return Environment.getExternalStorageDirectory() +"/" + split[1];
+                String filePath = Environment.getExternalStorageDirectory() +"/" + split[1];
+                CheckFileType(filePath);
+                return filePath;
             } else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
                 uri = ContentUris.withAppendedId(
@@ -34,10 +45,13 @@ public class FileUtil {
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 if ("image".equals(type)) {
+                    this.selectType = IMAGE;
                     uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 } else if ("video".equals(type)) {
+                    this.selectType = VIDEO;
                     uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 } else if ("audio".equals(type)) {
+                    this.selectType = AUDIO;
                     uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
                 selection = "_id=?";
@@ -47,7 +61,9 @@ public class FileUtil {
 
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             if (isGooglePhotosUri(uri)) {
-                return uri.getLastPathSegment();
+                String filePath = uri.getLastPathSegment();
+                CheckFileType(filePath);
+                return filePath;
             }
             String[] projection = {
                     MediaStore.Images.Media.DATA
@@ -60,18 +76,21 @@ public class FileUtil {
                 if (cursor.moveToFirst()) {
                     String imagePath = cursor.getString(column_index);
                     cursor.close();
+                    CheckFileType(imagePath);
                     return imagePath;
                 }
             } catch (Exception ignored) {
                 // ignore
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
+            String filePath = uri.getPath();
+            CheckFileType(filePath);
+            return filePath;
         }
         return null;
     }
 
-    static public String handleStorageImage(Context context, Intent data) {
+    public String handleStorageImage(Context context, Intent data) {
         Uri uri = data.getData();
         String imagePath = getFilePath(context, uri);
 
@@ -81,19 +100,35 @@ public class FileUtil {
         return imagePath;
     }
 
-    static private boolean isExternalStorageDocument(Uri uri) {
+    private void CheckFileType(String filePath) {
+        String typeStr = filePath.substring(filePath.length() - 3);
+        switch (typeStr) {
+            case "mp4":
+                selectType = VIDEO;
+                break;
+            case "jpg":
+            case "png":
+                selectType = IMAGE;
+                break;
+            case "mp3":
+                selectType = AUDIO;
+                break;
+        }
+    }
+
+    private boolean isExternalStorageDocument(Uri uri) {
         return"com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isDownloadsDocument(Uri uri) {
+    private boolean isDownloadsDocument(Uri uri) {
         return"com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isMediaDocument(Uri uri) {
+    private boolean isMediaDocument(Uri uri) {
         return"com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isGooglePhotosUri(Uri uri) {
+    private boolean isGooglePhotosUri(Uri uri) {
         return"com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 }
