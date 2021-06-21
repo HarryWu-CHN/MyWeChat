@@ -70,8 +70,12 @@ interface ApiService {
                          @Part("msgType") msgType: RequestBody,
                          @Part file: MultipartBody.Part?) : BooleanResponse
 
+    @Multipart
     @POST("discover/post")
-    suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
+    suspend fun discoverPost(@Part("msgType") msgType: RequestBody,
+                             @Part("text") text: RequestBody,
+                             @Part files: List<MultipartBody.Part>) : BooleanResponse
+    //suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
 
     @POST("discover")
     suspend fun discover(@Body request: DiscoverRequest) : DiscoverResponse

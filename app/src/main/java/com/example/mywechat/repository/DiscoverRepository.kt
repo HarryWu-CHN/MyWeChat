@@ -1,8 +1,14 @@
 package com.example.mywechat.repository
 
 import com.example.mywechat.api.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
+
 
 class DiscoverRepository @Inject constructor(
         private val apiService: ApiService
@@ -11,11 +17,26 @@ class DiscoverRepository @Inject constructor(
             msgType: String,
             text: String,
             files: List<File>?,
-    ) = apiService.discoverPost(
-            DiscoverPostRequest(
-                    msgType, text, files
+    ): BooleanResponse {
+        files?.let {
+            val parts: MutableList<MultipartBody.Part> = ArrayList(files.size)
+            for (file in files) {
+                val requestBody: RequestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val part: MultipartBody.Part = MultipartBody.Part.createFormData("files", file.name, requestBody)
+                (parts as ArrayList<MultipartBody.Part>).add(part)
+            }
+            return apiService.discoverPost(
+                msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
+                text.toRequestBody("text/plain".toMediaTypeOrNull()),
+                parts
             )
-    )
+        }
+        return apiService.discoverPost(
+            msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
+            text.toRequestBody("text/plain".toMediaTypeOrNull()),
+            ArrayList(0)
+        )
+    }
 
     suspend fun discover(
             lastUpdateTime : Long
