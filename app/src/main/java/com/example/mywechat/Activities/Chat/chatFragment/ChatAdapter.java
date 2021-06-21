@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +39,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             case 2:
                 mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_img_user2, parent, false);
                 break;
+            case 3:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_vid_user2, parent, false);
+                break;
             default:
                 break;
         }
@@ -50,8 +54,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         ChatBubble chatBubble = data.get(position);
         if (chatBubble.getIntMsgType() == 0) {
             holder.getChatContentView().setText((String) chatBubble.getContent());
-        } else if (chatBubble.getIntMsgType() == 1){
+        } else if (chatBubble.getIntMsgType() == 1) {
             holder.getChatImgView().setImageBitmap((Bitmap) chatBubble.getContent());
+        } else if (chatBubble.getIntMsgType() == 2) {
+            holder.getChatVidView().setVideoPath((String)chatBubble.getContent());
         }
         holder.getChatTimeView().setText(chatBubble.getTime());
         holder.getChatIconView().setImageResource(chatBubble.getIcon());
@@ -90,6 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         private TextView chatContentView;
         private final ImageView chatIconView;
         private ImageView chatImgView;
+        private VideoView chatVidView;
 
         public ChatViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
@@ -102,23 +109,24 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                 case 1:
                     this.chatImgView = itemView.findViewById(R.id.chatContent);
                     break;
+                case 2:
+                    this.chatVidView = itemView.findViewById(R.id.chatContent);
+                    break;
             }
         }
 
         public TextView getChatTimeView() {
             return chatTimeView;
         }
-
         public TextView getChatContentView() {
             return chatContentView;
         }
-
         public ImageView getChatIconView() {
             return chatIconView;
         }
-
         public ImageView getChatImgView() {
             return chatImgView;
         }
+        public VideoView getChatVidView() { return chatVidView; }
     }
 }

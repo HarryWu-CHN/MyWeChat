@@ -67,4 +67,11 @@ public class ChatRecord extends LitePalSupport {
     public void setTimes(List<String> times) {
         this.times = times;
     }
+
+    public void addAllYouNeed(String msg, String msgType, String time, Boolean isuser) {
+        msgs.add(msg);
+        msgTypes.add(msgType);
+        times.add(time);
+        isUser.add(isuser);
+    }
 }

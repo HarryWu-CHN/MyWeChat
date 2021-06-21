@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -77,6 +79,7 @@ public class ChatFragment extends Fragment {
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
+    private ActivityResultLauncher<Integer> launcherVideo;
 
 
     public ChatFragment() {
@@ -154,11 +157,18 @@ public class ChatFragment extends Fragment {
                         bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
                         break;
                     case "1":
-                        Log.d("LiveData Observe", Objects.requireNonNull(response.getFile()).getPath());
+                        Log.d("LiveData Observe Img", Objects.requireNonNull(response.getFile()).getPath());
                         Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
                         bubble = new ChatBubble(time, bitmap, R.drawable.avatar5, true, Integer.valueOf(MessageType.IMAGE.ordinal()).toString());
                         break;
+                    case "2":
+                        Log.d("LiveData Observe Video", Objects.requireNonNull(response.getFile()).getPath());
+                        bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
+                        break;
                 }
+                ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
+                chatRecord.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
+                chatRecord.save();
                 if (bubble != null)
                     chatAdapter.addData(data.size(), bubble);
             }
@@ -171,6 +181,17 @@ public class ChatFragment extends Fragment {
                 sendImg(imagePath);
             }
         });
+        launcherVideo = registerForActivityResult(new ResultContract(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String videoPath) {
+                if (videoPath == null) return;
+                sendVideo(videoPath);
+            }
+        });
+        /* TODO
+        videoView.requestFocus();
+        videoView.start();
+         */
     }
 
     private void setDialog() {
@@ -181,11 +202,12 @@ public class ChatFragment extends Fragment {
         root.findViewById(R.id.btn_img).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            launcherImg.launch(2);
+            launcherImg.launch(0);
             bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_video).setOnClickListener(v -> {
-
+            launcherVideo.launch(1);
+            bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_location).setOnClickListener(v -> {
 
@@ -210,7 +232,11 @@ public class ChatFragment extends Fragment {
         @Override
         public Intent createIntent(@NonNull Context context, Integer requestCode) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
+            if (requestCode.equals(0)) {
+                intent.setType("image/*");
+            } else if (requestCode.equals(1)){
+                intent.setType("video/*");
+            }
             return intent;
         }
 
@@ -247,6 +273,11 @@ public class ChatFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         File file = new File(imagePath);
         chatSendViewModel.chatSend(sendTo, "1", null, file);
+    }
+
+    public void sendVideo(String videoPath) {
+        File file = new File(videoPath);
+        chatSendViewModel.chatSend(sendTo, "2", null, file);
     }
 
     private Handler handler = new Handler(Looper.myLooper()) {
