@@ -76,6 +76,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycle_discover_4, parent, false);
                 break;
             default:
+                Log.d("viewType", "" + viewType);
                 throw new IllegalArgumentException("viewType error!");
         }
 

@@ -76,7 +76,13 @@ interface ApiService {
     @POST("discover/post")
     suspend fun discoverPost(@Part("msgType") msgType: RequestBody,
                              @Part("text") text: RequestBody,
-                             @Part files: List<MultipartBody.Part>) : BooleanResponse
+                             @Part file: MultipartBody.Part?) : BooleanResponse
+
+    @Multipart
+    @POST("discover/post/mul")
+    suspend fun discoverMulPost(@Part("msgType") msgType: RequestBody,
+                                @Part("text") text: RequestBody,
+                                @Part files: List<MultipartBody.Part>?) : BooleanResponse
     //suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
 
     @POST("discover")
@@ -208,13 +214,6 @@ data class GroupExitRequest(
 @JsonClass(generateAdapter = true)
 data class GroupDelRequest(
         val groupId : String,
-)
-
-@JsonClass(generateAdapter = true)
-data class DiscoverPostRequest(
-        val msgType: String,
-        val msg: String,
-        val files: List<File>?,
 )
 
 @JsonClass(generateAdapter = true)

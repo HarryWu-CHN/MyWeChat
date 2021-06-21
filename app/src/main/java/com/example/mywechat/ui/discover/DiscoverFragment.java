@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.Activities.NewFriend.FriendApplyAdapter;
 import com.example.mywechat.App;
 import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
@@ -50,12 +49,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class DiscoverFragment extends Fragment {
+    
     private RecyclerView recyclerView;
     private DiscoverViewModel discoverViewModel;
     private List<DiscoverInfo> discoverList;
@@ -95,7 +94,7 @@ public class DiscoverFragment extends Fragment {
             getImages();
         });
 
-        // 设置LayoutManager及Adapter
+        // 设置LayoutManager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -186,7 +185,6 @@ public class DiscoverFragment extends Fragment {
                                 time, images, thumbUsers, comments));
                     }
 
-                    Activity mAct = getActivity();
                     recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel,
                             ((App) getActivity().getApplication()).getUsername()));
                     break;
