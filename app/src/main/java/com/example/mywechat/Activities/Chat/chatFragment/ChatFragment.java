@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,6 +78,8 @@ public class ChatFragment extends Fragment {
     private ImageButton moreBtn;
     private String username;
     private String sendTo;
+    private int userIconId;
+    private int sendToIconId;
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
@@ -105,12 +108,6 @@ public class ChatFragment extends Fragment {
         App app = (App) activity.getApplication();
         username = app.getUsername();
         sendTo = activity.getSendTo();
-        ChatRecord chatRecord = null;
-        try {
-            chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        }
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
         /* TODO 先不做本地数据库
@@ -129,8 +126,8 @@ public class ChatFragment extends Fragment {
         }
          */
         // TODO 获取对应的icon
-        int userIconId =  R.drawable.avatar5;
-        int sendToIconId = R.drawable.avatar6;
+        userIconId =  R.drawable.avatar5;
+        sendToIconId = R.drawable.avatar6;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(data);
@@ -154,42 +151,21 @@ public class ChatFragment extends Fragment {
                 return;
             }
             List<ChatRecordBody> chatRecords = response.getRecordList();
+            pushBubbles(chatRecords);
+            List<String> msgs = new ArrayList<>();
+            List<String> msgTypes = new ArrayList<>();
+            List<String> times = new ArrayList<>();
+            List<Integer> isUser = new ArrayList<>();
             for (ChatRecordBody body : chatRecords) {
-                boolean isuser = body.getSenderName().equals(username);
-                switch (body.getMessageType()) {
-                    case "TEXT":
-                        ChatBubble bubble = new ChatBubble(body.getTime(), body.getContent() == null? "":body.getContent(),
-                                isuser?userIconId:sendToIconId, isuser, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
-                        chatAdapter.addData(data.size(), bubble);
-                        break;
-                    case "PICTURE":
-                        getWebImg(body.getTime(), body.getContent(), R.drawable.avatar6, isuser);
-                        String path = "http://8.140.133.34:7262/" + body.getContent();
-                        try {
-                            URL url = new URL(path);
-                            Bitmap bitmap = null;
-                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                            connection.setRequestMethod("GET");
-                            connection.setConnectTimeout(10000);
-                            //获取返回码
-                            int code = connection.getResponseCode();
-                            if (code == 200) {
-                                InputStream inputStream = connection.getInputStream();
-                                bitmap = BitmapFactory.decodeStream(inputStream);
-                                inputStream.close();
-                            }
-                            Message msg = new Message();
-                            msg.what = 0;
-                            msg.obj = new ChatBubble(body.getTime(), bitmap, isuser?userIconId: sendToIconId, isuser, "1");
-                            handler.sendMessage(msg);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "VIDEO":
-                        break;
-                }
+                msgs.add(body.getContent());
+                msgTypes.add(body.getMessageType());
+                times.add(body.getTime());
+                isUser.add(body.getSenderName().equals(username)? 1 : 0);
             }
+            ChatRecord chatRecord1 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
+            chatRecord1.setMsgs(msgs);   chatRecord1.setMsgTypes(msgTypes);
+            chatRecord1.setTimes(times); chatRecord1.setIsUser(isUser);
+            chatRecord1.save();
         });
         chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
             if (response == null || !response.component1()) {
@@ -288,7 +264,7 @@ public class ChatFragment extends Fragment {
         bottom_dialog.setContentView(root);
         Window dialogWindow = bottom_dialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-//        dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
+        // dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
         WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
         lp.x = 0; // 新位置X坐标
         lp.y = 0; // 新位置Y坐标
@@ -371,6 +347,51 @@ public class ChatFragment extends Fragment {
 
         }
     };
+
+    public void pushBubbles(List<ChatRecordBody> chatRecords) {
+        new Thread(() -> {
+            for (ChatRecordBody body : chatRecords) {
+                boolean isuser = body.getSenderName().equals(username);
+                ChatBubble bubble = null;
+                switch (body.getMessageType()) {
+                    case "TEXT":
+                        bubble = new ChatBubble(body.getTime(), body.getContent() == null ? "" : body.getContent(),
+                                isuser ? userIconId : sendToIconId, isuser, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                        break;
+                    case "PICTURE":
+                        String path = "http://8.140.133.34:7262/" + body.getContent();
+                        try {
+                            URL url = new URL(path);
+                            Bitmap bitmap = null;
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setRequestMethod("GET");
+                            connection.setConnectTimeout(10000);
+                            //获取返回码
+                            int code = connection.getResponseCode();
+                            if (code == 200) {
+                                InputStream inputStream = connection.getInputStream();
+                                bitmap = BitmapFactory.decodeStream(inputStream);
+                                inputStream.close();
+                            }
+                            bubble = new ChatBubble(body.getTime(), bitmap, isuser ? userIconId : sendToIconId, isuser, "1");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "VIDEO":
+                        path = "http://8.140.133.34:7262/" + body.getContent();
+                        bubble = new ChatBubble(body.getTime(), path, isuser ? userIconId : sendToIconId, isuser, "2");
+                        break;
+                }
+                if (bubble != null) {
+                    Message msg = new Message();
+                    msg.what = 0;
+                    msg.obj = bubble;
+                    handler.sendMessage(msg);
+                }
+            }
+        }).start();
+    }
 
     public void getWebImg(String time, String imgPath, int avatar, boolean isUser) {
         new Thread(() -> {

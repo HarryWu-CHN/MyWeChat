@@ -1,6 +1,7 @@
 package com.example.mywechat.Activities.Chat.chatFragment;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             case 3:
                 mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_vid_user2, parent, false);
                 break;
+            case -3:
+                mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_vid_user1, parent, false);
+                break;
             default:
                 break;
         }
@@ -57,7 +61,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         } else if (chatBubble.getIntMsgType() == 1) {
             holder.getChatImgView().setImageBitmap((Bitmap) chatBubble.getContent());
         } else if (chatBubble.getIntMsgType() == 2) {
-            holder.getChatVidView().setVideoPath((String)chatBubble.getContent());
+            String fileUrl = (String)chatBubble.getContent();
+            if (fileUrl.contains("http://8.140")) {
+                Uri uri = Uri.parse(fileUrl);
+                holder.getChatVidView().setVideoURI(uri);
+            } else {
+                holder.getChatVidView().setVideoPath(fileUrl);
+            }
         }
         holder.getChatTimeView().setText(chatBubble.getTime());
         holder.getChatIconView().setImageResource(chatBubble.getIcon());
