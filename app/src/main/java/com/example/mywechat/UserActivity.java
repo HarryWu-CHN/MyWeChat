@@ -49,6 +49,8 @@ public class UserActivity extends AppCompatActivity {
                 Log.d("new friend", response.toString());
             }
         });
+        String username = getIntent().getStringExtra("username");
+        ((App) getApplication()).setUsername(username);
     }
 
     @Override

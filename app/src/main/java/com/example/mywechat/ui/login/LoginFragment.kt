@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.login
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import com.example.mywechat.App
 import com.example.mywechat.MainActivity
 import com.example.mywechat.R
 import com.example.mywechat.databinding.FragmentLoginBinding
@@ -18,13 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import kotlin.math.log
 
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
+    private var username : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -49,6 +51,7 @@ class LoginFragment : Fragment() {
                             }
                         }
                     }
+                    username = binding.loginUsernameTextEdit.text.toString()
                     Log.d("LoginFragment", "login succeeded.")
                 }
                 Log.d("LoginFragment", "finished")
@@ -56,7 +59,7 @@ class LoginFragment : Fragment() {
         }
         loginViewModel.successfulLogin.observe(viewLifecycleOwner) {
             if(it.httpLogin and it.wsLogin) {
-                    (requireActivity() as MainActivity).jumpToUser()
+                    (requireActivity() as MainActivity).jumpToUser(username)
             }
 
         }

@@ -68,28 +68,32 @@ public class ContactFragment extends Fragment {
             startActivity(intent);
         });
         App app = (App) getActivity().getApplication();
-        FriendRecord friendRecord = LitePal.where("userName = ?", app.getUsername()).find(FriendRecord.class).get(0);
-
+        List<FriendRecord> tmpList = LitePal.where("userName = ?", app.getUsername()).find(FriendRecord.class);
+        FriendRecord friendRecord = null;
+        if (tmpList != null && tmpList.size() > 0)
+            friendRecord = tmpList.get(0);
         // 添加数据，为recyclerView绑定Adapter, LayoutManager
         // 添加数据的样例代码如下:
-        LinkedList<Contact> contacts = new LinkedList<>();
-        List<String> friendsName = friendRecord.getFriendsName();
-        List<String> friendsIcon = friendRecord.getFriendsIcon();
-        for (int i=0; i<friendsName.size(); i++){
-            try {
-                FileInputStream fis = new FileInputStream(friendsIcon.get(i));
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-                contacts.add(new Contact(friendsName.get(i), bitmap));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        if (friendRecord != null) {
+            LinkedList<Contact> contacts = new LinkedList<>();
+            List<String> friendsName = friendRecord.getFriendsName();
+            List<String> friendsIcon = friendRecord.getFriendsIcon();
+            for (int i = 0; i < friendsName.size(); i++) {
+                try {
+                    FileInputStream fis = new FileInputStream(friendsIcon.get(i));
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    contacts.add(new Contact(friendsName.get(i), bitmap));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
+            // 设置LayoutManager及Adapter
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView = view.findViewById(R.id.contacts_recyclerview);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(new ContactAdapter(contacts));
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
-        // 设置LayoutManager及Adapter
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView = view.findViewById(R.id.contacts_recyclerview);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new ContactAdapter(contacts));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     @Override
