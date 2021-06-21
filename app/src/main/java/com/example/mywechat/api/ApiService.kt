@@ -227,7 +227,15 @@ data class DiscoverInfo(
         val discoverType: String,
         val urlList : List<String>?,
         val time: String,
-        val discoverComments: List<String>?,
+        val thumbUsers: List<String>?,
+        val discoverComments: List<DiscoverComment>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class DiscoverComment(
+        val username: String,
+        val sendTo: String?,
+        val msg: String,
 )
 
 @JsonClass(generateAdapter = true)
@@ -239,7 +247,7 @@ data class ThumbRequest(
 @JsonClass(generateAdapter = true)
 data class CommentRequest(
         val discoverId: String,
-        val sendTo: String,
+        val sendTo: String?,
         val msg: String,
 )
 

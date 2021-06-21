@@ -58,7 +58,7 @@ class DiscoverRepository @Inject constructor(
 
     suspend fun comment(
             discoverId: String,
-            sendTo: String,
+            sendTo: String?,
             msg: String,
     ) = apiService.comment(
             CommentRequest(
