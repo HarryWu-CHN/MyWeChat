@@ -10,30 +10,27 @@ import java.util.List;
 
 public class FriendRecord extends LitePalSupport {
     @Column(unique = true)
-    private String userName;
-    private List<String> friendsName = new ArrayList<>();
-    private List<String> friendsIcon = new ArrayList<>();
+    private String friendName;
+    private byte[] friendIcon;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    public String getUserName() {
-        return userName;
+    public FriendRecord(String friendName, byte[] friendIcon) {
+        this.friendName = friendName;
+        this.friendIcon = friendIcon;
     }
 
-    public void setFriendsName(List<String> friendsName) {
-        this.friendsName = friendsName;
+    public String getFriendName() {
+        return friendName;
     }
 
-    public void setFriendsIcon(List<String> friendsIcon) {
-        this.friendsIcon = friendsIcon;
+    public void setFriendName(String friendName) {
+        this.friendName = friendName;
     }
 
-    public List<String> getFriendsName() {
-        return friendsName;
+    public byte[] getFriendIcon() {
+        return friendIcon;
     }
 
-    public List<String> getFriendsIcon() {
-        return friendsIcon;
+    public void setFriendIcon(byte[] friendIcon) {
+        this.friendIcon = friendIcon;
     }
 }

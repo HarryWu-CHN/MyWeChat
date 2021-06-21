@@ -13,7 +13,7 @@ public class ChatRecord extends LitePalSupport {
     private List<String> msgs = new ArrayList<>();
     private List<String> msgTypes = new ArrayList<>();
     private List<String> times = new ArrayList<>();
-    private List<Boolean> isUser = new ArrayList<>();
+    private List<Integer> isUser = new ArrayList<>();
 
     public ChatRecord(String userName, String friendName) {
         this.userName = userName;
@@ -52,11 +52,11 @@ public class ChatRecord extends LitePalSupport {
         return msgTypes;
     }
 
-    public List<Boolean> getIsUser() {
+    public List<Integer> getIsUser() {
         return isUser;
     }
 
-    public void setIsUser(List<Boolean> isUser) {
+    public void setIsUser(List<Integer> isUser) {
         this.isUser = isUser;
     }
 
@@ -68,7 +68,7 @@ public class ChatRecord extends LitePalSupport {
         this.times = times;
     }
 
-    public void addAllYouNeed(String msg, String msgType, String time, Boolean isuser) {
+    public void addAllYouNeed(String msg, String msgType, String time, Integer isuser) {
         msgs.add(msg);
         msgTypes.add(msgType);
         times.add(time);

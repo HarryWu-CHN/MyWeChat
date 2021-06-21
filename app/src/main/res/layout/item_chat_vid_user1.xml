@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical" >
     <!-- 发送时间 -->
     <TextView
         android:id="@+id/chatTime"
@@ -17,17 +18,16 @@
         android:textColor="#7C7A7A"
         android:textSize="12sp" />
 
+    <!-- 文字内容 -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/chatIcon"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="-5dp"
-        android:layout_marginEnd="-7dp"
-        android:layout_marginBottom="0dp"
-        android:layout_toStartOf="@+id/chatIcon"
+        android:layout_marginEnd="30dp"
+        android:layout_toEndOf="@+id/chatIcon"
         android:adjustViewBounds="true"
-        android:background="@drawable/bubble_bg"
+        android:background="@drawable/bubble_bg1"
         android:orientation="vertical"
         android:maxWidth="280dp"
         android:paddingStart="10dp"
@@ -41,17 +41,14 @@
             android:layout_height="200dp" />
     </LinearLayout>
 
-
-
     <ImageView
         android:id="@+id/chatIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_below="@+id/chatTime"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="14dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="5dp"
         android:src="@drawable/avatar3" />
 
 
