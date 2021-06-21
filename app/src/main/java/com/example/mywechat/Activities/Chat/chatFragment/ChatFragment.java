@@ -145,32 +145,37 @@ public class ChatFragment extends Fragment {
         // ViewModel bind
         chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
         chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
-            if (response == null) {
+            if (response == null || !response.component1()) {
                 return;
             }
-            if (response.component1()) {
-                SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-                String time = sdf.format(response.component2());
-                ChatBubble bubble = null;
-                switch (response.getMsgType()) {
-                    case "0":
-                        bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
-                        break;
-                    case "1":
-                        Log.d("LiveData Observe Img", Objects.requireNonNull(response.getFile()).getPath());
-                        Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
-                        bubble = new ChatBubble(time, bitmap, R.drawable.avatar5, true, Integer.valueOf(MessageType.IMAGE.ordinal()).toString());
-                        break;
-                    case "2":
-                        Log.d("LiveData Observe Video", Objects.requireNonNull(response.getFile()).getPath());
-                        bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
-                        break;
-                }
-                ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
-                chatRecord.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
-                chatRecord.save();
-                if (bubble != null)
-                    chatAdapter.addData(data.size(), bubble);
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+            String time = sdf.format(response.component2());
+            ChatBubble bubble = null;
+            switch (response.getMsgType()) {
+                case "0":
+                    bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar5, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                    break;
+                case "1":
+                    Log.d("LiveData Observe Img", Objects.requireNonNull(response.getFile()).getPath());
+                    Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
+                    bubble = new ChatBubble(time, bitmap, R.drawable.avatar5, true, Integer.valueOf(MessageType.IMAGE.ordinal()).toString());
+                    break;
+                case "2":
+                    Log.d("LiveData Observe Video", Objects.requireNonNull(response.getFile()).getPath());
+                    bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), R.drawable.avatar5, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
+                    break;
+            }
+            ChatRecord chatRecord = LitePal.where("userName = ? and friendName = ?", app.getUsername(), activity.getSendTo()).findFirst(ChatRecord.class);
+            chatRecord.addAllYouNeed(response.getMsg(), response.getMsgType(), time, true);
+            chatRecord.save();
+            if (bubble != null)
+                chatAdapter.addData(data.size(), bubble);
+        });
+        chatSendViewModel.observeNewMsg();
+        chatSendViewModel.getNewMsgLiveData().observe(requireActivity(), response -> {
+            if (response == null) return;
+            if (response.component1() == 0) {
+                Log.d("ChatFragment", "Receive New Msg" + response.toString());
             }
         });
         // launcher
@@ -188,6 +193,7 @@ public class ChatFragment extends Fragment {
                 sendVideo(videoPath);
             }
         });
+
         /* TODO
         videoView.requestFocus();
         videoView.start();
