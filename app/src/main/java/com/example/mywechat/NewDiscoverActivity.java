@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -45,6 +46,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class NewDiscoverActivity extends AppCompatActivity implements ImagePickAdapter.OnRecyclerViewItemClickListener {
     private ImageButton backButton;
     private Button postDiscoverButton;
+    private VideoView uploadVideo;
     private RecyclerView imageUploadRecyclerView;
     private int maxImageCnt = 4;
     private EditText contentText;
@@ -64,6 +66,7 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_discover);
+        discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
 
         contentText = findViewById(R.id.newDiscoverContent);
 
@@ -85,6 +88,10 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
             finish();
         });
 
+        discoverViewModel.getLiveData().observe(this, response -> {
+            discoverViewModel.discover(0);
+        });
+
         postDiscoverButton = findViewById(R.id.postDiscoverButton);
         postDiscoverButton.setOnClickListener(v -> {
             String msgType;
@@ -95,17 +102,16 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
                 msgType = "1";
                 discoverViewModel.discoverPost(msgType, contentText.getText().toString(), selectFiles);
             }
-            discoverViewModel.discover(0);
             // TODO: 发送视频
         });
 
+        uploadVideo = findViewById(R.id.discoverVideo);
         imageUploadRecyclerView = findViewById(R.id.imageUploadRecyclerView);
         //imageUploadRecyclerView.setAdapter(adapter);
         initUploadView();
     }
 
     private void initUploadView() {
-        discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
         selectFiles = new LinkedList<>();
         imageUploadRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         selectImages = new ArrayList<>();
@@ -139,16 +145,32 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT) {
             if (data != null && resultCode == RESULT_OK) {
-                Bitmap bitmap = getStorageImageBitMap(data);
-                selectImages.add(new ImagePick(bitmap));
-                adapter.setImages(selectImages);
+                //Bitmap bitmap = getStorageImageBitMap(data);
+                //selectImages.add(new ImagePick(bitmap));
+                //adapter.setImages(selectImages);
+
+                Uri uri = data.getData();
+                FileUtil file = new FileUtil();
+                String filePath = file.getFilePath(this, uri);
+                switch (file.selectType) {
+                    case FileUtil.IMAGE:
+                        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                        selectImages.add(new ImagePick(bitmap));
+                        adapter.setImages(selectImages);
+                        break;
+                    case FileUtil.VIDEO:
+                        imageUploadRecyclerView.setVisibility(View.GONE);
+                        uploadVideo.setVideoPath(filePath);
+                        uploadVideo.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
         }
     }
 
     private void openAlbum() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+        intent.setType("*/*");
         startActivityForResult(intent, REQUEST_CODE_SELECT);
     }
 

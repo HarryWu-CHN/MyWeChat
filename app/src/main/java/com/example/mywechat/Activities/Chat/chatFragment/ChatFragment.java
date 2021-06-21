@@ -265,8 +265,10 @@ public class ChatFragment extends Fragment {
 
         @Override
         public String parseResult(int resultCode, @Nullable Intent intent) {
-            if (resultCode == RESULT_OK && intent != null)
-                return FileUtil.handleStorageImage(getActivity(), intent);
+            if (resultCode == RESULT_OK && intent != null) {
+                FileUtil file = new FileUtil();
+                return file.handleStorageImage(getActivity(), intent);
+            }
             return null;
         }
     }
