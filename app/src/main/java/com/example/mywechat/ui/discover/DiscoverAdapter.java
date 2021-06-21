@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.CommentAdapter;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
@@ -33,13 +35,16 @@ import java.util.LinkedList;
 import dagger.hilt.android.AndroidEntryPoint;
 
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
-    private LinkedList<Discover> data;
     private View mParent;
+    private LinkedList<Discover> data;
+    private String mName;
+    private String commentId;
     private DiscoverViewModel discoverViewModel;
 
-    public DiscoverAdapter(LinkedList<Discover> data, DiscoverViewModel discoverViewModel) {
+    public DiscoverAdapter(LinkedList<Discover> data, DiscoverViewModel discoverViewModel, String mName) {
         this.data = data;
         this.discoverViewModel = discoverViewModel;
+        this.mName = mName;
     }
 
     @Override
@@ -93,13 +98,28 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
         // 点赞按钮
         holder.getLikeButton().setOnClickListener(v -> {
-            //TODO: 增加后端交互
-            holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
+            String[] likeUsers = ((String) holder.getThumbUsers().getText()).split(", ");
+            boolean mLiked = false;
+            for (String likeUser : likeUsers) {
+                if (likeUser.equals(mName)) {
+                    mLiked = true;
+                    break;
+                }
+            }
+
+            if (mLiked) {
+                holder.getLikeButton().setImageResource(R.drawable.icon_like_blue);
+                discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "0");
+            } else {
+                holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
+                discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "1");
+            }
+            discoverViewModel.discover(0);
         });
 
         // 评论按钮
         holder.getCommentButton().setOnClickListener(v -> {
-            //TODO: 增加后端交互
+            this.commentId = this.data.get(position).getDiscoverId();
             InputMethodManager inputMethodManager =
                     (InputMethodManager) this.mParent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -114,7 +134,27 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.GONE);
         });
 
-        // 隐藏评论
+        // 发送评论
+        Button sendCommentButton = this.mParent.findViewById(R.id.sendCommentButton);
+        sendCommentButton.setOnClickListener(v -> {
+            EditText editText = this.mParent.findViewById(R.id.editCommentText);
+            String msg = editText.getText().toString();
+
+            discoverViewModel.comment(commentId, null, msg);
+
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) this.mParent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(this.mParent.findViewById(R.id.editCommentText).getWindowToken(), 0);
+
+            View mParentParent = (View) this.mParent.getParent().getParent();
+            mParentParent.findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+            mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.VISIBLE);
+            this.mParent.findViewById(R.id.commentLayout).setVisibility(View.GONE);
+
+            discoverViewModel.discover(0);
+        });
+
+        // 点击外部隐藏评论输入框
         holder.getItemView().setOnClickListener(v -> {
             InputMethodManager inputMethodManager =
                     (InputMethodManager) this.mParent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -126,12 +166,43 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             this.mParent.findViewById(R.id.commentLayout).setVisibility(View.GONE);
         });
 
+        boolean hideThumb = false;
+        boolean hideComments = false;
+
+        // 处理点赞
+        if (this.data.get(position).getThumbUsers() != null && this.data.get(position).getThumbUsers().size() > 0) {
+            StringBuilder likeStr = new StringBuilder();
+            for (String likeUser : this.data.get(position).getThumbUsers()) {
+                likeStr.append(likeUser);
+                likeStr.append(", ");
+                if (likeUser.equals(mName)) {
+                    holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
+                }
+            }
+            likeStr.delete(likeStr.length() - 2, likeStr.length());
+            holder.getThumbUsers().setText(likeStr.toString());
+        } else {
+            hideThumb = true;
+            holder.getIconLike().setVisibility(View.INVISIBLE);
+            holder.getThumbUsers().setVisibility(View.INVISIBLE);
+            holder.getLikes_comments_layout().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
+        }
+
         // 为评论添加Adapter
-        if (this.data.get(position).getComments() != null) {
+        if (this.data.get(position).getComments() != null && this.data.get(position).getComments().size() > 0) {
             holder.getCommentsView().setAdapter(new CommentAdapter(this.data.get(position).getComments()));
         }
         else {
+            hideComments = true;
             holder.getLikes_comments_layout().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
+        }
+
+        if (hideComments && ! hideThumb) {
+            holder.getCommentsView().setVisibility(View.GONE);
+        } else if (hideThumb && !hideComments) {
+            holder.getItemView().findViewById(R.id.likeLayout).setVisibility(View.GONE);
+        } else if (hideComments && hideThumb) {
+            holder.getLikes_comments_layout().setVisibility(View.INVISIBLE);
         }
     }
 
@@ -151,7 +222,10 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         private final ImageButton likeButton;
         private final ImageButton commentButton;
         private final LinearLayout likes_comments_layout;
+        private final ImageView iconLike;
+        private final TextView thumbUsers;
         private final RecyclerView commentsView;
+
         private final View itemView;
 
         public DiscoverViewHolder(@NonNull View itemView, int imageCount) {
@@ -170,6 +244,9 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             this.commentButton = itemView.findViewById(R.id.commentButton);
 
             this.likes_comments_layout = itemView.findViewById(R.id.likes_and_comments_layout);
+
+            this.iconLike = itemView.findViewById(R.id.icon_like);
+            this.thumbUsers = itemView.findViewById(R.id.likeUserText);
 
             this.commentsView = itemView.findViewById(R.id.commentsView);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(itemView.getContext());
@@ -212,6 +289,14 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
         public LinearLayout getLikes_comments_layout() {
             return this.likes_comments_layout;
+        }
+
+        public ImageView getIconLike() {
+            return iconLike;
+        }
+
+        public TextView getThumbUsers() {
+            return thumbUsers;
         }
 
         public RecyclerView getCommentsView() {

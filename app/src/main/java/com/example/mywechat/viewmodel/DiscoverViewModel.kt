@@ -44,4 +44,22 @@ class DiscoverViewModel @Inject constructor(
             } catch (ignored : IOException) {}
         }
     }
+
+    fun thumb(discoverId: String, thumb: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = discoverRepository.thumb(discoverId, thumb)
+                liveData.postValue(response)
+            } catch (ignored : IOException) {}
+        }
+    }
+
+    fun comment(discoverId: String, sendTo: String?, msg: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = discoverRepository.comment(discoverId, sendTo, msg)
+                liveData.postValue(response)
+            } catch (ignored : IOException) {}
+        }
+    }
 }

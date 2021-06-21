@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,8 +34,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.Activities.NewFriend.FriendApplyAdapter;
+import com.example.mywechat.App;
 import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
+import com.example.mywechat.api.DiscoverComment;
 import com.example.mywechat.api.DiscoverInfo;
 import com.example.mywechat.ui.comment.Comment;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
@@ -47,6 +50,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -75,18 +79,6 @@ public class DiscoverFragment extends Fragment {
         hideActionBar(view);
         recyclerView = view.findViewById(R.id.discover_recyclerview);
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
-
-        // 添加数据
-//        LinkedList<Discover> discovers = new LinkedList<>();
-//        ArrayList<Integer> imageList1 = new ArrayList<>();
-//
-//        ArrayList<Comment> comments = new ArrayList<>();
-//        comments.add(new Comment("小陈: ", "海南海口宇哥NB，66666666666666666666666666666666666666666666666666666666666666666666666666，我的宝贝"));
-//        comments.add(new Comment("小伍: ", "煜宝NB"));
-//        comments.add(new Comment("小杨: ", "钊钊NB"));
-//
-//        discovers.add(new Discover(getString(R.string.nickname1), R.drawable.avatar1,
-//                getString(R.string.paragraph1), "1小时前", imageList1, comments));
 
         discoverViewModel.discover(0);
 
@@ -163,6 +155,7 @@ public class DiscoverFragment extends Fragment {
                     LinkedList<Discover> discovers = new LinkedList<>();
                     List<Pair<String, Bitmap>> bitmaps = (List<Pair<String, Bitmap>>) msg.obj;
                     for (DiscoverInfo discover : discoverList) {
+                        String discoverId = discover.component1();
                         String nickName = discover.component2();
                         String text = discover.component3();
                         String time = discover.component6();
@@ -173,16 +166,27 @@ public class DiscoverFragment extends Fragment {
                             }
                         }
 
-                        // TODO: 修复comment
-                        ArrayList<String> comments = null;
+                        ArrayList<String> thumbUsers = null;
+                        ArrayList<Comment> comments = null;
                         if (discover.component7() != null) {
-                            comments = new ArrayList<>(discover.component7());
+                            thumbUsers = new ArrayList<>(discover.component7());
+                        }
+                        if (discover.component8() != null) {
+                            comments = new ArrayList<>();
+                            for (DiscoverComment comment : discover.component8()) {
+                                comments.add(new Comment(comment.component1(), comment.component2(), comment.component3()));
+                            }
                         }
 
-                        discovers.add(new Discover(nickName, R.drawable.avatar1, text,
-                                time, images, null));
+                        discovers.add(new Discover(discoverId, nickName, R.drawable.avatar1, text,
+                                time, images, thumbUsers, comments));
                     }
-                    recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel));
+
+                    Activity mAct = getActivity();
+                    App mApp = (App)mAct.getApplication();
+                    String mName = ((App) getActivity().getApplication()).getUsername();
+                    recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel,
+                            ((App) getActivity().getApplication()).getUsername()));
                     break;
                 case 1:
                     Log.d("InternetImageView", "NETWORK_ERROR");
