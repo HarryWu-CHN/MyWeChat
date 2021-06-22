@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@drawable/mywechat_btn_borderless"
+        android:background="@drawable/mywechat_btn_bottom_line"
         android:text="清空聊天记录"
         android:textColor="@color/ALIZARIN"
         android:textSize="18sp"

@@ -15,8 +15,31 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 public class FileUtil {
+
+    public static File SaveBitmap2Png(Bitmap bitmap) {
+        String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "MyWeChat" + File.separator + "pictures";
+        String uuid = UUID.randomUUID().toString();
+        File file = new File(storagePath);
+        file.mkdirs();
+        file = new File(storagePath + File.separator
+                + uuid + ".png");
+        try {
+            FileOutputStream fout = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fout);
+            fout.flush();
+            fout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return file;
+    }
 
     public static String getFilePath(Context context, Uri uri) {
         String selection = null;

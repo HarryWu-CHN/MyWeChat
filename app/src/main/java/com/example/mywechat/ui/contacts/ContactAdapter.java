@@ -18,8 +18,17 @@ import java.util.LinkedList;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
     private LinkedList<Contact> data;
 
+    public ContactAdapter() {
+
+    }
+
     public ContactAdapter(LinkedList<Contact> data) {
         this.data = data;
+    }
+
+    public void setContacts(LinkedList<Contact> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -32,8 +41,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = data.get(position);
-        holder.getAvatar().setImageBitmap(contact.getAvatarIcon());
-        holder.getNickname().setText(contact.getNickname());
+        if (contact.getAvatarIcon() != null) {
+            holder.getAvatar().setImageBitmap(contact.getAvatarIcon());
+        }
+        holder.getNickname().setText(contact.getNickName());
 
         holder.getItemView().setOnClickListener(v -> {
             Intent intent = new Intent(holder.getItemView().getContext(), FriendActivity.class);
@@ -43,6 +54,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public int getItemCount() {
+        if (data == null) {
+            return 0;
+        }
         return data.size();
     }
 

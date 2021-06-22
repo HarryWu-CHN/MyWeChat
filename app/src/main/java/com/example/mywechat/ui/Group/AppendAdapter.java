@@ -53,9 +53,9 @@ public class AppendAdapter extends RecyclerView.Adapter<AppendAdapter.AppendHold
     @Override
     public void onBindViewHolder(@NonNull AppendAdapter.AppendHolder holder, int position) {
         Contact member = this.members.get(position);
-        holder.getMemberNameView().setText(member.getNickname());
+        holder.getMemberNameView().setText(member.getNickName());
         ImageView memberView = holder.getMemberImageView();
-        if (member.getNickname() == null) {
+        if (member.getNickName() == null) {
             memberView.setImageResource(R.drawable.icon_plus_rect);
         } else {
             memberView.setImageResource(R.drawable.avatar1);

@@ -57,7 +57,8 @@ public class NewGroupActivity extends AppCompatActivity {
         for (String friendName : userInfo.getFriendNames()) {
             FriendRecord friendRecord = LitePal.where("friendName = ?", friendName).findFirst(FriendRecord.class);
             Bitmap bitmap = BitmapFactory.decodeFile(friendRecord.getIconPath());
-            contacts.add(new Contact( friendName, bitmap ));
+            // TODO: 通过username nickname icon 重新设置 contact
+            //contacts.add(new Contact( friendName, bitmap ));
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);

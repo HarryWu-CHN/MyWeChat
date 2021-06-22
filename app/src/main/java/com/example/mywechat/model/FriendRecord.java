@@ -23,6 +23,10 @@ public class FriendRecord extends LitePalSupport {
         return friendName;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
     public void setFriendName(String friendName) {
         this.friendName = friendName;
     }

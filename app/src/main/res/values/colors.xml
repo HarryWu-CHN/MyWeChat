@@ -14,6 +14,8 @@
     <color name="PETER_RIVER_DARK">#FF2E86C1</color>
     <color name="SUNFLOWER">#FFF1C40F</color>
     <color name="CLOUDS">#FFECF0F1</color>
+    <color name="ASBESTOS_LIGHT">#FFB2BABB</color>
     <color name="ASBESTOS">#FF7F8C8D</color>
+    <color name="ASBESTOS_DARK">#FF707B7C</color>
     <color name="ALIZARIN">#FFE74C3C</color>
 </resources>
