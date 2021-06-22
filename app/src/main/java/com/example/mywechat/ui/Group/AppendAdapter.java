@@ -58,7 +58,9 @@ public class AppendAdapter extends RecyclerView.Adapter<AppendAdapter.AppendHold
         if (member.getNickName() == null) {
             memberView.setImageResource(R.drawable.icon_plus_rect);
         } else {
-            memberView.setImageResource(R.drawable.avatar1);
+            if (member.getAvatarIcon() != null) {
+                memberView.setImageBitmap(member.getAvatarIcon());
+            }
         }
         memberView.setOnClickListener(getOnClickListener(position));
     }

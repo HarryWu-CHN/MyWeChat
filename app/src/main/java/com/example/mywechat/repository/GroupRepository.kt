@@ -20,6 +20,19 @@ class GroupRepository @Inject constructor(
             groupName, membersName
     ))
 
+    suspend fun getGroups(
+
+    ) = apiService.getGroups(
+
+    )
+
+    suspend fun getGroupMembers(
+            groupId: String
+    ) = apiService.getGroupMembers(
+            GetGroupMemberRequest(
+            groupId
+    ))
+
     suspend fun groupSend(
             groupId: String,
             msg: String?,
