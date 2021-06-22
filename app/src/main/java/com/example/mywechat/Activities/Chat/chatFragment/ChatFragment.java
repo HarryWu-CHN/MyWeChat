@@ -94,6 +94,7 @@ public class ChatFragment extends Fragment {
     private ActivityResultLauncher<Integer> launcherVideo;
     private ActivityResultLauncher<Integer> launcherPicCapture;
     private ActivityResultLauncher<Integer> launcherVidCapture;
+    private ActivityResultLauncher<Integer> launcherMicCapture;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -296,6 +297,14 @@ public class ChatFragment extends Fragment {
                 sendVideo(result);
             }
         });
+        launcherMicCapture = registerForActivityResult(new ResultContractCapture(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String result) {
+                if (result == null) return;
+                Log.d("On Ac Result", result);
+                // sendRecording(result);
+            }
+        });
         /* TODO
         videoView.requestFocus();
         videoView.start();
@@ -341,10 +350,12 @@ public class ChatFragment extends Fragment {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);;
             if (requestCode == 2) {
                 curImageFile = new File(dir, uuid + ".jpg");
-                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            } else if (requestCode == 3){
+            } else if (requestCode == 3) {
                 curImageFile = new File(dir, uuid + ".mp4");
                 intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            } else if (requestCode == 4) {
+                curImageFile = new File(dir, uuid + ".amr");
+                intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
             }
             if (curImageFile.exists()) return null;
             try {
@@ -374,7 +385,8 @@ public class ChatFragment extends Fragment {
         Dialog bottom_dialog = new Dialog(getActivity(), R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(getActivity()).inflate(
                 R.layout.bottom_dialog_chat, null);
-        //初始化视图
+        // 初始化视图
+        // 按钮点击事件
         root.findViewById(R.id.btn_pic_capture).setOnClickListener(v -> {
             launcherPicCapture.launch(2);
             bottom_dialog.dismiss();
@@ -398,9 +410,14 @@ public class ChatFragment extends Fragment {
             launcherVidCapture.launch(3);
             bottom_dialog.dismiss();
         });
+        root.findViewById(R.id.btn_microphone).setOnClickListener(v -> {
+            launcherMicCapture.launch(4);
+            bottom_dialog.dismiss();
+        });
         bottom_dialog.setContentView(root);
         Window dialogWindow = bottom_dialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
+
         // dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
         WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
         lp.x = 0; // 新位置X坐标
