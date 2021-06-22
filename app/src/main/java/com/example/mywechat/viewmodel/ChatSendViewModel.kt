@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mywechat.api.ChatRecordGetResponse
 import com.example.mywechat.api.ChatSendResponse
 import com.example.mywechat.repository.ChatRepository
+import com.example.mywechat.repository.NewGroupMessage
 import com.example.mywechat.repository.NewMessage
 import com.example.mywechat.repository.WSRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ class ChatSendViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             observeNewMsg()
+            observeNewGroupMsg()
         }
     }
     val liveData = MutableLiveData<ChatSendResponse?>(null)
@@ -57,6 +59,17 @@ class ChatSendViewModel @Inject constructor(
                 Log.d("new message", it.toString())
                 for (newMsg in it) {
                     newMsgLiveData.postValue(newMsg)
+                }
+            }
+        }
+    }
+    val newGroupMsgLiveData =  MutableLiveData<NewGroupMessage?>(null)
+    private fun observeNewGroupMsg() {
+        viewModelScope.launch(Dispatchers.IO) {
+            wsRepository.newGroupMessage().consumeEach {
+                Log.d("new message", it.toString())
+                for (newMsg in it) {
+                    newGroupMsgLiveData.postValue(newMsg)
                 }
             }
         }

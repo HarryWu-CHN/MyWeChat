@@ -58,6 +58,7 @@ interface ApiService {
     @POST("group/member")
     suspend fun getGroupMembers(@Body request : GetGroupMemberRequest) : GetGroupMemberResponse
 
+    @Multipart
     @POST("group/send")
     suspend fun groupSend(@Part("groupId") groupId: RequestBody,
                           @Part("msg") msg: RequestBody?,

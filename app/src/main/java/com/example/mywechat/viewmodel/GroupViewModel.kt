@@ -59,7 +59,7 @@ class GroupViewModel @Inject constructor(
     }
 
     val groupSendLiveData = MutableLiveData<ChatSendResponse?>(null)
-    fun groupSend(groupId: String, msg: String?, msgType: String, file: File?) {
+    fun groupSend(groupId: String, msgType: String, msg: String?,  file: File?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = groupRepository.groupSend(groupId, msg, msgType, file)

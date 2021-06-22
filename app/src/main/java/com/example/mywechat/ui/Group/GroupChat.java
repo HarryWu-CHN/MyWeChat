@@ -10,20 +10,16 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.Activities.Chat.chatFragment.ChatAdapter;
 import com.example.mywechat.Activities.Chat.chatFragment.ChatBubble;
-import com.example.mywechat.Activities.Chat.chatFragment.ChatFragment;
 import com.example.mywechat.App;
 import com.example.mywechat.BuildConfig;
 import com.example.mywechat.Util.FileUtil;
-import com.example.mywechat.api.ChatRecordBody;
-import com.example.mywechat.model.ChatRecord;
+import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.model.MessageType;
+import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.viewmodel.ChatSendViewModel;
 import com.example.mywechat.viewmodel.GroupViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,7 +27,6 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,8 +40,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -67,10 +60,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
@@ -89,11 +80,11 @@ public class GroupChat extends AppCompatActivity {
     private Button sendBtn;
     private ImageButton moreBtn;
     private String username;
-    private int userIconId;
-    private int sendToIconId;
+    private Bitmap userIcon;
     private File curImageFile;
     static String FILE_LOAD_PRE = "http://8.140.133.34:7262/";
     private GroupViewModel groupViewModel;
+    private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
     private ActivityResultLauncher<Integer> launcherVideo;
     private ActivityResultLauncher<Integer> launcherPicCapture;
@@ -120,8 +111,13 @@ public class GroupChat extends AppCompatActivity {
         recyclerView = findViewById(R.id.chatList);
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        userIconId = R.drawable.avatar5;
-        sendToIconId = R.drawable.avatar6;
+        UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
+        if (userInfo != null) {
+            String userIconPath = userInfo.getUserIcon();
+            userIcon = BitmapFactory.decodeFile(userIconPath);
+        } else {
+            userIcon = null;
+        }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         // recyclerView 相关绑定
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -214,8 +210,8 @@ public class GroupChat extends AppCompatActivity {
             chatRecord1.setIsUser(isUser);
             chatRecord1.save();
         });*/
+
         // 发送消息成功的回调
-        /*
         groupViewModel.getGroupSendLiveData().observe(this,response -> {
             if (response == null || !response.component1()) {
                 return;
@@ -225,71 +221,70 @@ public class GroupChat extends AppCompatActivity {
             ChatBubble bubble = null;
             switch (response.getMsgType()) {
                 case "0":
-                    bubble = new ChatBubble(time, response.getMsg(), userIconId, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                    bubble = new ChatBubble(time, response.getMsg(), userIcon, true, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
                     break;
                 case "1":
                     Log.d("LiveData Observe Img", Objects.requireNonNull(response.getFile()).getPath());
                     Bitmap bitmap = BitmapFactory.decodeFile(Objects.requireNonNull(response.getFile()).getPath());
-                    bubble = new ChatBubble(time, bitmap, userIconId, true, Integer.valueOf(MessageType.PICTURE.ordinal()).toString());
+                    bubble = new ChatBubble(time, bitmap, userIcon, true, Integer.valueOf(MessageType.PICTURE.ordinal()).toString());
                     break;
                 case "2":
                     Log.d("LiveData Observe Video", Objects.requireNonNull(response.getFile()).getPath());
-                    bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), userIconId, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
+                    bubble = new ChatBubble(time, Objects.requireNonNull(response.getFile()).getPath(), userIcon, true, Integer.valueOf(MessageType.VIDEO.ordinal()).toString());
                     break;
                 case "3":
                     Log.d("LiveData Location", response.getMsg());
-                    bubble = new ChatBubble(time, response.getMsg(), userIconId, true, "3");
+                    bubble = new ChatBubble(time, response.getMsg(), userIcon, true, "3");
                     break;
                 case "4":
                     Log.d("LiveData Sound", response.getMsg());
-                    bubble = new ChatBubble(time, response.getMsg(), userIconId, true, "4");
+                    bubble = new ChatBubble(time, response.getMsg(), userIcon, true, "4");
                     break;
             }
             if (bubble != null)
                 chatAdapter.addData(data.size(), bubble);
         });
-        */
+
         // 接收到WebSocket发来的新消息
-        /*
-        groupViewModel.getNewMsgLiveData().observe(this,response -> {
+        chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        chatSendViewModel.getNewGroupMsgLiveData().observe(this,response -> {
             if (response == null) return;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String time = sdf.format(new Date().getTime());
-            if (response.component1() == 0 && response.getFrom().equals(sendTo)) {
+            if (response.getInfoType() == 6 && response.getFrom().equals(groupId)) {
                 ChatBubble bubble = null;
+                FriendRecord friendRecord = LitePal.where("friendName = ?", response.getSenderName()).findFirst(FriendRecord.class);
+                Bitmap friendIcon = null;
+                if (friendRecord != null) {
+                    friendIcon = BitmapFactory.decodeFile(friendRecord.getIconPath());
+                }
                 switch (response.getMsgType()) {
                     case "0":
-                        bubble = new ChatBubble(time, response.getMsg(), R.drawable.avatar6, false, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
+                        bubble = new ChatBubble(time, response.getMsg(), friendIcon, false, Integer.valueOf(MessageType.TEXT.ordinal()).toString());
                         chatAdapter.addData(data.size(), bubble);
                         break;
                     case "1":
-                        getWebImg(time, response.getMsg(), R.drawable.avatar6, false);
+                        getWebImg(time, response.getMsg(), friendIcon, false);
                         break;
                     case "2":
                         String path = FILE_LOAD_PRE + response.getMsg();
-                        bubble = new ChatBubble(time, path, sendToIconId, false, "2");
+                        bubble = new ChatBubble(time, path, friendIcon, false, "2");
                         chatAdapter.addData(data.size(), bubble);
                         break;
                     case "3":
                         path = FILE_LOAD_PRE + response.getMsg();
-                        bubble = new ChatBubble(time, path, sendToIconId, false, "3");
+                        bubble = new ChatBubble(time, path, friendIcon, false, "3");
                         chatAdapter.addData(data.size(), bubble);
                         break;
                     case "4":
                         path = FILE_LOAD_PRE + response.getMsg();
-                        bubble = new ChatBubble(time, path, userIconId, false, "4");
+                        bubble = new ChatBubble(time, path, friendIcon, false, "4");
                         chatAdapter.addData(data.size(), bubble);
                         break;
                 }
             }
-            if (response.component1() == 0) {
-                Log.d("ChatFragment", "Receive New Msg" + response.toString());
-                ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
-                chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 0);
-                chatRecord2.save();
-            }
         });
-         */
+
 
         // 发送图片
         launcherImg = registerForActivityResult(new ResultContract(), new ActivityResultCallback<String>() {
