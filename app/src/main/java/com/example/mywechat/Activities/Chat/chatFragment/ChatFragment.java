@@ -277,7 +277,6 @@ public class ChatFragment extends Fragment {
                 chatAdapter.addData(data.size(), bubble);
         });
         // 接收到WebSocket发来的新消息
-//        chatSendViewModel.observeNewMsg();
         chatSendViewModel.getNewMsgLiveData().observe(requireActivity(), response -> {
             if (response == null) return;
             SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
