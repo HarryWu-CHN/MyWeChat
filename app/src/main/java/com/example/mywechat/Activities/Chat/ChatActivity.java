@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ChatActivity extends AppCompatActivity {
     private TextView topName;
+    private String sendTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +23,13 @@ public class ChatActivity extends AppCompatActivity {
 //        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
         Bundle bundle = getIntent().getExtras();
-        String nickname = bundle.getString("username");
-        int icon = bundle.getInt("icon");
+        String nickname = bundle.getString("nickname");
         topName = findViewById(R.id.topName);
         topName.setText(nickname);
+        sendTo = bundle.getString("username");
     }
 
     public String getSendTo() {
-        return topName.getText().toString();
+        return sendTo;
     }
 }

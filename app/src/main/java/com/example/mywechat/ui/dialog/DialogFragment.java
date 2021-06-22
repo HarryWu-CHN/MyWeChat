@@ -54,18 +54,7 @@ public class DialogFragment extends Fragment {
 
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        data.add(new Dialog("b", R.drawable.avatar1, getString(R.string.sentence1), "2021/01/01"));
-        data.add(new Dialog(getString(R.string.nickname2), R.drawable.avatar2, getString(R.string.sentence2), "2021/01/02"));
-        data.add(new Dialog(getString(R.string.nickname3), R.drawable.avatar3, getString(R.string.sentence3), "2021/01/03"));
-        data.add(new Dialog(getString(R.string.nickname4), R.drawable.avatar4, getString(R.string.sentence4), "2021/01/04"));
-        data.add(new Dialog(getString(R.string.nickname5), R.drawable.avatar5, getString(R.string.sentence5), "2021/01/05"));
-        data.add(new Dialog(getString(R.string.nickname6), R.drawable.avatar6, getString(R.string.sentence6), "2021/01/06"));
-        data.add(new Dialog(getString(R.string.nickname7), R.drawable.avatar7, getString(R.string.sentence7), "2021/01/07"));
-        data.add(new Dialog(getString(R.string.nickname8), R.drawable.avatar8, getString(R.string.sentence8), "2021/01/08"));
-        data.add(new Dialog(getString(R.string.nickname9), R.drawable.avatar9, getString(R.string.sentence9), "2021/01/09"));
-        data.add(new Dialog(getString(R.string.nickname10), R.drawable.avatar10, getString(R.string.sentence10), "2021/01/10"));
-        data.add(new Dialog(getString(R.string.nickname11), R.drawable.avatar11, getString(R.string.sentence11), "2021/01/11"));
-        data.add(new Dialog(getString(R.string.nickname12), R.drawable.avatar12, getString(R.string.sentence12), "2021/01/12"));
+        data.add(new Dialog("b", "b", R.drawable.avatar1, getString(R.string.sentence1), "2021/01/01"));
         dialogAdapter = new DialogAdapter(data, context);
         listView.setAdapter(dialogAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,11 +62,12 @@ public class DialogFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dialog dialog = (Dialog) dialogAdapter.getItem(position);
-                String username = dialog.getNickname();
+                String nickname = dialog.getNickname();
                 int icon = dialog.getAvatarIcon();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("username", username);
+                bundle.putString("username", dialog.getUsername());
+                bundle.putString("nickname", nickname);
                 bundle.putInt("icon", icon);
                 intent.putExtras(bundle);
                 startActivity(intent);
