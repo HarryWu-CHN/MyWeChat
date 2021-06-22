@@ -2,6 +2,11 @@ package com.example.mywechat.repository
 
 import com.example.mywechat.api.*
 import io.reactivex.internal.util.ArrayListSupplier
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class GroupRepository @Inject constructor(
@@ -14,6 +19,23 @@ class GroupRepository @Inject constructor(
             GroupCreateRequest(
             groupName, membersName
     ))
+
+    suspend fun groupSend(
+            groupId: String,
+            msg: String?,
+            msgType: String,
+            file: File?
+    ) = apiService.groupSend(
+            groupId.toRequestBody("text/plain".toMediaTypeOrNull()),
+            msg?.toRequestBody("text/plain".toMediaTypeOrNull()),
+            msgType.toRequestBody("text/plain".toMediaTypeOrNull()),
+            file?.let {
+                MultipartBody.Part.createFormData("file", it.name, it.asRequestBody("multipart/form-data".toMediaTypeOrNull()))
+            }
+    )
+    suspend fun groupRecord(
+            groupId: String
+    ) = apiService.groupRecord(GroupRecordRequest(groupId))
 
     suspend fun groupEdit(
             groupId : String?,
