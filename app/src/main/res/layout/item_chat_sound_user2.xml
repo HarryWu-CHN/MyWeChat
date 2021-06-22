@@ -35,10 +35,11 @@
         android:maxWidth="280dp"
         android:padding="10dp"
         android:paddingEnd="20dp"
+        android:text="11'"
         android:textAllCaps="false"
         android:textSize="16sp"
-        tools:ignore="RtlSymmetry"
-        app:drawableStartCompat="@drawable/icon_sound" />
+        app:drawableStartCompat="@drawable/icon_sound"
+        tools:ignore="RtlSymmetry" />
 
     <ImageView
         android:id="@+id/chatIcon"
