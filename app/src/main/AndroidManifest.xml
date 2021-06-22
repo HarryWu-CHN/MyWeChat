@@ -26,7 +26,7 @@
             android:name=".NewDiscoverActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".Activities.InfoActivity"
+            android:name=".ui.mine.InfoActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".FriendActivity"

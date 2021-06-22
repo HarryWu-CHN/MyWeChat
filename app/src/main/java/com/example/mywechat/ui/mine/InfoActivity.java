@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities;
+package com.example.mywechat.ui.mine;
 
 import android.Manifest;
 import android.content.ContentUris;
