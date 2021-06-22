@@ -38,9 +38,13 @@ import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.api.DiscoverComment;
 import com.example.mywechat.api.DiscoverInfo;
+import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.ui.comment.Comment;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
+import com.example.mywechat.viewmodel.UserInfoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,16 +55,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import kotlin.Suppress;
 
 @AndroidEntryPoint
 public class DiscoverFragment extends Fragment {
     private DiscoverAdapter adapter;
     private RecyclerView recyclerView;
     private DiscoverViewModel discoverViewModel;
+    private UserInfoViewModel userInfoViewModel;
 
     private ImageView previewImage;
     private VideoView previewVideo;
     private Dialog previewDialog;
+
+    private String mName;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -79,6 +87,7 @@ public class DiscoverFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         hideActionBar(view);
+        mName = ((App) getActivity().getApplication()).getUsername();
 
         initPreviewDialog();
         BindViewModel();
@@ -142,6 +151,7 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void BindViewModel() {
+        userInfoViewModel = new ViewModelProvider(this).get(UserInfoViewModel.class);
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
         discoverViewModel.discover(0);
 
@@ -154,52 +164,79 @@ public class DiscoverFragment extends Fragment {
                 return;
             }
 
-            List<DiscoverInfo> discoverList = response.component2();
+            List<DiscoverInfo> discoverList = response.getDiscoverList();
             LinkedList<Discover> data = new LinkedList<>();
+            ArrayList<String> downloadUsers = new ArrayList<>();
             ArrayList<Pair<String, ArrayList<String>>> download = new ArrayList<>();
             for (DiscoverInfo info : discoverList) {
                 Discover discover = new Discover();
-                discover.setAvatarIcon(R.drawable.avatar1);
-                discover.setDiscoverId(info.component1());
-                discover.setNickname(info.component2());
-                discover.setText(info.component3());
-                discover.setDiscoverType(info.component4());
-                discover.setPublishedTime(info.component6());
+
+                FriendRecord friendRecord = LitePal.where("friendName = ?", info.getUsername()).findFirst(FriendRecord.class);
+
+                if (friendRecord != null && friendRecord.getIconPath() != null) {
+                    discover.setNickname(friendRecord.getNickName());
+                    discover.setAvatarIcon(BitmapFactory.decodeFile(friendRecord.getIconPath()));
+                } else {
+                    if (!downloadUsers.contains(info.getUsername())) {
+                        downloadUsers.add(info.getUsername());
+                    }
+                }
+
+                discover.setDiscoverId(info.getId());
+                discover.setUsername(info.getUsername());
+                discover.setText(info.getText());
+                discover.setDiscoverType(info.getDiscoverType());
+                discover.setPublishedTime(info.getTime());
 
                 ArrayList<String> thumbUsers = null;
                 ArrayList<Comment> comments = null;
-                if (info.component7() != null) {
-                    thumbUsers = new ArrayList<>(info.component7());
+                if (info.getThumbUsers() != null) {
+                    thumbUsers = new ArrayList<>(info.getThumbUsers());
                 }
-                if (info.component8() != null) {
+                if (info.getDiscoverComments() != null) {
                     comments = new ArrayList<>();
-                    for (DiscoverComment comment : info.component8()) {
-                        comments.add(new Comment(comment.component1(), comment.component2(), comment.component3()));
+                    for (DiscoverComment comment : info.getDiscoverComments()) {
+                        comments.add(new Comment(comment.getUsername(), comment.getSendTo(), comment.getMsg()));
                     }
                 }
                 discover.setThumbUsers(thumbUsers);
                 discover.setComments(comments);
 
-                switch (info.component4()) {
+                switch (info.getDiscoverType()) {
                     case "PHOTO":
-                        ArrayList<String> images = new ArrayList<>(info.component5());
-                        download.add(new Pair<>(info.component1(), images));
+                        ArrayList<String> images = new ArrayList<>(info.getUrlList());
+                        download.add(new Pair<>(info.getId(), images));
                         break;
                     case "VIDEO":
-                        discover.setVideoUrl(info.component5().get(0));
+                        discover.setVideoUrl(info.getUrlList().get(0));
                         break;
                 }
                 data.add(discover);
             }
             adapter.setDiscoverData(data);
+            for (String downloadUser : downloadUsers) {
+                userInfoViewModel.userGet(downloadUser);
+            }
             for (Pair<String, ArrayList<String>> downloadPair : download) {
                 getImages(downloadPair.first, downloadPair.second);
             }
         });
+
+        userInfoViewModel.getLiveData().observe(getViewLifecycleOwner(), response -> {
+            if (response == null) {
+                return;
+            }
+
+            String userName = response.getUsername();
+            String nickName = response.getNickName();
+            String avatar = response.getIcon();
+
+            getAvatar(userName, nickName, avatar);
+        });
     }
 
     private void initAdapterAndListener() {
-        adapter = new DiscoverAdapter(discoverViewModel, ((App) getActivity().getApplication()).getUsername());
+        adapter = new DiscoverAdapter(discoverViewModel, mName);
         adapter.setOnItemClickListener((view, discoverType, data) -> {
             switch (discoverType) {
                 case "PHOTO":
@@ -247,6 +284,28 @@ public class DiscoverFragment extends Fragment {
     }
 
     @SuppressLint("HandlerLeak")
+    private Handler avatarHandler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Pair<Pair<String, String>, Bitmap> USER = (Pair<Pair<String, String>, Bitmap>) msg.obj;
+                    adapter.updateDiscoverUser(USER.first.first, USER.first.second, USER.second);
+                    break;
+                case 1:
+                    Log.d("InternetImageView", "NETWORK_ERROR");
+                    break;
+                case 2:
+                    Log.d("InternetImageView", "SERVER_ERROR");
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
         @Override
@@ -268,6 +327,36 @@ public class DiscoverFragment extends Fragment {
 
         }
     };
+
+    private void getAvatar(String userName, String nickName, String avatar) {
+        new Thread(() -> {
+            int arg1 = 0;
+            Bitmap bitmap = null;
+            String path = "http://8.140.133.34:7262/" + avatar;
+            try {
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(10000);
+                int code = connection.getResponseCode();
+                if (code == 200) {
+                    InputStream inputStream = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                    inputStream.close();
+                } else {
+                    arg1 = 1;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                arg1 = 2;
+            }
+            Message msg = new Message();
+            msg.what = 0;
+            msg.arg1 = arg1;
+            msg.obj = new Pair<>(new Pair<>(userName, nickName), bitmap);
+            avatarHandler.sendMessage(msg);
+        }).start();
+    }
 
     private void getImages(String discoverId, ArrayList<String> imagePaths) {
         new Thread(() -> {

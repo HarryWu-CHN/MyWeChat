@@ -9,42 +9,31 @@ import java.util.ArrayList;
 public class Discover {
     private String discoverId;
     private String discoverType;
-    private int avatarIcon; //头像
-    private String nickname; //昵称
-    private String text; // 文字
-    private String publishedTime; // 发布时间
+    private String username;
+    private String nickname;
+    private String text;
+    private String publishedTime;
     private String videoUrl;
-    private ArrayList<Bitmap> images; // 图片
-    private ArrayList<String> thumbUsers; // 点赞
-    private ArrayList<Comment> comments; // 评论
+    private ArrayList<String> thumbUsers;
+    private ArrayList<Comment> comments;
+
+    private Bitmap avatarIcon;
+    private ArrayList<Bitmap> images;
 
     public Discover() {
 
     }
 
-    public Discover(String discoverId, String discoverType, int avatarIcon, String nickname, String text,
+    public Discover(String discoverId, String discoverType, String nickname, String text,
                     String publishedTime, ArrayList<String> thumbUsers, ArrayList<Comment> comments) {
         this.discoverId = discoverId;
         this.discoverType = discoverType;
         this.nickname = nickname;
-        this.avatarIcon = avatarIcon;
         this.text = text;
         this.publishedTime = publishedTime;
         this.thumbUsers = thumbUsers;
         this.comments = comments;
     }
-
-//    public Discover(String discoverId, String nickname, int avatarIcon, String text, String publishedTime,
-//                    ArrayList<Bitmap> images, ArrayList<String> thumbUsers, ArrayList<Comment> comments) {
-//        this.discoverId = discoverId;
-//        this.nickname = nickname;
-//        this.avatarIcon = avatarIcon;
-//        this.text = text;
-//        this.publishedTime = publishedTime;
-//        this.images = images;
-//        this.thumbUsers = thumbUsers;
-//        this.comments = comments;
-//    }
 
     public void setDiscoverId(String discoverId) {
         this.discoverId = discoverId;
@@ -54,7 +43,7 @@ public class Discover {
         this.discoverType = discoverType;
     }
 
-    public void setAvatarIcon(int avatarIcon) {
+    public void setAvatarIcon(Bitmap avatarIcon) {
         this.avatarIcon = avatarIcon;
     }
 
@@ -64,6 +53,10 @@ public class Discover {
 
     public void setPublishedTime(String publishedTime) {
         this.publishedTime = publishedTime;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setNickname(String nickname) {
@@ -94,11 +87,15 @@ public class Discover {
         return discoverType;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public String getNickname() {
         return nickname;
     }
 
-    public int getAvatarIcon() {
+    public Bitmap getAvatarIcon() {
         return avatarIcon;
     }
 
