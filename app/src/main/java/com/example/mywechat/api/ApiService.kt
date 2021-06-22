@@ -129,13 +129,14 @@ data class UserGetRequest(
 data class UserGetResponse(
         val success : Boolean,
         val username : String,
-        val icon : Bitmap,
-        val joinTime : String,
+        val nickName : String,
+        val icon : String,
 )
 
 @JsonClass(generateAdapter = true)
 data class ContactGetResponse(
         val friendNames: List<String>,
+        val friendNickNames: List<String>,
         val friendTypes: List<String>,
         val friendIcons: List<String>,
 )
