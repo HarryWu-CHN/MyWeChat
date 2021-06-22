@@ -28,7 +28,7 @@ class UserInfoViewModel @Inject constructor(
                 val response = userInfoRepository.userGet(userToGet)
                 liveData.postValue(response)
             } catch (ignored : IOException){
-
+                ignored.printStackTrace()
             }
         }
     }

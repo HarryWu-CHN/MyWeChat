@@ -11,11 +11,12 @@ import java.util.List;
 public class FriendRecord extends LitePalSupport {
     @Column(unique = true)
     private String friendName;
+    private String nickName;
     private String iconPath;
 
-    public FriendRecord(String friendName, String iconPath) {
+    public FriendRecord(String friendName, String nickName) {
         this.friendName = friendName;
-        this.iconPath = iconPath;
+        this.nickName = nickName;
     }
 
     public String getFriendName() {

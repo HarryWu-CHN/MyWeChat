@@ -9,6 +9,8 @@ import java.util.List;
 public class UserInfo extends LitePalSupport {
     @Column(unique = true)
     private String username;
+    private String nickName;
+    private String userIcon;
     private List<String> friendNames;
 
     public UserInfo(String username) {
@@ -35,6 +37,22 @@ public class UserInfo extends LitePalSupport {
 
     public void setFriendNames(List<String> friendNames) {
         this.friendNames = friendNames;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public void setUserIcon(String userIcon) {
+        this.userIcon = userIcon;
     }
 
     public void addFriend(String friendName) {
