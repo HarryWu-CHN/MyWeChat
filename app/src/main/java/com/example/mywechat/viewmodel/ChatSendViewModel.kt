@@ -68,7 +68,25 @@ class ChatSendViewModel @Inject constructor(
                 val response = chatRepository.chatRecordGet(sendTo)
                 chatGetLiveDate.postValue(response)
             } catch (ignored : IOException){
-                chatGetLiveDate.postValue(null)
+                ignored.printStackTrace()
+            }
+        }
+    }
+    fun chatDelete(sendTo: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = chatRepository.chatDelete(sendTo)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
+            }
+        }
+    }
+    fun contactDelete(sendTo: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = chatRepository.contactDelete(sendTo)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
             }
         }
     }

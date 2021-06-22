@@ -1,6 +1,7 @@
 package com.example.mywechat.repository
 
 import com.example.mywechat.api.ApiService
+import com.example.mywechat.api.ChatDeleteRequest
 import com.example.mywechat.api.ChatRecordGetRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -31,4 +32,10 @@ class ChatRepository @Inject constructor(
     ) = apiService.chatRecordGet(
             ChatRecordGetRequest(sendTo)
     )
+    suspend fun chatDelete(
+            sendTo: String
+    ) = apiService.chatDelete(ChatDeleteRequest(sendTo))
+    suspend fun contactDelete(
+            sendTo: String
+    ) = apiService.contactDelete(ChatRecordGetRequest(sendTo))
 }
