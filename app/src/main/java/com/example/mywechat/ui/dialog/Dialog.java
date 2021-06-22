@@ -3,7 +3,7 @@ package com.example.mywechat.ui.dialog;
 public class Dialog {
     private final String username; // 名称
     private final String nickname; // 昵称
-    private final String lastSpeak; //最后聊天内容
+    private String lastSpeak; //最后聊天内容
     private final String iconPath; // 头像
     private final String lastSpeakTime; //最后联络时间
 
@@ -33,5 +33,9 @@ public class Dialog {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void setLastSpeak(String lastSpeak) {
+        this.lastSpeak = lastSpeak;
     }
 }

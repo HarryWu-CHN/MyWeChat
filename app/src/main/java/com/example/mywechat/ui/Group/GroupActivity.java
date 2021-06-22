@@ -50,6 +50,7 @@ public class GroupActivity extends AppCompatActivity  {
     private RecyclerView memberRecyclerView;
 
     private String groupId;
+    private String groupName;
 
     private GroupViewModel groupViewModel;
 
@@ -67,6 +68,7 @@ public class GroupActivity extends AppCompatActivity  {
 
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
+        groupName = intent.getStringExtra("groupName");
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
         groupViewModel.getMembers(groupId);
         groupViewModel.getGroupMembers().observe(this, response -> {
@@ -107,6 +109,18 @@ public class GroupActivity extends AppCompatActivity  {
         backToUserButton.setOnClickListener(v -> {
             finish();
         });
+        sendMessageButton.setOnClickListener(v -> {
+            sendMessageBtnClicked();
+        });
+    }
+
+    private void sendMessageBtnClicked() {
+        Intent intent = new Intent(this, GroupChat.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("groupId", groupId);
+        bundle.putString("groupName", groupName);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void initRecyclerView() {

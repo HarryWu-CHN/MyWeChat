@@ -65,8 +65,7 @@ public class UserActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        username = getIntent().getStringExtra("username");
-        ((App) getApplication()).setUsername(username);
+        username = ((App) getApplication()).getUsername();
         userInfoViewModel = new ViewModelProvider(this).get(UserInfoViewModel.class);
         userInfoViewModel.userGet(username);
         userInfoViewModel.getLiveData().observe(this, response -> {

@@ -123,7 +123,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                 }
         }
         holder.getChatTimeView().setText(chatBubble.getTime());
-        holder.getChatIconView().setImageResource(chatBubble.getIcon());
+        holder.getChatIconView().setImageBitmap(chatBubble.getIcon());
 
         if (mOnItemClickListener != null) {
             holder.contentView.setOnClickListener(view -> mOnItemClickListener.onItemClick(view, position));

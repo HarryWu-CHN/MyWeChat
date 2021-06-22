@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.mywechat.Activities.Chat.chatFragment.ChatBubble;
 import com.example.mywechat.R;
 
 import java.util.LinkedList;
@@ -39,6 +40,20 @@ public class DialogAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    public void addData(Dialog dialog) {
+        data.add(dialog);
+        notifyDataSetChanged();
+    }
+
+    public void updateData(String username, String lastSpeak) {
+        for (int i=0; i<data.size(); i++) {
+            if (!username.equals(data.get(i).getUsername())) continue;
+            data.get(i).setLastSpeak(lastSpeak);
+            break;
+        }
+        notifyDataSetChanged();
     }
 
     @SuppressLint("ViewHolder")

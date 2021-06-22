@@ -5,11 +5,11 @@ import android.graphics.Bitmap;
 public class ChatBubble {
     private final String time; // 发送时间
     private final Object content; // 发送内容
-    private final int icon;
+    private final Bitmap icon;
     private final boolean isUser;
     private final String msgType;
 
-    public ChatBubble(String time, String content, int icon, Boolean isUser, String msgType) {
+    public ChatBubble(String time, String content, Bitmap icon, Boolean isUser, String msgType) {
         this.time = time;
         this.content = content;
         this.icon = icon;
@@ -17,7 +17,7 @@ public class ChatBubble {
         this.msgType = msgType;
     }
 
-    public ChatBubble(String time, Bitmap bitmap, int icon, Boolean isUser, String msgType) {
+    public ChatBubble(String time, Bitmap bitmap, Bitmap icon, Boolean isUser, String msgType) {
         this.time = time;
         this.content = bitmap;
         this.icon = icon;
@@ -31,7 +31,7 @@ public class ChatBubble {
     public Object getContent() {
         return content;
     }
-    public int getIcon() {
+    public Bitmap getIcon() {
         return icon;
     }
 

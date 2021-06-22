@@ -10,15 +10,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.viewmodel.ChatSendViewModel;
+import com.example.mywechat.viewmodel.NewFriendViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class FriendActivity extends AppCompatActivity {
     private ImageView friendAvatar;
     private TextView friendNickName;
     private TextView friendUserName;
     private Button sendMessageButton;
+    private Button clearButton;
+    private Button quitButton;
     private ImageButton backToContactButton;
+
+    private ChatSendViewModel chatSendViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +49,6 @@ public class FriendActivity extends AppCompatActivity {
         Bitmap avatarBm = BitmapFactory.decodeByteArray(avatarBytes, 0, avatarBytes.length);
         friendAvatar.setImageBitmap(avatarBm);
 
-        // TODO: 向联系人发起聊天
         sendMessageButton = findViewById(R.id.sendMessageButton);
         sendMessageButton.setOnClickListener(v -> {
             Intent it = new Intent(this, ChatActivity.class);
@@ -49,6 +58,17 @@ public class FriendActivity extends AppCompatActivity {
             bundle.putByteArray("friendAvatarBytes", avatarBytes);
             it.putExtras(bundle);
             startActivity(it);
+        });
+
+        chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        clearButton = findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(v -> {
+            chatSendViewModel.chatDelete(userName);
+        });
+        quitButton = findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(v -> {
+            chatSendViewModel.contactDelete(userName);
+            finish();
         });
 
         backToContactButton = findViewById(R.id.backToContactButton);

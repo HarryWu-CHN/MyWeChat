@@ -38,6 +38,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class DialogFragment extends Fragment {
     private FragmentManager fm;
     private ChatSendViewModel chatSendViewModel;
@@ -67,7 +70,7 @@ public class DialogFragment extends Fragment {
         listView = getView().findViewById(R.id.listview);
         Context context = getActivity();
 
-        username = ((App)getActivity().getApplication()).getUsername();
+        username = ((App) requireActivity().getApplication()).getUsername();
         List<DialogRecord> dialogRecords = LitePal.findAll(DialogRecord.class);
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
@@ -86,34 +89,42 @@ public class DialogFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("username", dialog.getUsername());
                 bundle.putString("nickname", nickname);
-
+                FriendRecord friendRecord = LitePal.where("friendName = ?", dialog.getUsername()).findFirst(FriendRecord.class);
+                if (friendRecord != null) {
+                    bundle.putString("sendToIcon", friendRecord.getIconPath());
+                }
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
-
-        /*chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
         chatSendViewModel.getNewMsgLiveData().observe(getViewLifecycleOwner(), response ->{
             if (response == null) return;
             SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String time = sdf.format(new Date().getTime());
-            if (response.component1() == 0) {
+            if (response.getInfoType() == 0) {
                 Log.d("DialogFragment", "Receive New Msg" + response.toString());
                 ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, response.getFrom()).findFirst(ChatRecord.class);
+                if (chatRecord2 == null) chatRecord2 = new ChatRecord(username, response.getFrom());
                 chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 0);
                 chatRecord2.save();
                 DialogRecord dialogRecord = LitePal.where("uniqueName = ?", response.getFrom()).findFirst(DialogRecord.class);
                 if (dialogRecord == null) {
                     FriendRecord friendRecord = LitePal.where("friendName = ?", response.getFrom()).findFirst(FriendRecord.class);
-                    if (friendRecord != null)
+                    if (friendRecord != null) {
+                        Dialog dialog = new Dialog(response.getFrom(), friendRecord.getNickName(), friendRecord.getIconPath(), response.getMsg(), "");
+                        dialogAdapter.addData(dialog);
                         dialogRecord = new DialogRecord(friendRecord.getFriendName(), friendRecord.getNickName(),
                                 "0", friendRecord.getIconPath(), response.getMsg());
+                    }
                     else return;
+                } else {
+                    dialogAdapter.updateData(response.getFrom(), response.getMsg());
                 }
                 dialogRecord.setLastSpeak(response.getMsg());
                 dialogRecord.save();
             }
-        });*/
+        });
     }
 
     @Override
