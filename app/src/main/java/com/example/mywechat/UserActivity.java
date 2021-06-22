@@ -21,13 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.mywechat.Util.FileUtil;
-import com.example.mywechat.databinding.FragmentUserInfoBinding;
 import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.ui.Group.NewGroupActivity;
 import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
-import com.example.mywechat.ui.contacts.Contact;
-import com.example.mywechat.ui.contacts.ContactAdapter;
-import com.example.mywechat.viewmodel.MainActivityViewModel;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,8 +33,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -45,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class UserActivity extends AppCompatActivity {
     private NewFriendViewModel nfViewModel;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +56,9 @@ public class UserActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        username = getIntent().getStringExtra("username");
+        ((App) getApplication()).setUsername(username);
+
         nfViewModel = new ViewModelProvider(this).get(NewFriendViewModel.class);
         nfViewModel.contactGet();
         nfViewModel.getContactsData().observe(this, response -> {
@@ -68,12 +67,13 @@ public class UserActivity extends AppCompatActivity {
             }
             List<String> friendNames = response.component1();
             List<String> friendIcons = response.component3();
+            UserInfo userInfo = new UserInfo(username);
             for (int i=0; i<friendNames.size(); i++) {
                 getIconAndSave(friendNames.get(i), friendIcons.get(i));
+                userInfo.addFriend(friendNames.get(i));
             }
+            userInfo.saveOrUpdate();
         });
-        String username = getIntent().getStringExtra("username");
-        ((App) getApplication()).setUsername(username);
     }
 
     @Override
@@ -122,7 +122,8 @@ public class UserActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     FriendRecord friendRecord = (FriendRecord) msg.obj;
-                    friendRecord.saveOrUpdate();
+                    friendRecord.assignBaseObjId(1);
+                    friendRecord.save();
                     break;
             }
         }
@@ -154,7 +155,7 @@ public class UserActivity extends AppCompatActivity {
             if (bitmap == null) return;
             Message msg = new Message();
             msg.what = 0;
-            msg.obj = new FriendRecord(friendName, FileUtil.bitmap2byte(bitmap));
+            msg.obj = new FriendRecord(friendName, FileUtil.Bitmap2Bytes(bitmap));
             handler.sendMessage(msg);
         }).start();
     }

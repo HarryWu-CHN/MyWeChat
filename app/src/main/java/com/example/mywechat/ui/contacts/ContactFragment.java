@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.Activities.Chat.chatFragment.ChatBubble;
 import com.example.mywechat.Activities.NewFriend.FriendApplyActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
@@ -34,11 +32,6 @@ import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.example.mywechat.Util.FileUtil;
 
-import org.litepal.LitePal;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -46,7 +39,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -150,7 +142,7 @@ public class ContactFragment extends Fragment {
                 LinkedList<Contact> contacts = (LinkedList<Contact>) msg.obj;
                 recyclerView.setAdapter(new ContactAdapter(contacts));
                 for (Contact contact : contacts) {
-                    FriendRecord friendRecord = new FriendRecord(contact.getNickname(), FileUtil.bitmap2byte(contact.getAvatarIcon()));
+                    FriendRecord friendRecord = new FriendRecord(contact.getNickname(), FileUtil.Bitmap2Bytes(contact.getAvatarIcon()));
                     friendRecord.save();
                 }
             }

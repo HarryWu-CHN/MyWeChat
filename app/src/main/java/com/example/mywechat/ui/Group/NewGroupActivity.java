@@ -9,8 +9,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.App;
 import com.example.mywechat.R;
+import com.example.mywechat.Util.FileUtil;
+import com.example.mywechat.model.ChatRecord;
+import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.ui.contacts.Contact;
+
+import org.litepal.LitePal;
 
 import java.util.LinkedList;
 
@@ -22,12 +29,14 @@ public class NewGroupActivity extends AppCompatActivity {
     private Button inviteButton;
     private RecyclerView recyclerView;
     private InviteAdapter adapter;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_group);
+        username = ((App)getApplication()).getUsername();
 
         backToUserButton = findViewById(R.id.backToUserButton);
         backToUserButton.setOnClickListener(v -> {
@@ -40,12 +49,13 @@ public class NewGroupActivity extends AppCompatActivity {
         });
 
         recyclerView = findViewById(R.id.inviteRecyclerView);
-
-        // TODO: 获取联系人并放进 contacts
         LinkedList<Contact> contacts = new LinkedList<>();
-        contacts.add(new Contact("a", null));
-        contacts.add(new Contact("b", null));
-
+        // 从数据库中获取联系人信息
+        UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
+        for (String friendName : userInfo.getFriendNames()) {
+            FriendRecord friendRecord = LitePal.where("friendName = ?", friendName).findFirst(FriendRecord.class);
+            contacts.add(new Contact( friendName, FileUtil.BytesToBitmap(friendRecord.getFriendIcon()) ));
+        }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
