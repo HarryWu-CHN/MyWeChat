@@ -95,7 +95,7 @@ public class UserActivity extends AppCompatActivity {
                 FriendRecord friendRecord = LitePal.where("friendName = ?", friendNames.get(i)).findFirst(FriendRecord.class);
                 if (friendRecord != null) continue;
                 friendRecord = new FriendRecord(friendNames.get(i), friendNickNames.get(i));
-                getIconAndSave(friendRecord, friendIcons.get(i));
+                //getIconAndSave(friendRecord, friendIcons.get(i));
             }
             UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
             if (userInfo == null) userInfo = new UserInfo(username);

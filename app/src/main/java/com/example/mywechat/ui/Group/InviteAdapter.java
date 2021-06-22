@@ -33,7 +33,7 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteHold
     public void onBindViewHolder(@NonNull InviteHolder holder, int position) {
         Contact contact = invite.get(position);
 
-        holder.getFriendNickName().setText(contact.getNickname());
+        holder.getFriendNickName().setText(contact.getNickName());
         holder.getFriendAvatar().setImageBitmap(contact.getAvatarIcon());
     }
 
