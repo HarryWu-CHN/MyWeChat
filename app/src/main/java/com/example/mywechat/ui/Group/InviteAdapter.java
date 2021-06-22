@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,15 +14,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.contacts.Contact;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteHolder> {
     private LinkedList<Contact> invite;
+    private  Map<Integer, Boolean> map = new HashMap<>();
 
     public InviteAdapter(LinkedList<Contact> invite) {
         this.invite = invite;
+        initMap();
     }
 
+    private void initMap() {
+        for (int i = 0; i < invite.size(); i++) {
+            map.put(i, false);
+        }
+    }
+    public Map<Integer, Boolean> getMap() {
+        return map;
+    }
     @NonNull
     @Override
     public InviteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,6 +48,19 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteHold
 
         holder.getFriendNickName().setText(contact.getNickName());
         holder.getFriendAvatar().setImageBitmap(contact.getAvatarIcon());
+        // checkbox 监听
+        holder.getCheck().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //用map集合保存
+                map.put(position, isChecked);
+            }
+        });
+        // 设置CheckBox的状态
+        if (map.get(position) == null) {
+            map.put(position, false);
+        }
+        holder.getCheck().setChecked(map.get(position));
     }
 
     @Override

@@ -4,12 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mywechat.api.BooleanResponse
+import com.example.mywechat.api.ChatRecordGetResponse
+import com.example.mywechat.api.ChatSendResponse
 import com.example.mywechat.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -26,6 +29,35 @@ class GroupViewModel @Inject constructor(
             try {
                 val response = groupRepository.groupCreate(groupName, membersName)
                 createResLiveData.postValue(response)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
+            }
+        }
+    }
+    val groupSendLiveData = MutableLiveData<ChatSendResponse?>(null)
+    fun groupSend(groupId: String, msg: String?, msgType: String, file: File?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.groupSend(groupId, msg, msgType, file)
+                val chatSendResponse = ChatSendResponse (
+                        response.component1(),
+                        response.component2(),
+                        msgType,
+                        msg,
+                        file
+                )
+                groupSendLiveData.postValue(chatSendResponse)
+            } catch (ignored : IOException){
+                ignored.printStackTrace();
+            }
+        }
+    }
+    val groupRecordLiveData = MutableLiveData<ChatRecordGetResponse?>(null)
+    fun groupRecord(groupId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.groupRecord(groupId)
+                groupRecordLiveData.postValue(response)
             } catch (ignored : IOException){
                 ignored.printStackTrace()
             }

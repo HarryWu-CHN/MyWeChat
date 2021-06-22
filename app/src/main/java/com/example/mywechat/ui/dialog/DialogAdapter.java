@@ -2,6 +2,8 @@ package com.example.mywechat.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +54,8 @@ public class DialogAdapter extends BaseAdapter {
         TextView nicknameView = convertView.findViewById(R.id.nickname_text);
         nicknameView.setText(chat.getNickname());
         ImageView avatarIconView = convertView.findViewById(R.id.avatar_icon);
-        avatarIconView.setImageResource(chat.getAvatarIcon());
+        Bitmap bitmap = BitmapFactory.decodeFile(chat.getIconPath());
+        avatarIconView.setImageBitmap(bitmap);
         TextView lastSpeakView = convertView.findViewById(R.id.last_speak_text);
         lastSpeakView.setText(chat.getLastSpeak());
         TextView lastSpeakTimeView = convertView.findViewById(R.id.last_speak_time_text);

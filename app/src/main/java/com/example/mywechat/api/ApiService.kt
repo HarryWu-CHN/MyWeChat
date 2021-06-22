@@ -49,6 +49,15 @@ interface ApiService {
     @POST("group/create")
     suspend fun groupCreate(@Body request: GroupCreateRequest) : BooleanResponse
 
+    @POST("group/send")
+    suspend fun groupSend(@Part("groupId") groupId: RequestBody,
+                          @Part("msg") msg: RequestBody?,
+                          @Part("msgType") msgType: RequestBody,
+                          @Part file: MultipartBody.Part?) : BooleanResponse
+
+    @POST("group/record")
+    suspend fun groupRecord(@Body request: GroupRecordRequest) : ChatRecordGetResponse
+
     @POST("group/edit")
     suspend fun groupEdit(@Body request: GroupEditRequest) : BooleanResponse
 
@@ -191,6 +200,10 @@ data class ChatSendResponse(
 @JsonClass(generateAdapter = true)
 data class ChatRecordGetRequest(
         val sendTo: String
+)
+@JsonClass(generateAdapter = true)
+data class GroupRecordRequest(
+        val groupId: String
 )
 
 @JsonClass(generateAdapter = true)

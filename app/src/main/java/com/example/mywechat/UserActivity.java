@@ -100,7 +100,7 @@ public class UserActivity extends AppCompatActivity {
             UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
             if (userInfo == null) userInfo = new UserInfo(username);
             userInfo.setFriendNames(friendNames);
-            userInfo.saveOrUpdate();
+            userInfo.save();
         });
     }
 
