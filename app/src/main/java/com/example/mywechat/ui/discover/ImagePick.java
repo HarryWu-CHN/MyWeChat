@@ -1,4 +1,4 @@
-package com.example.mywechat.ui.pickAdapter;
+package com.example.mywechat.ui.discover;
 
 import android.content.Context;
 import android.graphics.Bitmap;

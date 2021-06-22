@@ -1,30 +1,19 @@
-package com.example.mywechat;
+package com.example.mywechat.ui.discover;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,8 +23,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.ui.pickAdapter.ImagePick;
-import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
+import com.example.mywechat.Util.FileUtil;
+import com.example.mywechat.R;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.io.File;

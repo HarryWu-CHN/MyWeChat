@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,10 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.CommentAdapter;
-import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.util.ArrayList;

@@ -1,15 +1,13 @@
-package com.example.mywechat.ui.pickAdapter;
+package com.example.mywechat.ui.discover;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
 
 import java.util.ArrayList;

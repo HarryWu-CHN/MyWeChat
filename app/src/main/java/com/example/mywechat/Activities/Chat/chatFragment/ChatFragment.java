@@ -37,7 +37,7 @@ import android.widget.TextView;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
-import com.example.mywechat.FileUtil;
+import com.example.mywechat.Util.FileUtil;
 import com.example.mywechat.R;
 import com.example.mywechat.api.ChatRecordBody;
 import com.example.mywechat.model.ChatRecord;

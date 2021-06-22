@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.Util;
 
 import android.content.ContentUris;
 import android.content.Context;

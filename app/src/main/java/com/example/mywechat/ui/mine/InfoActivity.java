@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.ui.mine;
 
 import android.Manifest;
 import android.content.ContentUris;
@@ -27,6 +27,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.mywechat.viewmodel.InfoViewModel;
+import com.example.mywechat.R;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 
 import java.io.File;

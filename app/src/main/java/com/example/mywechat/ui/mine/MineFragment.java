@@ -18,11 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mywechat.InfoActivity;
 import com.example.mywechat.R;
-import com.example.mywechat.UserActivity;
-
-import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.

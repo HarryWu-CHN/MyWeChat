@@ -1,4 +1,4 @@
-package com.example.mywechat
+package com.example.mywechat.viewmodel
 
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
