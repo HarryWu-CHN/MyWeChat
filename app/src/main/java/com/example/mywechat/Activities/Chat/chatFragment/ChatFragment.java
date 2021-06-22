@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -37,8 +38,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
@@ -89,7 +92,7 @@ public class ChatFragment extends Fragment {
     private int userIconId;
     private int sendToIconId;
     private File curImageFile;
-    static String FILELOADPRE = "http://8.140.133.34:7262/";
+    static String FILE_LOAD_PRE = "http://8.140.133.34:7262/";
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
@@ -97,6 +100,11 @@ public class ChatFragment extends Fragment {
     private ActivityResultLauncher<Integer> launcherPicCapture;
     private ActivityResultLauncher<Integer> launcherVidCapture;
     private ActivityResultLauncher<Integer> launcherMicCapture;
+
+    private ImageView previewImage;
+    private VideoView previewVideo;
+    private MediaPlayer previewMedia;
+    private Dialog previewDialog;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -115,6 +123,8 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.chatList);
+
+        initPreviewDialog();
 
         ChatActivity activity = (ChatActivity) getActivity();
         App app = (App) activity.getApplication();
@@ -146,27 +156,49 @@ public class ChatFragment extends Fragment {
         chatAdapter = new ChatAdapter(data, (Context)requireActivity());
         recyclerView.setAdapter(chatAdapter);
         // 气泡点击事件
-        chatAdapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
-            @SuppressLint("QueryPermissionsNeeded")
-            @Override
-            public void onItemClick(View view, int position) {
-                Log.d("ItemClicked", "~~~!!!~~~");
-                ChatBubble bubble = data.get(position);
-                switch (bubble.getIntMsgType()) {
-                    case 0:
-                        break;
-                    case 3:
-                        String loc = (String) bubble.getContent();
-                        // 对地址进行解析并传递给新创建的intent.
-                        Uri addressUri = Uri.parse("geo:0,0?q=" + loc);
-                        Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
-                        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-                            startActivity(intent);
-                        } else {
-                            Log.d("ImplicitIntents", "Can't handle this intent!");
-                        }
-                        break;
-                }
+        chatAdapter.setOnItemClickListener((v, position) -> {
+            Log.d("ItemClicked", "~~~!!!~~~");
+            ChatBubble bubble = data.get(position);
+            switch (bubble.getIntMsgType()) {
+                case 1:
+                    // Click image
+                    previewImage.setImageBitmap((Bitmap) bubble.getContent());
+                    previewDialog.setContentView(previewImage);
+                    previewDialog.show();
+                    break;
+                case 2:
+                    // Click video
+                    previewVideo.setVideoURI(Uri.parse((String) bubble.getContent()));
+                    previewDialog.setContentView(previewVideo);
+                    previewDialog.show();
+                    previewVideo.start();
+                    break;
+                case 3:
+                    // Click location
+                    String loc = (String) bubble.getContent();
+                    // 对地址进行解析并传递给新创建的intent.
+                    Uri addressUri = Uri.parse("geo:0,0?q=" + loc);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
+                    if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                        startActivity(intent);
+                    } else {
+                        Log.d("ImplicitIntents", "Can't handle this intent!");
+                    }
+                    break;
+                case 4:
+                    // Click media
+                    previewMedia = new MediaPlayer();
+                    try {
+                        previewMedia.setDataSource(getActivity(), Uri.parse((String) bubble.getContent()));
+                        previewMedia.prepare();
+                    } catch (IOException e) {
+                        // ignored
+                    }
+                    previewMedia.start();
+                    break;
+                default:
+                    // ignored
+                    break;
             }
         });
         // View bind
@@ -201,6 +233,7 @@ public class ChatFragment extends Fragment {
                 isUser.add(body.getSenderName().equals(username)? 1 : 0);
             }
             ChatRecord chatRecord1 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
+            if (chatRecord1 == null) chatRecord1 = new ChatRecord(username, sendTo);
             chatRecord1.setMsgs(msgs);   chatRecord1.setMsgTypes(msgTypes);
             chatRecord1.setTimes(times); chatRecord1.setIsUser(isUser);
             chatRecord1.save();
@@ -258,17 +291,17 @@ public class ChatFragment extends Fragment {
                         getWebImg(time, response.getMsg(), R.drawable.avatar6, false);
                         break;
                     case "2":
-                        String path = FILELOADPRE + response.getMsg();
+                        String path = FILE_LOAD_PRE + response.getMsg();
                         bubble = new ChatBubble(time, path, sendToIconId, false, "2");
                         chatAdapter.addData(data.size(), bubble);
                         break;
                     case "3":
-                        path = FILELOADPRE + response.getMsg();
+                        path = FILE_LOAD_PRE + response.getMsg();
                         bubble = new ChatBubble(time, path, sendToIconId, false, "3");
                         chatAdapter.addData(data.size(), bubble);
                         break;
                     case "4":
-                        path = FILELOADPRE + response.getMsg();
+                        path = FILE_LOAD_PRE + response.getMsg();
                         bubble = new ChatBubble(time, path, userIconId, false, "4");
                         chatAdapter.addData(data.size(), bubble);
                         break;
@@ -324,6 +357,30 @@ public class ChatFragment extends Fragment {
         videoView.requestFocus();
         videoView.start();
          */
+    }
+
+    private void initPreviewDialog() {
+        // 预览Dialog
+        previewDialog = new Dialog(getActivity(), R.style.FullActivity);
+        WindowManager.LayoutParams attributes = previewDialog.getWindow().getAttributes();
+        attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
+        attributes.height = WindowManager.LayoutParams.MATCH_PARENT;
+        //attributes.gravity = Gravity.CENTER_VERTICAL;
+        previewDialog.getWindow().setAttributes(attributes);
+
+        previewImage = new ImageView(getActivity());
+        previewImage.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
+
+        previewVideo = new VideoView(getActivity());
+//        RelativeLayout.LayoutParams LayoutParams = new RelativeLayout.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT);
+//        LayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        previewVideo.setLayoutParams(LayoutParams);
+        previewVideo.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
     }
 
     class ResultContract extends ActivityResultContract<Integer, String> {
@@ -555,7 +612,7 @@ public class ChatFragment extends Fragment {
                         bubble = new ChatBubble(body.getTime(), body.getContent(), isuser ? userIconId : sendToIconId, isuser, "3");
                         break;
                     case "SOUND":
-                        bubble = new ChatBubble(body.getTime(), FILELOADPRE+body.getContent(), isuser ? userIconId : sendToIconId, isuser, "4");
+                        bubble = new ChatBubble(body.getTime(), FILE_LOAD_PRE+body.getContent(), isuser ? userIconId : sendToIconId, isuser, "4");
                         break;
                 }
                 if (bubble != null) {

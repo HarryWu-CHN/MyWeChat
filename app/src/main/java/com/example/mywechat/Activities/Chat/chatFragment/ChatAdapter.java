@@ -35,7 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         void onItemClick(View view, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener){
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
@@ -95,6 +95,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                 } else {
                     holder.getChatVidView().setVideoPath(filePath);
                 }
+                holder.getChatVidView().seekTo(100);
                 break;
             case 3:
                 TextView txView = holder.getChatContentView();
@@ -105,7 +106,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             case 4:
                 filePath = (String) chatBubble.getContent();
                 MediaPlayer mediaPlayer = new MediaPlayer();
-                Integer soundSecond;
+                int soundSecond;
                 try {
                     if (filePath.contains("http://8.140")) {
                         mediaPlayer.setDataSource(context, Uri.parse(filePath));
@@ -114,7 +115,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                     }
                     mediaPlayer.prepare();
                     soundSecond = mediaPlayer.getDuration() / 1000;
-                    String secondStr = soundSecond.toString() + "'";
+                    String secondStr = soundSecond + "'";
                     holder.getChatContentView().setText(secondStr);
                 }
                 catch (IOException e) {
@@ -125,12 +126,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         holder.getChatIconView().setImageResource(chatBubble.getIcon());
 
         if (mOnItemClickListener != null) {
-            holder.contentView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnItemClickListener.onItemClick(view, position);
-                }
-            });
+            holder.contentView.setOnClickListener(view -> mOnItemClickListener.onItemClick(view, position));
         }
     }
 
