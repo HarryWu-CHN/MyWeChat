@@ -139,6 +139,9 @@ public class ContactFragment extends Fragment {
                 }
             }
             adapter.setContacts(contacts);
+            UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
+            userInfo.setFriendNames(friendNames);
+            userInfo.save();
         });
     }
 
