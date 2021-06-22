@@ -68,7 +68,7 @@ public class DialogFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("username", dialog.getUsername());
                 bundle.putString("nickname", nickname);
-                bundle.putInt("icon", icon);
+
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

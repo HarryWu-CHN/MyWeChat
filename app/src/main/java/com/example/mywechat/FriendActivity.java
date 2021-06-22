@@ -46,7 +46,7 @@ public class FriendActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("username", userName);
             bundle.putString("nickname", nickName);
-            bundle.putByteArray();
+            bundle.putByteArray("friendAvatarBytes", avatarBytes);
             it.putExtras(bundle);
             startActivity(it);
         });
