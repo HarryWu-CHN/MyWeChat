@@ -7,9 +7,11 @@
 
     <ImageView
         android:id="@+id/newImageView"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_margin="5dp"
+        android:layout_weight="0.2"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/icon_plus_rect" />
+
 </LinearLayout>

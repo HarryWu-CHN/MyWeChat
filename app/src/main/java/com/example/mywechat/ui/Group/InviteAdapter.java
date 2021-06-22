@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.Group;
+package com.example.mywechat.ui.Group;
 
 import android.view.LayoutInflater;
 import android.view.View;
