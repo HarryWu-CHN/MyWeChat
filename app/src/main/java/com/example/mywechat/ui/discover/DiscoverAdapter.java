@@ -1,41 +1,35 @@
 package com.example.mywechat.ui.discover;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.App;
+import com.example.mywechat.NewDiscoverActivity;
 import com.example.mywechat.R;
 import com.example.mywechat.ui.comment.CommentAdapter;
+import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import dagger.hilt.android.AndroidEntryPoint;
 
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
     private View mParent;
@@ -43,15 +37,38 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
     private String commentId;
     private final String mName;
     private final DiscoverViewModel discoverViewModel;
+    private onRecyclerItemClickerListener listener;
 
     public DiscoverAdapter(DiscoverViewModel discoverViewModel, String mName) {
         this.discoverViewModel = discoverViewModel;
         this.mName = mName;
     }
 
+    public void updateDiscoverData(String discoverId, ArrayList<Bitmap> bitmaps) {
+        for (Discover discover : this.data) {
+            if (discover.getDiscoverId().equals(discoverId)) {
+                discover.setImages(bitmaps);
+                break;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public void setDiscoverData(LinkedList<Discover> data) {
         this.data = new LinkedList<>(data);
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(onRecyclerItemClickerListener listener) {
+        this.listener = listener;
+    }
+
+    private View.OnClickListener getOnClickListener(final String discoverType, final Object data) {
+        return v -> listener.onRecyclerItemClick(v, discoverType, data);
+    }
+
+    public interface onRecyclerItemClickerListener {
+        void onRecyclerItemClick(View view, String discoverType, Object data);
     }
 
     @Override
@@ -60,6 +77,9 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             case "ONLY_TEXT":
                 return 0;
             case "PHOTO":
+                if (this.data.get(position).getImages() == null) {
+                    return 0;
+                }
                 return this.data.get(position).getImageCount();
             case "VIDEO":
                 return 5;
@@ -104,27 +124,26 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
     public void onBindViewHolder(@NonNull DiscoverViewHolder holder, int position) {
         Discover discover = this.data.get(position);
 
-        holder.getAvatar().setImageResource(discover.getAvatarIcon());
-        holder.getNickname().setText(discover.getNickname());
-        holder.getPostText().setText(discover.getText());
-        holder.getPublishedTime().setText(discover.getPublishedTime());
+        initBasicView(holder, discover);
 
         // 设置图片或视频
         if (holder.imageCount < 5) {
-            ImageView[] images = holder.getImages();
-            //ArrayList<Bitmap> imagesId = discover.getImages();
-            //ArrayList<String> imagesUri = discover.getObjects();
+            ImageView[] imageViews = holder.getImages();
+            ArrayList<Bitmap> imageBitmaps = discover.getImages();
             for (int i = 0; i < holder.imageCount; i++) {
-                //images[i].setImageURI(Uri.parse("http://8.140.133.34:7262/" + imagesUri.get(i)));
-                //images[i].setImageBitmap(imagesId.get(i));
+                Bitmap bitmap = imageBitmaps.get(i);
+                imageViews[i].setImageBitmap(bitmap);
+                imageViews[i].setOnClickListener(getOnClickListener("PHOTO", bitmap));
             }
         } else {
             Log.d("VIDEO", "setUri");
             VideoView video = holder.getDiscoverVideo();
             String videoUrl = discover.getVideoUrl();
-            video.setVideoURI(Uri.parse("http://8.140.133.34:7262/" + videoUrl));
-            video.start();
-            //video.seekTo(100);
+            Uri videoUri = Uri.parse("http://8.140.133.34:7262/" + videoUrl);
+            video.setVideoURI(videoUri);
+            //video.start();
+            video.seekTo(100);
+            video.setOnClickListener(getOnClickListener("VIDEO", videoUri));
         }
 
         // 点赞按钮
@@ -195,14 +214,21 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             mParentParent.findViewById(R.id.newDiscoverButton).setVisibility(View.VISIBLE);
             this.mParent.findViewById(R.id.commentLayout).setVisibility(View.GONE);
         });
+    }
+
+    private void initBasicView(DiscoverViewHolder holder, Discover discover) {
+        holder.getAvatar().setImageResource(discover.getAvatarIcon());
+        holder.getNickname().setText(discover.getNickname());
+        holder.getPostText().setText(discover.getText());
+        holder.getPublishedTime().setText(discover.getPublishedTime());
 
         boolean hideThumb = false;
         boolean hideComments = false;
 
         // 处理点赞
-        if (this.data.get(position).getThumbUsers() != null && this.data.get(position).getThumbUsers().size() > 0) {
+        if (discover.getThumbUsers() != null && discover.getThumbUsers().size() > 0) {
             StringBuilder likeStr = new StringBuilder();
-            for (String likeUser : this.data.get(position).getThumbUsers()) {
+            for (String likeUser : discover.getThumbUsers()) {
                 likeStr.append(likeUser);
                 likeStr.append(", ");
                 if (likeUser.equals(mName)) {
@@ -219,8 +245,8 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         }
 
         // 为评论添加Adapter
-        if (this.data.get(position).getComments() != null && this.data.get(position).getComments().size() > 0) {
-            holder.getCommentsView().setAdapter(new CommentAdapter(this.data.get(position).getComments()));
+        if (discover.getComments() != null && discover.getComments().size() > 0) {
+            holder.getCommentsView().setAdapter(new CommentAdapter(discover.getComments()));
         }
         else {
             hideComments = true;
@@ -347,7 +373,5 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
             return commentsView;
         }
     }
-
-
 }
 
