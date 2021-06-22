@@ -3,12 +3,13 @@
     <!--数据库名称-->
     <dbname value="MyWeChatDb" />
     <!--数据库版本-->
-    <version value="7" />
+    <version value="8" />
 
     <!--映射模型-->
     <list>
         <mapping class="com.example.mywechat.model.FriendRecord" />
         <mapping class="com.example.mywechat.model.ChatRecord" />
         <mapping class="com.example.mywechat.model.UserInfo" />
+        <mapping class="com.example.mywechat.model.DialogRecord" />
     </list>
 </litepal>

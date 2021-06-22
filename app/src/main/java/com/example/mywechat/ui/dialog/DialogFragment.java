@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +18,33 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.App;
 import com.example.mywechat.R;
+import com.example.mywechat.model.ChatRecord;
+import com.example.mywechat.model.DialogRecord;
+import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.viewmodel.ChatSendViewModel;
+import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import org.jetbrains.annotations.NotNull;
+import org.litepal.LitePal;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 public class DialogFragment extends Fragment {
     private FragmentManager fm;
+    private ChatSendViewModel chatSendViewModel;
     private DialogAdapter dialogAdapter;
     private LinkedList<Dialog> data;
     private ListView listView;
+    private String username;
 
     public DialogFragment() {
         // Required empty public constructor
@@ -52,9 +67,13 @@ public class DialogFragment extends Fragment {
         listView = getView().findViewById(R.id.listview);
         Context context = getActivity();
 
+        username = ((App)getActivity().getApplication()).getUsername();
+        List<DialogRecord> dialogRecords = LitePal.findAll(DialogRecord.class);
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
         data = new LinkedList<>();
-        data.add(new Dialog("b", "b", R.drawable.avatar1, getString(R.string.sentence1), "2021/01/01"));
+        for (DialogRecord dialogRecord : dialogRecords) {
+            data.add(new Dialog(dialogRecord.getUniqueName(), dialogRecord.getNickName(), dialogRecord.getIconPath(), dialogRecord.getLastSpeak(), ""));
+        }
         dialogAdapter = new DialogAdapter(data, context);
         listView.setAdapter(dialogAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,7 +82,6 @@ public class DialogFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dialog dialog = (Dialog) dialogAdapter.getItem(position);
                 String nickname = dialog.getNickname();
-                int icon = dialog.getAvatarIcon();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("username", dialog.getUsername());
@@ -73,6 +91,29 @@ public class DialogFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        /*chatSendViewModel = new ViewModelProvider(this).get(ChatSendViewModel.class);
+        chatSendViewModel.getNewMsgLiveData().observe(getViewLifecycleOwner(), response ->{
+            if (response == null) return;
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String time = sdf.format(new Date().getTime());
+            if (response.component1() == 0) {
+                Log.d("DialogFragment", "Receive New Msg" + response.toString());
+                ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, response.getFrom()).findFirst(ChatRecord.class);
+                chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 0);
+                chatRecord2.save();
+                DialogRecord dialogRecord = LitePal.where("uniqueName = ?", response.getFrom()).findFirst(DialogRecord.class);
+                if (dialogRecord == null) {
+                    FriendRecord friendRecord = LitePal.where("friendName = ?", response.getFrom()).findFirst(FriendRecord.class);
+                    if (friendRecord != null)
+                        dialogRecord = new DialogRecord(friendRecord.getFriendName(), friendRecord.getNickName(),
+                                "0", friendRecord.getIconPath(), response.getMsg());
+                    else return;
+                }
+                dialogRecord.setLastSpeak(response.getMsg());
+                dialogRecord.save();
+            }
+        });*/
     }
 
     @Override
