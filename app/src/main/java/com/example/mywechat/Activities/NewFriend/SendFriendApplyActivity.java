@@ -37,6 +37,7 @@ public class SendFriendApplyActivity extends AppCompatActivity {
 
         backToNewFriendButton = findViewById(R.id.backToNewFriendButton);
         newFriendAvatar = findViewById(R.id.newFriendAvatar);
+        newFriendAvatar.setImageResource(R.drawable.avatar4);
         newFriendUserName = findViewById(R.id.newFriendNickName);
         addNewFriendButton = findViewById(R.id.addNewFriendButton);
 
