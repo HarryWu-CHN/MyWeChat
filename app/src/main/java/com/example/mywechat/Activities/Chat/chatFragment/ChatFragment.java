@@ -15,14 +15,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import android.widget.TextView;
 
 import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
+import com.example.mywechat.BuildConfig;
 import com.example.mywechat.FileUtil;
 import com.example.mywechat.R;
 import com.example.mywechat.api.ChatRecordBody;
@@ -59,6 +63,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -81,11 +86,14 @@ public class ChatFragment extends Fragment {
     private String sendTo;
     private int userIconId;
     private int sendToIconId;
+    private File curImageFile;
+    static String FILELOADPRE = "http://8.140.133.34:7262/";
 
     private ChatSendViewModel chatSendViewModel;
     private ActivityResultLauncher<Integer> launcherImg;
     private ActivityResultLauncher<Integer> launcherVideo;
-
+    private ActivityResultLauncher<Integer> launcherPicCapture;
+    private ActivityResultLauncher<Integer> launcherVidCapture;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -199,7 +207,7 @@ public class ChatFragment extends Fragment {
             if (response == null || !response.component1()) {
                 return;
             }
-            SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String time = sdf.format(response.component2());
             ChatBubble bubble = null;
             switch (response.getMsgType()) {
@@ -230,7 +238,7 @@ public class ChatFragment extends Fragment {
         chatSendViewModel.observeNewMsg();
         chatSendViewModel.getNewMsgLiveData().observe(requireActivity(), response -> {
             if (response == null) return;
-            SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String time = sdf.format(new Date().getTime());
             if (response.component1() == 0 && response.getFrom().equals(sendTo)) {
                 ChatBubble bubble = null;
@@ -241,6 +249,12 @@ public class ChatFragment extends Fragment {
                         break;
                     case "1":
                         getWebImg(time, response.getMsg(), R.drawable.avatar6, false);
+                        break;
+                    case "2":
+                        String path = FILELOADPRE + response.getMsg();
+                        bubble = new ChatBubble(time, path, sendToIconId, false, "2");
+                    case "3":
+                        bubble = new ChatBubble(time, response.getMsg(), sendToIconId, false, "3");
                         break;
                 }
             }
@@ -267,6 +281,21 @@ public class ChatFragment extends Fragment {
                 sendVideo(videoPath);
             }
         });
+        // 拍摄照片
+        launcherPicCapture = registerForActivityResult(new ResultContractCapture(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String result) {
+                if (result == null) return;
+                sendImg(result);
+            }
+        });
+        launcherVidCapture = registerForActivityResult(new ResultContractCapture(), new ActivityResultCallback<String>() {
+            @Override
+            public void onActivityResult(String result) {
+                if (result == null) return;
+                sendVideo(result);
+            }
+        });
         /* TODO
         videoView.requestFocus();
         videoView.start();
@@ -278,10 +307,13 @@ public class ChatFragment extends Fragment {
         @Override
         public Intent createIntent(@NonNull Context context, Integer requestCode) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            if (requestCode.equals(0)) {
-                intent.setType("image/*");
-            } else if (requestCode.equals(1)){
-                intent.setType("video/*");
+            switch (requestCode) {
+                case 0:
+                    intent.setType("image/*");
+                    break;
+                case 1:
+                    intent.setType("video/*");
+                    break;
             }
             return intent;
         }
@@ -294,13 +326,58 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    class ResultContractCapture extends ActivityResultContract<Integer, String> {
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, Integer requestCode) {
+            // 调用相机拍照
+            File dir = new File(Environment.getExternalStorageDirectory(),"pictures");
+            if (!dir.exists()) dir.mkdirs();
+            String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + "pictures" + File.separator + "MyWeChat";
+            dir = new File(storagePath);
+            if (!dir.exists()) dir.mkdirs();
+            String uuid = UUID.randomUUID().toString();
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);;
+            if (requestCode == 2) {
+                curImageFile = new File(dir, uuid + ".jpg");
+                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            } else if (requestCode == 3){
+                curImageFile = new File(dir, uuid + ".mp4");
+                intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            }
+            if (curImageFile.exists()) return null;
+            try {
+                curImageFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Uri photoUri = FileProvider.getUriForFile(
+                    requireActivity(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    curImageFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            return intent;
+        }
+
+        @Override
+        public String parseResult(int resultCode, @Nullable Intent intent) {
+            if (resultCode == RESULT_OK) {
+                Log.d("Take Photo", curImageFile.getAbsolutePath());
+                return curImageFile.getAbsolutePath();
+            }
+            return null;
+        }
+    }
+
     private void setDialog() {
         Dialog bottom_dialog = new Dialog(getActivity(), R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(getActivity()).inflate(
                 R.layout.bottom_dialog_chat, null);
         //初始化视图
-        root.findViewById(R.id.btn_take).setOnClickListener(v -> {
-
+        root.findViewById(R.id.btn_pic_capture).setOnClickListener(v -> {
+            launcherPicCapture.launch(2);
+            bottom_dialog.dismiss();
         });
         root.findViewById(R.id.btn_img).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -315,6 +392,10 @@ public class ChatFragment extends Fragment {
         root.findViewById(R.id.btn_location).setOnClickListener(v -> {
             sendLocation(textInputView.getText().toString());
             textInputView.setText("");
+            bottom_dialog.dismiss();
+        });
+        root.findViewById(R.id.btn_vid_capture).setOnClickListener(v -> {
+            launcherVidCapture.launch(3);
             bottom_dialog.dismiss();
         });
         bottom_dialog.setContentView(root);
