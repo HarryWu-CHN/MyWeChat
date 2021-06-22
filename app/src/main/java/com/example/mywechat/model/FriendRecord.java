@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendRecord extends LitePalSupport {
-    @Column(unique = true)
     private String friendName;
     private String nickName;
     private String iconPath;

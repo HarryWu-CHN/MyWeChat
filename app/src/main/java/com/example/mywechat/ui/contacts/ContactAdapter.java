@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.contacts;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mywechat.FriendActivity;
 import com.example.mywechat.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
@@ -47,7 +49,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         holder.getNickname().setText(contact.getNickName());
 
         holder.getItemView().setOnClickListener(v -> {
+            if (contact.getAvatarIcon() == null) {
+                return;
+            }
+
+            ByteArrayOutputStream iconBytes = new ByteArrayOutputStream();
+            contact.getAvatarIcon().compress(Bitmap.CompressFormat.JPEG, 100, iconBytes);
             Intent intent = new Intent(holder.getItemView().getContext(), FriendActivity.class);
+            intent.putExtra("userName", contact.getUserName());
+            intent.putExtra("nickName", contact.getNickName());
+            intent.putExtra("avatarBytes", iconBytes.toByteArray());
             holder.getItemView().getContext().startActivity(intent);
         });
     }
