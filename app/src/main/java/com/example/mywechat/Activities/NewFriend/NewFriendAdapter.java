@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
-import com.example.mywechat.ui.pickAdapter.ImagePickAdapter;
 
 import java.util.LinkedList;
 

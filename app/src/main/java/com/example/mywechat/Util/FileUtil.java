@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.Util;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -13,10 +13,12 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class FileUtil {
-    static public String getFilePath(Context context, Uri uri) {
+
+    public static String getFilePath(Context context, Uri uri) {
         String selection = null;
         String[] selectionArgs = null;
         // Uri is different in versions after KITKAT (Android 4.4), we need to
@@ -71,7 +73,7 @@ public class FileUtil {
         return null;
     }
 
-    static public String handleStorageImage(Context context, Intent data) {
+    public static String handleStorageImage(Context context, Intent data) {
         Uri uri = data.getData();
         String imagePath = getFilePath(context, uri);
 
@@ -81,19 +83,30 @@ public class FileUtil {
         return imagePath;
     }
 
-    static private boolean isExternalStorageDocument(Uri uri) {
+    private static boolean isExternalStorageDocument(Uri uri) {
         return"com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isDownloadsDocument(Uri uri) {
+    private static boolean isDownloadsDocument(Uri uri) {
         return"com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isMediaDocument(Uri uri) {
+    private static boolean isMediaDocument(Uri uri) {
         return"com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    static private boolean isGooglePhotosUri(Uri uri) {
+    private static boolean isGooglePhotosUri(Uri uri) {
         return"com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static byte[] Bitmap2Bytes(Bitmap bitmap){
+        if (bitmap == null) return null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    public static Bitmap BytesToBitmap(byte[] bis){
+        return BitmapFactory.decodeByteArray(bis, 0, bis.length);
     }
 }

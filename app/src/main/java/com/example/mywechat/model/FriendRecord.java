@@ -2,36 +2,36 @@ package com.example.mywechat.model;
 
 import android.util.Pair;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendRecord extends LitePalSupport {
-    private String userName;
-    private List<String> friendsName = new ArrayList<>();
-    private List<String> friendsIcon = new ArrayList<>();
+    @Column(unique = true)
+    private String friendName;
+    private String nickName;
+    private String iconPath;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setFriendsName(List<String> friendsName) {
-        this.friendsName = friendsName;
+    public FriendRecord(String friendName, String nickName) {
+        this.friendName = friendName;
+        this.nickName = nickName;
     }
 
-    public void setFriendsIcon(List<String> friendsIcon) {
-        this.friendsIcon = friendsIcon;
+    public String getFriendName() {
+        return friendName;
     }
 
-    public List<String> getFriendsName() {
-        return friendsName;
+    public void setFriendName(String friendName) {
+        this.friendName = friendName;
     }
 
-    public List<String> getFriendsIcon() {
-        return friendsIcon;
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 }

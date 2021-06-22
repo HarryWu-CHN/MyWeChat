@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.contacts;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -7,6 +8,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,18 +29,28 @@ import com.example.mywechat.Activities.NewFriend.FriendApplyActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.ui.Group.GroupActivity;
+import com.example.mywechat.viewmodel.NewFriendViewModel;
+import com.example.mywechat.Util.FileUtil;
 
-import org.litepal.LitePal;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ContactFragment extends Fragment {
 
     private Button friendApplyButton;
+    private Button myGroupButton;
     private RecyclerView recyclerView;
+    private NewFriendViewModel NfViewModel;
+    private String username;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -61,35 +76,57 @@ public class ContactFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         showActionBar(view);
+        username = ((App) requireActivity().getApplication()).getUsername();
+        NfViewModel = new ViewModelProvider(this)
+                .get(NewFriendViewModel.class);
 
         friendApplyButton = view.findViewById(R.id.friendApplyButton);
         friendApplyButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), FriendApplyActivity.class);
             startActivity(intent);
         });
-        App app = (App) getActivity().getApplication();
-        FriendRecord friendRecord = LitePal.where("userName = ?", app.getUsername()).find(FriendRecord.class).get(0);
 
-        // 添加数据，为recyclerView绑定Adapter, LayoutManager
-        // 添加数据的样例代码如下:
-        LinkedList<Contact> contacts = new LinkedList<>();
-        List<String> friendsName = friendRecord.getFriendsName();
-        List<String> friendsIcon = friendRecord.getFriendsIcon();
-        for (int i=0; i<friendsName.size(); i++){
-            try {
-                FileInputStream fis = new FileInputStream(friendsIcon.get(i));
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-                contacts.add(new Contact(friendsName.get(i), bitmap));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        // 测试
+        myGroupButton = view.findViewById(R.id.myGroupButton);
+        myGroupButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), GroupActivity.class);
+            startActivity(intent);
+        });
+
         // 设置LayoutManager及Adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.contacts_recyclerview);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new ContactAdapter(contacts));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+        NfViewModel.contactGet();
+        NfViewModel.getContactsData().observe(getViewLifecycleOwner(), response -> {
+            if (response == null) {
+                return;
+            }
+            List<String> friendNames = response.component1();
+            List<String> friendIcons = response.component3();
+            getIcons(friendNames, friendIcons);
+        });
+
+        //App app = (App) getActivity().getApplication();
+        //List<FriendRecord> tmpList = LitePal.where("userName = ?", app.getUsername()).find(FriendRecord.class);
+        //FriendRecord friendRecord = null;
+
+//        if (friendRecord != null) {
+//            LinkedList<Contact> contacts = new LinkedList<>();
+//            List<String> friendsName = friendRecord.getFriendsName();
+//            List<String> friendsIcon = friendRecord.getFriendsIcon();
+//            for (int i = 0; i < friendsName.size(); i++) {
+//                try {
+//                    FileInputStream fis = new FileInputStream(friendsIcon.get(i));
+//                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+//                    contacts.add(new Contact(friendsName.get(i), bitmap));
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -105,6 +142,59 @@ public class ContactFragment extends Fragment {
             context = ((ContextWrapper) context).getBaseContext();
         }
         ((AppCompatActivity) context).getSupportActionBar().show();
+    }
+
+    private Handler handler = new Handler(Looper.myLooper()) {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                LinkedList<Contact> contacts = (LinkedList<Contact>) msg.obj;
+                recyclerView.setAdapter(new ContactAdapter(contacts));
+            }
+        }
+    };
+
+    public void getIcons(final List<String> friendNames, final List<String> usericon) {
+        //开启一个线程用于联网
+        new Thread(() -> {
+            List<Bitmap> bitmaps = new ArrayList<>();
+            LinkedList<Contact> contacts = new LinkedList<>();
+            int arg1 = 0;
+            for (String path : usericon) {
+                path = "http://8.140.133.34:7262/" + path;
+                try {
+                    //通过HTTP请求下载图片
+                    URL url = new URL(path);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        InputStream inputStream = connection.getInputStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        bitmaps.add(bitmap);
+                        inputStream.close();
+                    } else {
+                        arg1 = 1;
+                        bitmaps.add(null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    bitmaps.add(null);
+                    arg1 = 2;
+                }
+            }
+            for (int i=0; i<friendNames.size(); i++) {
+                contacts.add(new Contact(friendNames.get(i), bitmaps.get(i)));
+            }
+            Message msg = new Message();
+            msg.what = 0;
+            msg.arg1 = arg1;
+            msg.obj = contacts;
+            handler.sendMessage(msg);
+        }).start();
     }
 
     /** TODO 保存bitmap到外部存储的方法法

@@ -33,6 +33,8 @@ import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.api.UserGetResponse;
 import com.example.mywechat.viewmodel.InfoViewModel;
+import com.example.mywechat.viewmodel.InfoViewModel;
+import com.example.mywechat.R;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 
 import java.io.File;
@@ -70,25 +72,17 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void setInfoView() {
+        // TODO: 新增一个按钮，点击后才发送个人信息的修改
+
         setContentView(R.layout.activity_user_info);
 
         backButton = findViewById(R.id.backButton);
         avatarButton = findViewById(R.id.avatarButton);
         nickNameButton = findViewById(R.id.nickNameButton);
-        passwordButton = findViewById(R.id.passwordButton);
         myAvatar = findViewById(R.id.avatarThumbnail);
         testImageView = findViewById(R.id.testImageView);
         myNickName = findViewById(R.id.editMyNickName);
         myUserName = findViewById(R.id.myUserName);
-
-//        App app = (App) this.getApplication();
-//        userNameText = app.getUsername();
-//        myUserName.setText(userNameText);
-//
-//        infoViewModel.userGet(userNameText);
-//        infoViewModel.getUserInfoLiveData().observe(this, response -> {
-//            myNickName.setText();
-//        });
 
         initInfoButtons();
     }
@@ -119,45 +113,6 @@ public class InfoActivity extends AppCompatActivity {
         nickNameButton.setOnClickListener(v -> {
             setNickNameView();
         });
-
-        passwordButton.setOnClickListener(v -> {
-            setPasswordView();
-        });
-    }
-
-    private void setPasswordView() {
-        setContentView(R.layout.fragment_edit_password);
-
-        ImageButton backToInfoButton_p = findViewById(R.id.backToInfoButton_p);
-        Button savePasswordButton = findViewById(R.id.savePasswordButton);
-        EditText oldPasswordText = findViewById(R.id.oldPasswordText);
-        EditText newPasswordText = findViewById(R.id.newPasswordText);
-
-        backToInfoButton_p.setOnClickListener(v -> {
-            setInfoView();
-        });
-
-        savePasswordButton.setOnClickListener(v -> {
-            infoViewModel.callPasswordEdit(oldPasswordText.getText().toString(), newPasswordText.getText().toString());
-            infoViewModel.getPasswordEditResult().observe(this, response -> {
-                if (response != null)
-                {
-                    if (!response) {
-                        Log.d("修改密码失败",response.toString()+"a");
-                        Toast toast1 = Toast.makeText(this, "修改密码失败", Toast.LENGTH_SHORT);
-                        toast1.show();
-                    } else if (response) {
-                        Log.d("修改密码成功",response.toString());
-                        setInfoView();
-                        Toast toast2 = Toast.makeText(this, "成功修改密码", Toast.LENGTH_SHORT);
-                        toast2.show();
-                    }
-                }
-
-            });
-        });
-
-
     }
 
     private void setNickNameView() {
@@ -174,6 +129,8 @@ public class InfoActivity extends AppCompatActivity {
         saveNickNameButton.setOnClickListener(v -> {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
+
+            // TODO: 这里保存昵称修改之后直接就发送请求了，重写逻辑
             infoViewModel.callUserEdit(myNickName.getText().toString(), null);
             Toast toast=Toast.makeText(getApplicationContext(), "开始修改密码", Toast.LENGTH_SHORT);
             toast.show();
@@ -191,6 +148,8 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         testImageView.setImageBitmap(bitmap);
+
+        // TODO: 这里更新图片之后直接就往后端发请求了，重写一下逻辑
         File file = new File(imagePath);
         infoViewModel.callUserEdit(null, file);
     }

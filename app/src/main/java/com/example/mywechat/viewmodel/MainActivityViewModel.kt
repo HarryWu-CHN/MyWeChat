@@ -25,7 +25,7 @@ class MainActivityViewModel @Inject constructor(
     fun observeNewFriendApply() {
         viewModelScope.launch(Dispatchers.IO) {
             wsRepository.newFriendApply().consumeEach {
-                Log.d("test3", it.toString())
+                Log.d("ViewModel", "New Friend Apply$it")
                 newFriendApply.postValue(it)
             }
         }

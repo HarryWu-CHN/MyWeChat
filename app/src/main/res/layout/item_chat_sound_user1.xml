@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <!-- 发送时间 -->
+    <TextView
+        android:id="@+id/chatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:padding="3dp"
+        android:text="2016年9月13日10:55:58"
+        android:textColor="#7C7A7A"
+        android:textSize="12sp" />
+    <!-- 文字内容 -->
+    <TextView
+        android:id="@+id/chatContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/chatIcon"
+        android:layout_marginTop="-5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/chatIcon"
+        android:background="@drawable/bubble_bg1"
+        android:drawableEnd="@drawable/icon_sound"
+        android:gravity="center"
+        android:maxWidth="280dp"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:text="11'"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/chatIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/chatTime"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/avatar3" />
+
+</RelativeLayout>

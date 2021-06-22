@@ -6,6 +6,12 @@ import javax.inject.Inject
 class FriendRepository @Inject constructor(
         private val apiService: ApiService
 ) {
+    suspend fun contactGet (
+
+    ) = apiService.contactGet(
+
+    )
+
     suspend fun contactFind (
             userToFind : String,
     ) = apiService.contactFind(
@@ -33,10 +39,10 @@ class FriendRepository @Inject constructor(
     )
 
     suspend fun contactWaited (
-
+        username: String
     ) = apiService.contactWaited(
             ContactWaitedText(
-                    username = "yang",
+                    username = username,
             )
     )
 }
