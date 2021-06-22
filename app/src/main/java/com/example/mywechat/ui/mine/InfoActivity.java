@@ -205,7 +205,6 @@ public class InfoActivity extends AppCompatActivity {
         // 展示图片选择
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
-        testImageView.setImageBitmap(bitmap);
         File file = new File(imagePath);
         infoViewModel.callUserEdit(null, file);
     }
