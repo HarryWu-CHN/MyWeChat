@@ -32,10 +32,13 @@ import com.example.mywechat.Activities.Chat.ChatActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.api.UserGetResponse;
+import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.viewmodel.InfoViewModel;
 import com.example.mywechat.viewmodel.InfoViewModel;
 import com.example.mywechat.R;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
+
+import org.litepal.LitePal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,8 +75,6 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void setInfoView() {
-        // TODO: 新增一个按钮，点击后才发送个人信息的修改
-
         setContentView(R.layout.activity_user_info);
 
         backButton = findViewById(R.id.backButton);
@@ -83,6 +84,14 @@ public class InfoActivity extends AppCompatActivity {
         testImageView = findViewById(R.id.testImageView);
         myNickName = findViewById(R.id.editMyNickName);
         myUserName = findViewById(R.id.myUserName);
+
+        userNameText = ((App)getApplication()).getUsername();
+
+        UserInfo userInfo = LitePal.where("username = ?", userNameText).findFirst(UserInfo.class);
+        myNickName.setText(userInfo.getNickName());
+        myUserName.setText(userNameText);
+        myAvatar.setImageBitmap(BitmapFactory.decodeFile(userInfo.getUserIcon()));
+
 
         initInfoButtons();
     }
@@ -129,8 +138,6 @@ public class InfoActivity extends AppCompatActivity {
         saveNickNameButton.setOnClickListener(v -> {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
-
-            // TODO: 这里保存昵称修改之后直接就发送请求了，重写逻辑
             infoViewModel.callUserEdit(myNickName.getText().toString(), null);
             Toast toast=Toast.makeText(getApplicationContext(), "开始修改密码", Toast.LENGTH_SHORT);
             toast.show();
@@ -148,8 +155,6 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         testImageView.setImageBitmap(bitmap);
-
-        // TODO: 这里更新图片之后直接就往后端发请求了，重写一下逻辑
         File file = new File(imagePath);
         infoViewModel.callUserEdit(null, file);
     }
