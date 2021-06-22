@@ -3,9 +3,7 @@ package com.example.mywechat.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mywechat.api.BooleanResponse
-import com.example.mywechat.api.ChatRecordGetResponse
-import com.example.mywechat.api.ChatSendResponse
+import com.example.mywechat.api.*
 import com.example.mywechat.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +22,9 @@ class GroupViewModel @Inject constructor(
         private val groupRepository: GroupRepository
 ) : ViewModel() {
     val createResLiveData = MutableLiveData<BooleanResponse?>(null)
+    val groupsData = MutableLiveData<GetGroupsResponse?>(null)
+    val groupMembers = MutableLiveData<GetGroupMemberResponse?>(null)
+
     fun groupCreate(groupName : String?, membersName : List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -34,6 +35,29 @@ class GroupViewModel @Inject constructor(
             }
         }
     }
+
+    fun getGroups() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.getGroups()
+                groupsData.postValue(response)
+            } catch (ignored : IOException) {
+                // ignored
+            }
+        }
+    }
+
+    fun getMembers(groupId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.getGroupMembers(groupId)
+                groupMembers.postValue(response)
+            } catch (ignored : IOException) {
+                // ignored
+            }
+        }
+    }
+
     val groupSendLiveData = MutableLiveData<ChatSendResponse?>(null)
     fun groupSend(groupId: String, msg: String?, msgType: String, file: File?) {
         viewModelScope.launch(Dispatchers.IO) {

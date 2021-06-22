@@ -34,6 +34,7 @@ import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.ui.Group.GroupActivity;
+import com.example.mywechat.ui.Group.MyGroupsActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.example.mywechat.Util.FileUtil;
 
@@ -57,7 +58,7 @@ public class ContactFragment extends Fragment {
     private String username;
 
     private Button friendApplyButton;
-    private Button myGroupButton;
+    private Button myGroupsButton;
 
     private LinkedList<Contact> contacts;
     private ContactAdapter adapter;
@@ -99,10 +100,9 @@ public class ContactFragment extends Fragment {
             startActivity(intent);
         });
 
-        // 测试
-        myGroupButton = view.findViewById(R.id.myGroupButton);
-        myGroupButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), GroupActivity.class);
+        myGroupsButton = view.findViewById(R.id.myGroupButton);
+        myGroupsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MyGroupsActivity.class);
             startActivity(intent);
         });
 

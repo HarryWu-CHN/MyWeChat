@@ -49,6 +49,12 @@ interface ApiService {
     @POST("group/create")
     suspend fun groupCreate(@Body request: GroupCreateRequest) : BooleanResponse
 
+    @POST("group")
+    suspend fun getGroups() : GetGroupsResponse
+
+    @POST("group/member")
+    suspend fun getGroupMembers(@Body request : GetGroupMemberRequest) : GetGroupMemberResponse
+
     @POST("group/send")
     suspend fun groupSend(@Part("groupId") groupId: RequestBody,
                           @Part("msg") msg: RequestBody?,
@@ -265,6 +271,25 @@ data class GroupDelRequest(
 @JsonClass(generateAdapter = true)
 data class DiscoverRequest(
         val lastUpdateTime : Long,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupsResponse(
+        val groupIds : List<String>?,
+        val groupNames : List<String>?,
+        val creatorIcons : List<String>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupMemberRequest(
+        val groupId: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupMemberResponse(
+        val memberUsernames: List<String>,
+        val memberNicknames: List<String>,
+        val memberIcons: List<String>,
 )
 
 @JsonClass(generateAdapter = true)
