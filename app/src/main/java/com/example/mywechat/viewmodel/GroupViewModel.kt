@@ -3,13 +3,14 @@ package com.example.mywechat.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mywechat.api.BooleanResponse
+import com.example.mywechat.api.*
 import com.example.mywechat.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -21,11 +22,66 @@ class GroupViewModel @Inject constructor(
         private val groupRepository: GroupRepository
 ) : ViewModel() {
     val createResLiveData = MutableLiveData<BooleanResponse?>(null)
+    val groupsData = MutableLiveData<GetGroupsResponse?>(null)
+    val groupMembers = MutableLiveData<GetGroupMemberResponse?>(null)
+
     fun groupCreate(groupName : String?, membersName : List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = groupRepository.groupCreate(groupName, membersName)
                 createResLiveData.postValue(response)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
+            }
+        }
+    }
+
+    fun getGroups() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.getGroups()
+                groupsData.postValue(response)
+            } catch (ignored : IOException) {
+                // ignored
+            }
+        }
+    }
+
+    fun getMembers(groupId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.getGroupMembers(groupId)
+                groupMembers.postValue(response)
+            } catch (ignored : IOException) {
+                // ignored
+            }
+        }
+    }
+
+    val groupSendLiveData = MutableLiveData<ChatSendResponse?>(null)
+    fun groupSend(groupId: String, msgType: String, msg: String?,  file: File?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.groupSend(groupId, msg, msgType, file)
+                val chatSendResponse = ChatSendResponse (
+                        response.component1(),
+                        response.component2(),
+                        msgType,
+                        msg,
+                        file
+                )
+                groupSendLiveData.postValue(chatSendResponse)
+            } catch (ignored : IOException){
+                ignored.printStackTrace();
+            }
+        }
+    }
+    val groupRecordLiveData = MutableLiveData<ChatRecordGetResponse?>(null)
+    fun groupRecord(groupId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = groupRepository.groupRecord(groupId)
+                groupRecordLiveData.postValue(response)
             } catch (ignored : IOException){
                 ignored.printStackTrace()
             }

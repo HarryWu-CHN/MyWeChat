@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun jumpToUser(username: String, password: String) {
+        (application as App).username = username
         val intent: Intent = Intent(this, UserActivity::class.java)
         intent.putExtra("username", username)
         intent.putExtra("password", password)

@@ -43,7 +43,10 @@ class WSRepository @Inject constructor(
         val it = myWeChatService.observeNewMessage()
         Log.d("Repository", "New message$it")
         return it
+    }
 
+    fun newGroupMessage() : ReceiveChannel<Array<NewGroupMessage>> {
+        return myWeChatService.observeNewGroupMsg()
     }
 
     fun newFriendApply() : ReceiveChannel<Array<NewFriendApply>> {

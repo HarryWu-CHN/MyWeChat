@@ -35,6 +35,9 @@ interface MyWeChatService {
     @Receive
     fun observeNewDiscover(): ReceiveChannel<NewDiscover>
 
+    @Receive
+    fun observeNewGroupMsg(): ReceiveChannel<Array<NewGroupMessage>>
+
 }
 
 @JsonClass(generateAdapter = true)
@@ -75,6 +78,16 @@ data class NewMessage(
         val infoType: Int,
         val msg: String,
         val msgType: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class NewGroupMessage(
+        val from: String,
+        val groupName: String,
+        val infoType: Int,
+        val msg: String,
+        val msgType: String,
+        val senderName: String
 )
 
 

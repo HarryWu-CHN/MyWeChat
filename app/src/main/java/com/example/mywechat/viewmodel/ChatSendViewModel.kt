@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mywechat.api.ChatRecordGetResponse
 import com.example.mywechat.api.ChatSendResponse
 import com.example.mywechat.repository.ChatRepository
+import com.example.mywechat.repository.NewGroupMessage
 import com.example.mywechat.repository.NewMessage
 import com.example.mywechat.repository.WSRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ class ChatSendViewModel @Inject constructor(
         init {
         viewModelScope.launch {
             observeNewMsg()
+            observeNewGroupMsg()
         }
     }
     val liveData = MutableLiveData<ChatSendResponse?>(null)
@@ -61,6 +63,17 @@ class ChatSendViewModel @Inject constructor(
             }
         }
     }
+    val newGroupMsgLiveData =  MutableLiveData<NewGroupMessage?>(null)
+    private fun observeNewGroupMsg() {
+        viewModelScope.launch(Dispatchers.IO) {
+            wsRepository.newGroupMessage().consumeEach {
+                Log.d("new message", it.toString())
+                for (newMsg in it) {
+                    newGroupMsgLiveData.postValue(newMsg)
+                }
+            }
+        }
+    }
     val chatGetLiveDate = MutableLiveData<ChatRecordGetResponse?>(null)
     fun chatRecordGet(sendTo: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -68,7 +81,25 @@ class ChatSendViewModel @Inject constructor(
                 val response = chatRepository.chatRecordGet(sendTo)
                 chatGetLiveDate.postValue(response)
             } catch (ignored : IOException){
-                chatGetLiveDate.postValue(null)
+                ignored.printStackTrace()
+            }
+        }
+    }
+    fun chatDelete(sendTo: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = chatRepository.chatDelete(sendTo)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
+            }
+        }
+    }
+    fun contactDelete(sendTo: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = chatRepository.contactDelete(sendTo)
+            } catch (ignored : IOException){
+                ignored.printStackTrace()
             }
         }
     }

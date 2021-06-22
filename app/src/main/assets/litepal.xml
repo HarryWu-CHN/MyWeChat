@@ -10,5 +10,6 @@
         <mapping class="com.example.mywechat.model.FriendRecord" />
         <mapping class="com.example.mywechat.model.ChatRecord" />
         <mapping class="com.example.mywechat.model.UserInfo" />
+        <mapping class="com.example.mywechat.model.DialogRecord" />
     </list>
 </litepal>

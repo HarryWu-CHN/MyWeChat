@@ -45,9 +45,28 @@ interface ApiService {
     @POST("contact/waited")
     suspend fun contactWaited(@Body request: ContactWaitedText) : ContactFindResponse
 
+    @POST("contact/delete")
+    suspend fun contactDelete(@Body request: ChatRecordGetRequest) : BooleanResponse
+
     //群聊相关
     @POST("group/create")
     suspend fun groupCreate(@Body request: GroupCreateRequest) : BooleanResponse
+
+    @POST("group")
+    suspend fun getGroups() : GetGroupsResponse
+
+    @POST("group/member")
+    suspend fun getGroupMembers(@Body request : GetGroupMemberRequest) : GetGroupMemberResponse
+
+    @Multipart
+    @POST("group/send")
+    suspend fun groupSend(@Part("groupId") groupId: RequestBody,
+                          @Part("msg") msg: RequestBody?,
+                          @Part("msgType") msgType: RequestBody,
+                          @Part file: MultipartBody.Part?) : BooleanResponse
+
+    @POST("group/record")
+    suspend fun groupRecord(@Body request: GroupRecordRequest) : ChatRecordGetResponse
 
     @POST("group/edit")
     suspend fun groupEdit(@Body request: GroupEditRequest) : BooleanResponse
@@ -77,6 +96,9 @@ interface ApiService {
 
     @POST("chat")
     suspend fun chatRecordGet(@Body request : ChatRecordGetRequest) : ChatRecordGetResponse
+
+    @POST("chat/delete")
+    suspend fun chatDelete(@Body request : ChatDeleteRequest) : BooleanResponse
 
     @Multipart
     @POST("discover/post")
@@ -192,6 +214,10 @@ data class ChatSendResponse(
 data class ChatRecordGetRequest(
         val sendTo: String
 )
+@JsonClass(generateAdapter = true)
+data class GroupRecordRequest(
+        val groupId: String
+)
 
 @JsonClass(generateAdapter = true)
 data class ChatRecordGetResponse(
@@ -206,6 +232,11 @@ data class ChatRecordBody(
         val read: Boolean,
         val senderName: String,
         val time: String
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatDeleteRequest(
+        val sendTo: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -252,6 +283,25 @@ data class GroupDelRequest(
 @JsonClass(generateAdapter = true)
 data class DiscoverRequest(
         val lastUpdateTime : Long,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupsResponse(
+        val groupIds : List<String>?,
+        val groupNames : List<String>?,
+        val creatorIcons : List<String>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupMemberRequest(
+        val groupId: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class GetGroupMemberResponse(
+        val memberUsernames: List<String>,
+        val memberNicknames: List<String>,
+        val memberIcons: List<String>,
 )
 
 @JsonClass(generateAdapter = true)

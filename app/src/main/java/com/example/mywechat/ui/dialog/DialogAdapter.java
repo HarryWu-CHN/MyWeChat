@@ -2,6 +2,8 @@ package com.example.mywechat.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.mywechat.Activities.Chat.chatFragment.ChatBubble;
 import com.example.mywechat.R;
 
 import java.util.LinkedList;
@@ -39,6 +42,20 @@ public class DialogAdapter extends BaseAdapter {
         return 0;
     }
 
+    public void addData(Dialog dialog) {
+        data.add(dialog);
+        notifyDataSetChanged();
+    }
+
+    public void updateData(String username, String lastSpeak) {
+        for (int i=0; i<data.size(); i++) {
+            if (!username.equals(data.get(i).getUsername())) continue;
+            data.get(i).setLastSpeak(lastSpeak);
+            break;
+        }
+        notifyDataSetChanged();
+    }
+
     @SuppressLint("ViewHolder")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -52,7 +69,8 @@ public class DialogAdapter extends BaseAdapter {
         TextView nicknameView = convertView.findViewById(R.id.nickname_text);
         nicknameView.setText(chat.getNickname());
         ImageView avatarIconView = convertView.findViewById(R.id.avatar_icon);
-        avatarIconView.setImageResource(chat.getAvatarIcon());
+        Bitmap bitmap = BitmapFactory.decodeFile(chat.getIconPath());
+        avatarIconView.setImageBitmap(bitmap);
         TextView lastSpeakView = convertView.findViewById(R.id.last_speak_text);
         lastSpeakView.setText(chat.getLastSpeak());
         TextView lastSpeakTimeView = convertView.findViewById(R.id.last_speak_time_text);

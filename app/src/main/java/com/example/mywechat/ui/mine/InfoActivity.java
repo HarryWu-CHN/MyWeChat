@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.mine;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -59,19 +60,32 @@ public class InfoActivity extends AppCompatActivity {
     private TextView myNickName;
     private TextView myUserName;
     private InfoViewModel infoViewModel;
-    private String userNameText;
     SharedPreferences sharedPreferences;
+
+    private String userName;
+    private String nickName;
+    private Bitmap avatar;
+
+    private Toast resultToast;
 
     private static final int PHOTO = 1;
     private static final int ALBUM = 2;
 
+    @SuppressLint("ShowToast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
+        nickName = intent.getStringExtra("nickName");
+        byte[] avatarBytes = intent.getByteArrayExtra("avatarBytes");
+        avatar = BitmapFactory.decodeByteArray(avatarBytes, 0, avatarBytes.length);
+
+        resultToast = Toast.makeText(this, "成功修改密码", Toast.LENGTH_SHORT);
         setInfoView();
         infoViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
-
     }
 
     private void setInfoView() {
@@ -86,16 +100,9 @@ public class InfoActivity extends AppCompatActivity {
         myNickName = findViewById(R.id.editMyNickName);
         myUserName = findViewById(R.id.myUserName);
 
-        userNameText = ((App)getApplication()).getUsername();
-
-        UserInfo userInfo = LitePal.where("username = ?", userNameText).findFirst(UserInfo.class);
-        if (userInfo == null){
-            Log.d("empty userInfo", "nothing");
-        }
-        myNickName.setText(userInfo.getNickName());
-        myUserName.setText(userNameText);
-        myAvatar.setImageBitmap(BitmapFactory.decodeFile(userInfo.getUserIcon()));
-
+        myUserName.setText(userName);
+        myNickName.setText(nickName);
+        myAvatar.setImageBitmap(avatar);
 
         initInfoButtons();
     }
@@ -150,14 +157,14 @@ public class InfoActivity extends AppCompatActivity {
                 {
                     if (!response) {
                         Log.d("修改密码失败",response.toString()+"a");
-//                        Toast toast1 = Toast.makeText(this, "修改密码失败", Toast.LENGTH_SHORT);
-//                        toast1.show();
+                        resultToast.setText("修改密码失败");
+                        resultToast.show();
                     } else if (response) {
                         Log.d("修改密码成功",response.toString());
                         infoViewModel.getPasswordEditResult().setValue(null);
                         setInfoView();
-//                        Toast toast2 = Toast.makeText(this, "成功修改密码", Toast.LENGTH_SHORT);
-//                        toast2.show();
+                        resultToast.setText("成功修改密码");
+                        resultToast.show();
                     }
                 }
 
@@ -173,6 +180,7 @@ public class InfoActivity extends AppCompatActivity {
         ImageButton backToInfoButton = findViewById(R.id.backToInfoButton);
         Button saveNickNameButton = findViewById(R.id.saveNickNameButton);
         EditText newNickNameText = findViewById(R.id.newNickNameText);
+        newNickNameText.setText(nickName);
 
         backToInfoButton.setOnClickListener(v -> {
             setInfoView();

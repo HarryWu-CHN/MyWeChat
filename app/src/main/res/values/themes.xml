@@ -15,11 +15,23 @@
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
         <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
+
     <style name="OverflowMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>
         <item name="android:popupBackground">@color/CLOUDS</item>
     </style>
+
     <style name="OverflowButtonStyle" parent="Base.Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/icon_plus_round</item>
+        <item name="android:scaleType">centerInside</item>
     </style>
+
+    <style name="Theme.MyWeChat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MyWeChat.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MyWeChat.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

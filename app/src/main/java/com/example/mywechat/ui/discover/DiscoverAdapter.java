@@ -168,7 +168,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 holder.getLikeButton().setImageResource(R.drawable.icon_like_blue);
                 discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "0");
             } else {
-                holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
+                holder.getLikeButton().setImageResource(R.drawable.icon_like_red);
                 discoverViewModel.thumb(this.data.get(position).getDiscoverId(), "1");
             }
         });
@@ -244,7 +244,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
                 likeStr.append(likeUser);
                 likeStr.append(", ");
                 if (likeUser.equals(mName)) {
-                    holder.getLikeButton().setImageResource(R.drawable.icon_lick_red);
+                    holder.getLikeButton().setImageResource(R.drawable.icon_like_red);
                 }
             }
             likeStr.delete(likeStr.length() - 2, likeStr.length());

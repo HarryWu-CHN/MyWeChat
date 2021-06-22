@@ -68,7 +68,7 @@ public class UserActivity extends AppCompatActivity {
 
         username = getIntent().getStringExtra("username");
         password = getIntent().getStringExtra("password");
-        ((App) getApplication()).setUsername(username);
+//        ((App) getApplication()).setUsername(username);
 
         userInfoViewModel = new ViewModelProvider(this).get(UserInfoViewModel.class);
 
@@ -106,7 +106,7 @@ public class UserActivity extends AppCompatActivity {
             UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
             if (userInfo == null) userInfo = new UserInfo(username);
             userInfo.setFriendNames(friendNames);
-            userInfo.saveOrUpdate();
+            userInfo.save();
         });
     }
 
@@ -143,6 +143,7 @@ public class UserActivity extends AppCompatActivity {
                 break;
             case R.id.newGroupItem:
                 intent = new Intent(this, NewGroupActivity.class);
+                intent.putExtra("type", "create");
                 startActivity(intent);
                 break;
         }
