@@ -80,6 +80,7 @@ public class InfoActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         avatarButton = findViewById(R.id.avatarButton);
         nickNameButton = findViewById(R.id.nickNameButton);
+        passwordButton = findViewById(R.id.passwordButton);
         myAvatar = findViewById(R.id.avatarThumbnail);
         testImageView = findViewById(R.id.testImageView);
         myNickName = findViewById(R.id.editMyNickName);
@@ -88,6 +89,9 @@ public class InfoActivity extends AppCompatActivity {
         userNameText = ((App)getApplication()).getUsername();
 
         UserInfo userInfo = LitePal.where("username = ?", userNameText).findFirst(UserInfo.class);
+        if (userInfo == null){
+            Log.d("empty userInfo", "nothing");
+        }
         myNickName.setText(userInfo.getNickName());
         myUserName.setText(userNameText);
         myAvatar.setImageBitmap(BitmapFactory.decodeFile(userInfo.getUserIcon()));
@@ -122,6 +126,45 @@ public class InfoActivity extends AppCompatActivity {
         nickNameButton.setOnClickListener(v -> {
             setNickNameView();
         });
+
+        passwordButton.setOnClickListener(v -> {
+            setPasswordView();
+        });
+    }
+    private void setPasswordView() {
+        setContentView(R.layout.fragment_edit_password);
+
+        ImageButton backToInfoButton_p = findViewById(R.id.backToInfoButton_p);
+        Button savePasswordButton = findViewById(R.id.savePasswordButton);
+        EditText oldPasswordText = findViewById(R.id.oldPasswordText);
+        EditText newPasswordText = findViewById(R.id.newPasswordText);
+
+        backToInfoButton_p.setOnClickListener(v -> {
+            setInfoView();
+        });
+
+        savePasswordButton.setOnClickListener(v -> {
+            infoViewModel.callPasswordEdit(oldPasswordText.getText().toString(), newPasswordText.getText().toString());
+            infoViewModel.getPasswordEditResult().observe(this, response -> {
+                if (response != null)
+                {
+                    if (!response) {
+                        Log.d("修改密码失败",response.toString()+"a");
+//                        Toast toast1 = Toast.makeText(this, "修改密码失败", Toast.LENGTH_SHORT);
+//                        toast1.show();
+                    } else if (response) {
+                        Log.d("修改密码成功",response.toString());
+                        infoViewModel.getPasswordEditResult().setValue(null);
+                        setInfoView();
+//                        Toast toast2 = Toast.makeText(this, "成功修改密码", Toast.LENGTH_SHORT);
+//                        toast2.show();
+                    }
+                }
+
+            });
+        });
+
+
     }
 
     private void setNickNameView() {
@@ -139,7 +182,7 @@ public class InfoActivity extends AppCompatActivity {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
             infoViewModel.callUserEdit(myNickName.getText().toString(), null);
-            Toast toast=Toast.makeText(getApplicationContext(), "开始修改密码", Toast.LENGTH_SHORT);
+            Toast toast=Toast.makeText(getApplicationContext(), "修改昵称成功", Toast.LENGTH_SHORT);
             toast.show();
         });
         
