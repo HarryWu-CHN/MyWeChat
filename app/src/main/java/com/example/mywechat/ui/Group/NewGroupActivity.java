@@ -1,5 +1,6 @@
 package com.example.mywechat.ui.Group;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -48,6 +49,8 @@ public class NewGroupActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_new_group);
 
+        Intent intent = getIntent();
+
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
         username = ((App)getApplication()).getUsername();
 
@@ -65,7 +68,16 @@ public class NewGroupActivity extends AppCompatActivity {
                     inviteList.add(contacts.get(i).getUserName());
                 }
             }
-            groupViewModel.groupCreate(null, inviteList);
+            switch (intent.getStringExtra("type")) {
+                case "create":
+                    groupViewModel.groupCreate(null, inviteList);
+                    break;
+                case "invite":
+                    for (String userName : inviteList) {
+                        groupViewModel.groupAdd(intent.getStringExtra("id"), userName);
+                    }
+                    break;
+            }
             finish();
         });
 

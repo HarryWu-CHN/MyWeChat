@@ -137,6 +137,7 @@ public class UserActivity extends AppCompatActivity {
                 break;
             case R.id.newGroupItem:
                 intent = new Intent(this, NewGroupActivity.class);
+                intent.putExtra("type", "create");
                 startActivity(intent);
                 break;
         }

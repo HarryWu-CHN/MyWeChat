@@ -116,6 +116,8 @@ public class GroupActivity extends AppCompatActivity  {
         adapter.setOnItemClickListener((view, position) -> {
             if (position == adapter.getItemCount() - 1) {
                 Intent intent = new Intent(this, NewGroupActivity.class);
+                intent.putExtra("type", "invite");
+                intent.putExtra("id", groupId);
                 startActivityForResult(intent, REQUEST_CODE_INVITE);
             } else {
                 if (contacts.get(position).getAvatarIcon() == null) {
