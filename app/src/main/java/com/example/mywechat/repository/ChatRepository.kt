@@ -1,6 +1,7 @@
 package com.example.mywechat.repository
 
 import com.example.mywechat.api.ApiService
+import com.example.mywechat.api.ChatRecordGetRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -24,5 +25,10 @@ class ChatRepository @Inject constructor(
             file?.let {
                 MultipartBody.Part.createFormData("file", it.name, it.asRequestBody("multipart/form-data".toMediaTypeOrNull()))
             }
+    )
+    suspend fun chatRecordGet(
+            sendTo: String
+    ) = apiService.chatRecordGet(
+            ChatRecordGetRequest(sendTo)
     )
 }

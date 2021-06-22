@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/mywechat_btn_borderless"
+        android:background="@drawable/mywechat_btn_bottom_line"
         android:drawableLeft="@drawable/icon_round"
         android:drawablePadding="10dp"
         android:gravity="center|left"
@@ -96,6 +96,27 @@
         android:text="发消息"
         android:textColor="@color/PETER_RIVER_DARK"
         android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/mywechat_btn_bottom_line"
+        android:text="清空聊天记录"
+        android:textColor="@color/ALIZARIN"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mywechat_btn_borderless"
+        android:text="删除联系人"
+        android:textColor="@color/ALIZARIN"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
 </LinearLayout>

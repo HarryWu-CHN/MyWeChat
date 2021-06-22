@@ -1,6 +1,7 @@
 package com.example.mywechat.ui.contacts;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mywechat.FriendActivity;
 import com.example.mywechat.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
     private LinkedList<Contact> data;
 
+    public ContactAdapter() {
+
+    }
+
     public ContactAdapter(LinkedList<Contact> data) {
         this.data = data;
+    }
+
+    public void setContacts(LinkedList<Contact> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -32,17 +43,31 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = data.get(position);
-        holder.getAvatar().setImageBitmap(contact.getAvatarIcon());
-        holder.getNickname().setText(contact.getNickname());
+        if (contact.getAvatarIcon() != null) {
+            holder.getAvatar().setImageBitmap(contact.getAvatarIcon());
+        }
+        holder.getNickname().setText(contact.getNickName());
 
         holder.getItemView().setOnClickListener(v -> {
+            if (contact.getAvatarIcon() == null) {
+                return;
+            }
+
+            ByteArrayOutputStream iconBytes = new ByteArrayOutputStream();
+            contact.getAvatarIcon().compress(Bitmap.CompressFormat.JPEG, 100, iconBytes);
             Intent intent = new Intent(holder.getItemView().getContext(), FriendActivity.class);
+            intent.putExtra("userName", contact.getUserName());
+            intent.putExtra("nickName", contact.getNickName());
+            intent.putExtra("avatarBytes", iconBytes.toByteArray());
             holder.getItemView().getContext().startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
+        if (data == null) {
+            return 0;
+        }
         return data.size();
     }
 

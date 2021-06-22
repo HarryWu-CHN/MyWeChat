@@ -8,8 +8,8 @@ class GroupRepository @Inject constructor(
         private val apiService: ApiService
 ) {
     suspend fun groupCreate(
-            groupName : String,
-            membersName : ArrayList<String>,
+            groupName : String?,
+            membersName : List<String>,
     ) = apiService.groupCreate(
             GroupCreateRequest(
             groupName, membersName

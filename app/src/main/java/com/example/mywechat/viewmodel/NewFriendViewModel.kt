@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mywechat.api.ContactFindResponse
+import com.example.mywechat.api.ContactGetResponse
 import com.example.mywechat.repository.FriendRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,16 @@ import javax.inject.Inject
 class NewFriendViewModel @Inject constructor(private val friendRepository: FriendRepository) : ViewModel() {
     val liveData = MutableLiveData<ContactFindResponse?>(null)
     val appliesData = MutableLiveData<ContactFindResponse?>(null)
+    val contactsData = MutableLiveData<ContactGetResponse?>(null)
+
+    fun contactGet() {
+        viewModelScope.launch (Dispatchers.IO) {
+            try {
+                val response = friendRepository.contactGet()
+                contactsData.postValue(response)
+            } catch (e: IOException) {}
+        }
+    }
 
     fun contactFind(friendToFind : String) {
         viewModelScope.launch (Dispatchers.IO) {
@@ -48,10 +59,10 @@ class NewFriendViewModel @Inject constructor(private val friendRepository: Frien
         }
     }
 
-    fun contactWaited() {
+    fun contactWaited(username: String) {
         viewModelScope.launch (Dispatchers.IO) {
             try {
-                val response = friendRepository.contactWaited()
+                val response = friendRepository.contactWaited(username)
                 appliesData.postValue(response)
             } catch (e : IOException) {
                 // ignore

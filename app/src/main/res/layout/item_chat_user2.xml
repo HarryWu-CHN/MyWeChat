@@ -35,6 +35,7 @@
         android:padding="10dp"
         android:paddingEnd="20dp"
         android:text="qw速度速度多少e答复艾法尔发广告华人啊日嘎人工回填土啊如果啊嘎然嘎哈"
+        android:textAllCaps="false"
         android:textSize="16sp" />
 
     <ImageView

@@ -28,8 +28,16 @@
             android:gravity="center"
             android:text="新的朋友圈"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/selectVideoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="选择视频" />
 
         <Button
             android:id="@+id/postDiscoverButton"
@@ -66,15 +74,23 @@
             android:padding="10dp"
             android:textSize="24sp" />
 
+        <VideoView
+            android:id="@+id/discoverVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imageUploadRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fadingEdge="none"
             android:padding="5dp"
-            tools:listitem="@layout/item_list_upload_image"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3" />
+            app:spanCount="2"
+            tools:listitem="@layout/item_list_upload_image" />
 
     </LinearLayout>
 

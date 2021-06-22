@@ -31,6 +31,8 @@ interface ApiService {
     suspend fun passwordEdit(@Body request: PasswordEditRequest) : BooleanResponse
 
     // 好友相关
+    @POST("contact/get")
+    suspend fun contactGet() : ContactGetResponse
     @POST("contact/find")
     suspend fun contactFind(@Body request: ContactFindRequest) : ContactFindResponse
 
@@ -73,11 +75,30 @@ interface ApiService {
                          @Part("msgType") msgType: RequestBody,
                          @Part file: MultipartBody.Part?) : BooleanResponse
 
+    @POST("chat")
+    suspend fun chatRecordGet(@Body request : ChatRecordGetRequest) : ChatRecordGetResponse
+
+    @Multipart
     @POST("discover/post")
-    suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
+    suspend fun discoverPost(@Part("msgType") msgType: RequestBody,
+                             @Part("text") text: RequestBody,
+                             @Part file: MultipartBody.Part?) : BooleanResponse
+
+    @Multipart
+    @POST("discover/post/mul")
+    suspend fun discoverMulPost(@Part("msgType") msgType: RequestBody,
+                                @Part("text") text: RequestBody,
+                                @Part files: List<MultipartBody.Part>?) : BooleanResponse
+    //suspend fun discoverPost(@Body request: DiscoverPostRequest) : BooleanResponse
 
     @POST("discover")
     suspend fun discover(@Body request: DiscoverRequest) : DiscoverResponse
+
+    @POST("discover/thumb")
+    suspend fun thumb(@Body request: ThumbRequest) : BooleanResponse
+
+    @POST("discover/comment")
+    suspend fun comment(@Body request: CommentRequest) : BooleanResponse
 
     @POST("discover/user")
     suspend fun discoverUser(@Body request: DiscoverUserRequest) : DiscoverUserResponse
@@ -107,14 +128,20 @@ data class UserGetRequest(
         val userToGet: String
 )
 
-//todo: api修正
 @JsonClass(generateAdapter = true)
 data class UserGetResponse(
         val success : Boolean,
         val username : String,
-        val nickname: String,
+        val nickName : String,
         val icon : String,
-        val joinTime : String,
+)
+
+@JsonClass(generateAdapter = true)
+data class ContactGetResponse(
+        val friendNames: List<String>,
+        val friendNickNames: List<String>,
+        val friendTypes: List<String>,
+        val friendIcons: List<String>,
 )
 
 @JsonClass(generateAdapter = true)
@@ -162,8 +189,28 @@ data class ChatSendResponse(
 )
 
 @JsonClass(generateAdapter = true)
+data class ChatRecordGetRequest(
+        val sendTo: String
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatRecordGetResponse(
+        val success: Boolean,
+        val time : Long,
+        val recordList : List<ChatRecordBody>
+)
+@JsonClass(generateAdapter = true)
+data class ChatRecordBody(
+        val content: String?,
+        val messageType: String,
+        val read: Boolean,
+        val senderName: String,
+        val time: String
+)
+
+@JsonClass(generateAdapter = true)
 data class GroupCreateRequest(
-        val groupName : String,
+        val groupName : String?,
         val membersName : List<String>,
 )
 
@@ -203,12 +250,6 @@ data class GroupDelRequest(
 )
 
 @JsonClass(generateAdapter = true)
-data class DiscoverPostRequest(
-        val msgTpye: String,
-        val msg: String,
-)
-
-@JsonClass(generateAdapter = true)
 data class DiscoverRequest(
         val lastUpdateTime : Long,
 )
@@ -222,11 +263,33 @@ data class DiscoverResponse(
 @JsonClass(generateAdapter = true)
 data class DiscoverInfo(
         val id: String,
+        val username: String,
         val text : String,
         val discoverType: String,
-        val urlList : List<String>,
-        val time: Long,
-        val chatRecords : List<String>,
+        val urlList : List<String>?,
+        val time: String,
+        val thumbUsers: List<String>?,
+        val discoverComments: List<DiscoverComment>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class DiscoverComment(
+        val username: String,
+        val sendTo: String?,
+        val msg: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class ThumbRequest(
+        val discoverId: String,
+        val thumb: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class CommentRequest(
+        val discoverId: String,
+        val sendTo: String?,
+        val msg: String,
 )
 
 @JsonClass(generateAdapter = true)

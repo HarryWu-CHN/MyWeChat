@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 
@@ -55,7 +56,7 @@ public class FriendApplyActivity extends AppCompatActivity {
         applyRecyclerView.setLayoutManager(linearLayoutManager);
 
         // TODO: 索要好友申请
-        NfViewModel.contactWaited();
+        NfViewModel.contactWaited(((App) getApplication()).getUsername());
 
         NfViewModel.getAppliesData().observe(this, response -> {
             if (response == null) {
