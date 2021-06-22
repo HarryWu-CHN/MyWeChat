@@ -89,7 +89,10 @@ public class DialogFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("username", dialog.getUsername());
                 bundle.putString("nickname", nickname);
-
+                FriendRecord friendRecord = LitePal.where("friendName = ?", dialog.getUsername()).findFirst(FriendRecord.class);
+                if (friendRecord != null) {
+                    bundle.putString("sendToIcon", friendRecord.getIconPath());
+                }
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

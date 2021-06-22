@@ -30,8 +30,13 @@ public class ChatActivity extends AppCompatActivity {
         topName = findViewById(R.id.topName);
         topName.setText(nickname);
         sendTo = bundle.getString("username");
-        //byte[] avatarBytes = bundle.getByteArray("friendAvatarBytes");
-        //friendBitmap = BitmapFactory.decodeByteArray(avatarBytes, 0, avatarBytes.length);
+        String iconPath = bundle.getString("sendToIcon");
+        if (iconPath == null) {
+            byte[] avatarBytes = bundle.getByteArray("friendAvatarBytes");
+            friendBitmap = BitmapFactory.decodeByteArray(avatarBytes, 0, avatarBytes.length);
+        } else {
+            friendBitmap = BitmapFactory.decodeFile(iconPath);
+        }
     }
 
     public String getSendTo() {

@@ -75,6 +75,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class GroupChat extends AppCompatActivity {
     String groupName;
     String groupId;
@@ -82,10 +85,10 @@ public class GroupChat extends AppCompatActivity {
     private LinkedList<ChatBubble> data;
     private RecyclerView recyclerView;
     private TextView textInputView;
+    private TextView topNameView;
     private Button sendBtn;
     private ImageButton moreBtn;
     private String username;
-    private String sendTo;
     private int userIconId;
     private int sendToIconId;
     private File curImageFile;
@@ -110,13 +113,13 @@ public class GroupChat extends AppCompatActivity {
         groupName = bundle.getString("groupName");
         groupId = bundle.getString("groupId");
 
-        recyclerView = findViewById(R.id.chatList);
         initPreviewDialog();
         App app = (App) getApplication();
         username =app.getUsername();
+
+        recyclerView = findViewById(R.id.chatList);
         // 向ListView 添加数据，新建ChatAdapter，并向listView绑定该Adapter
-        data =new LinkedList<>();
-        // TODO 获取对应的icon
+        data = new LinkedList<>();
         userIconId = R.drawable.avatar5;
         sendToIconId = R.drawable.avatar6;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -181,9 +184,11 @@ public class GroupChat extends AppCompatActivity {
         moreBtn.setOnClickListener(v -> {
             setDialog();
         });
+        topNameView = findViewById(R.id.topName);
+        topNameView.setText(groupName);
         // ViewModel bind
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
-        groupViewModel.groupRecord(groupId);
+        /*groupViewModel.groupRecord(groupId);
         groupViewModel.getGroupRecordLiveData().observe(this, response -> {
             if (response == null || !response.component1()) {
                 return;
@@ -208,8 +213,9 @@ public class GroupChat extends AppCompatActivity {
             chatRecord1.setTimes(times);
             chatRecord1.setIsUser(isUser);
             chatRecord1.save();
-        });
+        });*/
         // 发送消息成功的回调
+        /*
         groupViewModel.getGroupSendLiveData().observe(this,response -> {
             if (response == null || !response.component1()) {
                 return;
@@ -239,12 +245,10 @@ public class GroupChat extends AppCompatActivity {
                     bubble = new ChatBubble(time, response.getMsg(), userIconId, true, "4");
                     break;
             }
-            ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
-            chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 1);
-            chatRecord2.save();
             if (bubble != null)
                 chatAdapter.addData(data.size(), bubble);
         });
+        */
         // 接收到WebSocket发来的新消息
         /*
         groupViewModel.getNewMsgLiveData().observe(this,response -> {
@@ -525,7 +529,7 @@ public class GroupChat extends AppCompatActivity {
         }
     };
 
-    public void pushBubbles(List<ChatRecordBody> chatRecords) {
+    /*public void pushBubbles(List<ChatRecordBody> chatRecords) {
         new Thread(() -> {
             for (ChatRecordBody body : chatRecords) {
                 boolean isuser = body.getSenderName().equals(username);
@@ -576,7 +580,9 @@ public class GroupChat extends AppCompatActivity {
         }).start();
     }
 
-    public void getWebImg(String time, String imgPath, int avatar, boolean isUser) {
+     */
+
+    public void getWebImg(String time, String imgPath, Bitmap avatar, boolean isUser) {
         new Thread(() -> {
             String path = "http://8.140.133.34:7262/" + imgPath;
             try {
