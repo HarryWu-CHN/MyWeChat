@@ -27,6 +27,9 @@ interface ApiService {
     @POST("user/get")
     suspend fun userGet(@Body request: UserGetRequest) : UserGetResponse
 
+    @POST("user/password")
+    suspend fun passwordEdit(@Body request: PasswordEditRequest) : BooleanResponse
+
     // 好友相关
     @POST("contact/find")
     suspend fun contactFind(@Body request: ContactFindRequest) : ContactFindResponse
@@ -104,12 +107,20 @@ data class UserGetRequest(
         val userToGet: String
 )
 
+//todo: api修正
 @JsonClass(generateAdapter = true)
 data class UserGetResponse(
         val success : Boolean,
         val username : String,
-        val icon : Bitmap,
+        val nickname: String,
+        val icon : String,
         val joinTime : String,
+)
+
+@JsonClass(generateAdapter = true)
+data class PasswordEditRequest(
+        val old_password : String,
+        val new_password : String,
 )
 
 @JsonClass(generateAdapter = true)

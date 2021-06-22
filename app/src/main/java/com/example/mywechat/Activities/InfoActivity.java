@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.Activities;
 
 import android.Manifest;
 import android.content.ContentUris;
@@ -21,12 +21,18 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.App;
+import com.example.mywechat.R;
+import com.example.mywechat.api.UserGetResponse;
+import com.example.mywechat.viewmodel.InfoViewModel;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 
 import java.io.File;
@@ -42,11 +48,13 @@ public class InfoActivity extends AppCompatActivity {
     private ImageButton backButton;
     private Button avatarButton;
     private Button nickNameButton;
+    private Button passwordButton;
     private ImageView myAvatar;
     private ImageView testImageView;
     private TextView myNickName;
     private TextView myUserName;
     private InfoViewModel infoViewModel;
+    private String userNameText;
     SharedPreferences sharedPreferences;
 
     private static final int PHOTO = 1;
@@ -67,10 +75,20 @@ public class InfoActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         avatarButton = findViewById(R.id.avatarButton);
         nickNameButton = findViewById(R.id.nickNameButton);
+        passwordButton = findViewById(R.id.passwordButton);
         myAvatar = findViewById(R.id.avatarThumbnail);
         testImageView = findViewById(R.id.testImageView);
         myNickName = findViewById(R.id.editMyNickName);
         myUserName = findViewById(R.id.myUserName);
+
+//        App app = (App) this.getApplication();
+//        userNameText = app.getUsername();
+//        myUserName.setText(userNameText);
+//
+//        infoViewModel.userGet(userNameText);
+//        infoViewModel.getUserInfoLiveData().observe(this, response -> {
+//            myNickName.setText();
+//        });
 
         initInfoButtons();
     }
@@ -101,6 +119,45 @@ public class InfoActivity extends AppCompatActivity {
         nickNameButton.setOnClickListener(v -> {
             setNickNameView();
         });
+
+        passwordButton.setOnClickListener(v -> {
+            setPasswordView();
+        });
+    }
+
+    private void setPasswordView() {
+        setContentView(R.layout.fragment_edit_password);
+
+        ImageButton backToInfoButton_p = findViewById(R.id.backToInfoButton_p);
+        Button savePasswordButton = findViewById(R.id.savePasswordButton);
+        EditText oldPasswordText = findViewById(R.id.oldPasswordText);
+        EditText newPasswordText = findViewById(R.id.newPasswordText);
+
+        backToInfoButton_p.setOnClickListener(v -> {
+            setInfoView();
+        });
+
+        savePasswordButton.setOnClickListener(v -> {
+            infoViewModel.callPasswordEdit(oldPasswordText.getText().toString(), newPasswordText.getText().toString());
+            infoViewModel.getPasswordEditResult().observe(this, response -> {
+                if (response != null)
+                {
+                    if (!response) {
+                        Log.d("修改密码失败",response.toString()+"a");
+                        Toast toast1 = Toast.makeText(this, "修改密码失败", Toast.LENGTH_SHORT);
+                        toast1.show();
+                    } else if (response) {
+                        Log.d("修改密码成功",response.toString());
+                        setInfoView();
+                        Toast toast2 = Toast.makeText(this, "成功修改密码", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+                }
+
+            });
+        });
+
+
     }
 
     private void setNickNameView() {
@@ -118,6 +175,8 @@ public class InfoActivity extends AppCompatActivity {
             setInfoView();
             myNickName.setText(newNickNameText.getText());
             infoViewModel.callUserEdit(myNickName.getText().toString(), null);
+            Toast toast=Toast.makeText(getApplicationContext(), "开始修改密码", Toast.LENGTH_SHORT);
+            toast.show();
         });
         
     }
