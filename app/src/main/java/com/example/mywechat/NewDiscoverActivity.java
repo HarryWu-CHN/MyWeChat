@@ -56,14 +56,14 @@ public class NewDiscoverActivity extends AppCompatActivity implements ImagePickA
     private final int maxImageCnt = 4;
     private ImagePickAdapter adapter;
     private RecyclerView imageUploadRecyclerView;
-    private ImageView previewImage;
     private List<ImagePick> selectImages;
 
     private boolean selectVideo = false;
-    private VideoView previewVideo;
     private VideoView uploadVideo;
     private Button selectVideoButton;
 
+    private ImageView previewImage;
+    private VideoView previewVideo;
     private Dialog previewDialog;
 
     private List<File> selectFiles;

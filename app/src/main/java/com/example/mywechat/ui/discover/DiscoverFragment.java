@@ -2,11 +2,13 @@ package com.example.mywechat.ui.discover;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,10 +20,13 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,7 +62,10 @@ public class DiscoverFragment extends Fragment {
     private DiscoverAdapter adapter;
     private RecyclerView recyclerView;
     private DiscoverViewModel discoverViewModel;
-    private List<DiscoverInfo> discoverList;
+
+    private ImageView previewImage;
+    private VideoView previewVideo;
+    private Dialog previewDialog;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -77,13 +85,14 @@ public class DiscoverFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         hideActionBar(view);
 
+        initPreviewDialog();
         BindViewModel();
 
         recyclerView = view.findViewById(R.id.discover_recyclerview);
         // 设置LayoutManager及Adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new DiscoverAdapter(discoverViewModel, ((App) getActivity().getApplication()).getUsername());
+        initAdapterAndListener();
         recyclerView.setAdapter(adapter);
 
         // 设置朋友圈分隔线
@@ -112,7 +121,8 @@ public class DiscoverFragment extends Fragment {
         FloatingActionButton newDiscoverButton = view.findViewById(R.id.newDiscoverButton);
         newDiscoverButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NewDiscoverActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 0);
+            //startActivity(intent);
         });
     }
 
@@ -149,8 +159,9 @@ public class DiscoverFragment extends Fragment {
                 return;
             }
 
-            discoverList = response.component2();
+            List<DiscoverInfo> discoverList = response.component2();
             LinkedList<Discover> data = new LinkedList<>();
+            ArrayList<Pair<String, ArrayList<String>>> download = new ArrayList<>();
             for (DiscoverInfo info : discoverList) {
                 Discover discover = new Discover();
                 discover.setAvatarIcon(R.drawable.avatar1);
@@ -160,12 +171,8 @@ public class DiscoverFragment extends Fragment {
                 discover.setDiscoverType(info.component4());
                 discover.setPublishedTime(info.component6());
 
-                ArrayList<String> images = null;
                 ArrayList<String> thumbUsers = null;
                 ArrayList<Comment> comments = null;
-                if (info.component5() != null) {
-                    images = new ArrayList<>(info.component5());
-                }
                 if (info.component7() != null) {
                     thumbUsers = new ArrayList<>(info.component7());
                 }
@@ -175,111 +182,142 @@ public class DiscoverFragment extends Fragment {
                         comments.add(new Comment(comment.component1(), comment.component2(), comment.component3()));
                     }
                 }
-
                 discover.setThumbUsers(thumbUsers);
                 discover.setComments(comments);
+
+                switch (info.component4()) {
+                    case "PHOTO":
+                        ArrayList<String> images = new ArrayList<>(info.component5());
+                        download.add(new Pair<>(info.component1(), images));
+                        break;
+                    case "VIDEO":
+                        discover.setVideoUrl(info.component5().get(0));
+                        break;
+                }
                 data.add(discover);
             }
             adapter.setDiscoverData(data);
-            //getImages();
+            for (Pair<String, ArrayList<String>> downloadPair : download) {
+                getImages(downloadPair.first, downloadPair.second);
+            }
         });
     }
 
-//    @SuppressLint("HandlerLeak")
-//    private Handler handler = new Handler() {
-//        @SuppressLint("HandlerLeak")
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case 0:
-//                    LinkedList<Discover> discovers = new LinkedList<>();
-//                    List<Pair<String, Bitmap>> bitmaps = (List<Pair<String, Bitmap>>) msg.obj;
-//                    for (DiscoverInfo discover : discoverList) {
-//                        String discoverId = discover.component1();
-//                        String nickName = discover.component2();
-//                        String text = discover.component3();
-//                        String time = discover.component6();
-//                        ArrayList<Bitmap> images = new ArrayList<>();
-//                        for (Pair<String, Bitmap> bitmap : bitmaps) {
-//                            if (discover.component1().equals(bitmap.first)) {
-//                                images.add(bitmap.second);
-//                            }
-//                        }
-//
-//                        ArrayList<String> thumbUsers = null;
-//                        ArrayList<Comment> comments = null;
-//                        if (discover.component7() != null) {
-//                            thumbUsers = new ArrayList<>(discover.component7());
-//                        }
-//                        if (discover.component8() != null) {
-//                            comments = new ArrayList<>();
-//                            for (DiscoverComment comment : discover.component8()) {
-//                                comments.add(new Comment(comment.component1(), comment.component2(), comment.component3()));
-//                            }
-//                        }
-//
-//                        discovers.add(new Discover(discoverId, nickName, R.drawable.avatar1, text,
-//                                time, images, thumbUsers, comments));
-//                    }
-//
-//                    recyclerView.setAdapter(new DiscoverAdapter(discovers, discoverViewModel,
-//                            ((App) getActivity().getApplication()).getUsername()));
-//                    break;
-//                case 1:
-//                    Log.d("InternetImageView", "NETWORK_ERROR");
-//                    break;
-//                case 2:
-//                    Log.d("InternetImageView", "SERVER_ERROR");
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//        }
-//    };
-//
-//    private void getImages() {
-//        new Thread(() -> {
-//            List<Pair<String, Bitmap>> bitmaps = new ArrayList<>();
-//            int arg1 = 0;
-//            for (DiscoverInfo discover : discoverList) {
-//                if (discover.component4().equals("ONLY_TEXT")) {
-//                    continue;
-//                }
-//                List<String> imagePaths = discover.component5();
-//                for (String path : imagePaths) {
-//                    path = "http://8.140.133.34:7262/" + path;
-//                    try {
-//                        //通过HTTP请求下载图片
-//                        URL url = new URL(path);
-//                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                        connection.setRequestMethod("GET");
-//                        connection.setConnectTimeout(10000);
-//                        //获取返回码
-//                        int code = connection.getResponseCode();
-//                        if (code == 200) {
-//                            InputStream inputStream = connection.getInputStream();
-//                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//                            // 利用Message把图片发给Handler
-//                            // Message的obj成员变量可以用来传递对象
-//                            bitmaps.add(new Pair<>(discover.component1(), bitmap));
-//                            inputStream.close();
-//                        } else {
-//                            arg1 = 1;
-//                            bitmaps.add(new Pair<>(discover.component1(), null));
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                        bitmaps.add(null);
-//                        arg1 = 2;
-//                    }
-//                }
-//            }
-//            Message msg = new Message();
-//            msg.what = 0;
-//            msg.arg1 = arg1;
-//            msg.obj = bitmaps;
-//            handler.sendMessage(msg);
-//        }).start();
-//    }
+    private void initAdapterAndListener() {
+        adapter = new DiscoverAdapter(discoverViewModel, ((App) getActivity().getApplication()).getUsername());
+        adapter.setOnItemClickListener(new DiscoverAdapter.onRecyclerItemClickerListener() {
+            @Override
+            public void onRecyclerItemClick(View view, String discoverType, Object data) {
+                switch (discoverType) {
+                    case "PHOTO":
+                        Bitmap bitmap = (Bitmap) data;
+                        previewImage.setImageBitmap(bitmap);
+                        previewDialog.setContentView(previewImage);
+                        previewDialog.show();
+                        break;
+                    case "VIDEO":
+                        Uri videoUri = (Uri) data;
+                        previewVideo.setVideoURI(videoUri);
+                        previewDialog.setContentView(previewVideo);
+                        previewDialog.show();
+                        previewVideo.start();
+                        break;
+                    default:
+                        // ignored
+                        break;
+                }
+            }
+        });
+    }
+
+    private void initPreviewDialog() {
+        // 预览Dialog
+        previewDialog = new Dialog(getActivity(), R.style.FullActivity);
+        WindowManager.LayoutParams attributes = previewDialog.getWindow().getAttributes();
+        attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
+        attributes.height = WindowManager.LayoutParams.MATCH_PARENT;
+        //attributes.gravity = Gravity.CENTER_VERTICAL;
+        previewDialog.getWindow().setAttributes(attributes);
+
+        previewImage = new ImageView(getActivity());
+        previewImage.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
+
+        previewVideo = new VideoView(getActivity());
+//        RelativeLayout.LayoutParams LayoutParams = new RelativeLayout.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT);
+//        LayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        previewVideo.setLayoutParams(LayoutParams);
+        previewVideo.setOnClickListener(v -> {
+            previewDialog.dismiss();
+        });
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Pair<String, ArrayList<Bitmap>> bitmaps = (Pair<String, ArrayList<Bitmap>>) msg.obj;
+                    adapter.updateDiscoverData(bitmaps.first, bitmaps.second);
+                    break;
+                case 1:
+                    Log.d("InternetImageView", "NETWORK_ERROR");
+                    break;
+                case 2:
+                    Log.d("InternetImageView", "SERVER_ERROR");
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    };
+
+    private void getImages(String discoverId, ArrayList<String> imagePaths) {
+        new Thread(() -> {
+            int arg1 = 0;
+            ArrayList<Bitmap> bitmaps = new ArrayList<>();
+            for (String path : imagePaths) {
+                path = "http://8.140.133.34:7262/" + path;
+                try {
+                    //通过HTTP请求下载图片
+                    URL url = new URL(path);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(10000);
+                    //获取返回码
+                    int code = connection.getResponseCode();
+                    if (code == 200) {
+                        InputStream inputStream = connection.getInputStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        // 利用Message把图片发给Handler
+                        // Message的obj成员变量可以用来传递对象
+                        bitmaps.add(bitmap);
+                        inputStream.close();
+                    } else {
+                        arg1 = 1;
+                        bitmaps.add(null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    bitmaps.add(null);
+                    arg1 = 2;
+                }
+            }
+            Message msg = new Message();
+            msg.what = 0;
+            msg.arg1 = arg1;
+            msg.obj = new Pair<>(discoverId, bitmaps);
+            handler.sendMessage(msg);
+        }).start();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        discoverViewModel.discover(0);
+    }
 }
