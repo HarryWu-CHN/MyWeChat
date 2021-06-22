@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mywechat.Activities.InfoActivity;
 import com.example.mywechat.R;
 
 /**
