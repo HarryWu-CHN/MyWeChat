@@ -3,5 +3,5 @@
     <external-path
         path="."
         name="external_files" />
-    <external-path name="myPicture" path="pictures/MyWeChat" />
+    <external-path name="myPicture" path="MyWeChat/" />
 </paths>

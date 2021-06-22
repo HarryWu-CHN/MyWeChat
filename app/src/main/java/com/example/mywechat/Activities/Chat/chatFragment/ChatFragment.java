@@ -3,8 +3,10 @@ package com.example.mywechat.Activities.Chat.chatFragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -141,7 +143,7 @@ public class ChatFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         // recyclerView 相关绑定
         recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new ChatAdapter(data);
+        chatAdapter = new ChatAdapter(data, (Context)requireActivity());
         recyclerView.setAdapter(chatAdapter);
         // 气泡点击事件
         chatAdapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
@@ -228,6 +230,10 @@ public class ChatFragment extends Fragment {
                     Log.d("LiveData Location", response.getMsg());
                     bubble = new ChatBubble(time, response.getMsg(), userIconId, true, "3");
                     break;
+                case "4":
+                    Log.d("LiveData Sound", response.getMsg());
+                    bubble = new ChatBubble(time, response.getMsg(), userIconId, true, "4");
+                    break;
             }
             ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
             chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 1);
@@ -254,8 +260,17 @@ public class ChatFragment extends Fragment {
                     case "2":
                         String path = FILELOADPRE + response.getMsg();
                         bubble = new ChatBubble(time, path, sendToIconId, false, "2");
+                        chatAdapter.addData(data.size(), bubble);
+                        break;
                     case "3":
-                        bubble = new ChatBubble(time, response.getMsg(), sendToIconId, false, "3");
+                        path = FILELOADPRE + response.getMsg();
+                        bubble = new ChatBubble(time, path, sendToIconId, false, "3");
+                        chatAdapter.addData(data.size(), bubble);
+                        break;
+                    case "4":
+                        path = FILELOADPRE + response.getMsg();
+                        bubble = new ChatBubble(time, path, userIconId, false, "4");
+                        chatAdapter.addData(data.size(), bubble);
                         break;
                 }
             }
@@ -297,12 +312,12 @@ public class ChatFragment extends Fragment {
                 sendVideo(result);
             }
         });
-        launcherMicCapture = registerForActivityResult(new ResultContractCapture(), new ActivityResultCallback<String>() {
+        launcherMicCapture = registerForActivityResult(new ResultContractRecording(), new ActivityResultCallback<String>() {
             @Override
             public void onActivityResult(String result) {
                 if (result == null) return;
                 Log.d("On Ac Result", result);
-                // sendRecording(result);
+                sendRecording(result);
             }
         });
         /* TODO
@@ -340,20 +355,26 @@ public class ChatFragment extends Fragment {
         @Override
         public Intent createIntent(@NonNull Context context, Integer requestCode) {
             // 调用相机拍照
-            File dir = new File(Environment.getExternalStorageDirectory(),"pictures");
+            File dir = new File(Environment.getExternalStorageDirectory(),"MyWeChat");
             if (!dir.exists()) dir.mkdirs();
             String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "pictures" + File.separator + "MyWeChat";
+                    + File.separator + "MyWeChat";
             dir = new File(storagePath);
-            if (!dir.exists()) dir.mkdirs();
+            dir.mkdirs();
             String uuid = UUID.randomUUID().toString();
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);;
             if (requestCode == 2) {
+                storagePath = storagePath + File.separator + "pictures";
+                dir = new File(storagePath);    dir.mkdirs();
                 curImageFile = new File(dir, uuid + ".jpg");
             } else if (requestCode == 3) {
+                storagePath = storagePath + File.separator + "video";
+                dir = new File(storagePath);    dir.mkdirs();
                 curImageFile = new File(dir, uuid + ".mp4");
                 intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             } else if (requestCode == 4) {
+                storagePath = storagePath + File.separator + "sound";
+                dir = new File(storagePath);    dir.mkdirs();
                 curImageFile = new File(dir, uuid + ".amr");
                 intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
             }
@@ -370,12 +391,25 @@ public class ChatFragment extends Fragment {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             return intent;
         }
-
         @Override
         public String parseResult(int resultCode, @Nullable Intent intent) {
             if (resultCode == RESULT_OK) {
                 Log.d("Take Photo", curImageFile.getAbsolutePath());
                 return curImageFile.getAbsolutePath();
+            }
+            return null;
+        }
+    }
+    class ResultContractRecording extends ActivityResultContract<Integer, String> {
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, Integer input) {
+            return new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        }
+        @Override
+        public String parseResult(int resultCode, @Nullable Intent intent) {
+            if (resultCode == RESULT_OK && intent != null) {
+                return FileUtil.handleStorageImage(getActivity(), intent);
             }
             return null;
         }
@@ -446,22 +480,22 @@ public class ChatFragment extends Fragment {
         Log.d("Sending Msg:", msg);
         chatSendViewModel.chatSend(sendTo, "0", msg, null);
     }
-
     public void sendImg(String imagePath) {
         Log.d("Sending Img", imagePath);
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         File file = new File(imagePath);
-        chatSendViewModel.chatSend(sendTo, "1", null, file);
+        chatSendViewModel.chatSend(sendTo, "1", imagePath, file);
     }
-
     public void sendVideo(String videoPath) {
         File file = new File(videoPath);
-        chatSendViewModel.chatSend(sendTo, "2", null, file);
+        chatSendViewModel.chatSend(sendTo, "2", videoPath, file);
     }
-
     public void sendLocation(String location) {
         Log.d("Sending Location:", location);
         chatSendViewModel.chatSend(sendTo, "3", location, null);
+    }
+    public void sendRecording(String result) {
+        File file = new File(result);
+        chatSendViewModel.chatSend(sendTo, "4", result, file);
     }
 
     private Handler handler = new Handler(Looper.myLooper()) {
@@ -519,6 +553,9 @@ public class ChatFragment extends Fragment {
                         break;
                     case "POSITION":
                         bubble = new ChatBubble(body.getTime(), body.getContent(), isuser ? userIconId : sendToIconId, isuser, "3");
+                        break;
+                    case "SOUND":
+                        bubble = new ChatBubble(body.getTime(), FILELOADPRE+body.getContent(), isuser ? userIconId : sendToIconId, isuser, "4");
                         break;
                 }
                 if (bubble != null) {
