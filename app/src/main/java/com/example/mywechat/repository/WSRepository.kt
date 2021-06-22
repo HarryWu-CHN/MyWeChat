@@ -8,6 +8,7 @@ import io.reactivex.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.filter
 import kotlinx.coroutines.reactive.collect
 import javax.inject.Inject
 import javax.inject.Singleton

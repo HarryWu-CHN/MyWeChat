@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.collect
 import kotlinx.coroutines.reactive.consumeEach
@@ -33,8 +35,8 @@ class UserInfoViewModel @Inject constructor(
     fun openReLogin(userName: String, password: String) {
         viewModelScope.launch {
             wsRepository.observeOnConnectionOpenedEvent().consumeEach {
-                Log.d("reconnect...........", userName + password + it.toString())
-                if (userName != "" && password != "") {
+                Log.d("reconnect...........", userName + password + it.toString().subSequence(0,18))
+                if (userName != "" && password != "" && it.toString().subSequence(0, 18) =="OnConnectionOpened") {
                     wsRepository.login(userName, password) {}
                 }
             }
