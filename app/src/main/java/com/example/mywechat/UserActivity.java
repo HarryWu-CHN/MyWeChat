@@ -211,7 +211,7 @@ public class UserActivity extends AppCompatActivity {
             File file = SaveBitmap2Png(bitmap);
             if (file == null) return;
             userInfo.setUserIcon(file.getAbsolutePath());
-            userInfo.saveOrUpdate();
+            userInfo.save();
         }).start();
     }
 
