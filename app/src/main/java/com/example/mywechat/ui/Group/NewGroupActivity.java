@@ -1,6 +1,7 @@
-package com.example.mywechat.Activities.Group;
+package com.example.mywechat.ui.Group;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class NewGroupActivity extends AppCompatActivity {
     private ImageButton backToUserButton;
+    private Button inviteButton;
     private RecyclerView recyclerView;
     private InviteAdapter adapter;
 
@@ -30,6 +32,11 @@ public class NewGroupActivity extends AppCompatActivity {
         backToUserButton = findViewById(R.id.backToUserButton);
         backToUserButton.setOnClickListener(v -> {
             finish();
+        });
+
+        inviteButton = findViewById(R.id.invitebutton);
+        inviteButton.setOnClickListener(v -> {
+
         });
 
         recyclerView = findViewById(R.id.inviteRecyclerView);

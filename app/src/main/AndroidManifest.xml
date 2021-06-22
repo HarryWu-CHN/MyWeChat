@@ -40,7 +40,7 @@
         <activity
             android:name=".Activities.NewFriend.SendFriendApplyActivity"
             android:theme="@style/Theme.MyWeChat" />
-        <activity android:name=".Activities.Group.NewGroupActivity"
+        <activity android:name=".ui.Group.NewGroupActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".MainActivity"

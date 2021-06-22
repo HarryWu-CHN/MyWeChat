@@ -15,9 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mywechat.Activities.Group.NewGroupActivity;
+import com.example.mywechat.ui.Group.NewGroupActivity;
 import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
-import com.example.mywechat.viewmodel.ChatSendViewModel;
 import com.example.mywechat.viewmodel.MainActivityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
