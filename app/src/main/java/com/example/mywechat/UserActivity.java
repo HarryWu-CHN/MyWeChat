@@ -10,23 +10,41 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.mywechat.Util.FileUtil;
+import com.example.mywechat.databinding.FragmentUserInfoBinding;
+import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.ui.Group.NewGroupActivity;
 import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
+import com.example.mywechat.ui.contacts.Contact;
+import com.example.mywechat.ui.contacts.ContactAdapter;
 import com.example.mywechat.viewmodel.MainActivityViewModel;
+import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class UserActivity extends AppCompatActivity {
-    private  MainActivityViewModel mainActivityViewModel;
+    private NewFriendViewModel nfViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +60,16 @@ public class UserActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        mainActivityViewModel.observeNewFriendApply();
-        mainActivityViewModel.getNewFriendApply().observe(this, response ->{
-            if (response != null){
-                Log.d("new friend", response.toString());
+        nfViewModel = new ViewModelProvider(this).get(NewFriendViewModel.class);
+        nfViewModel.contactGet();
+        nfViewModel.getContactsData().observe(this, response -> {
+            if (response == null) {
+                return;
+            }
+            List<String> friendNames = response.component1();
+            List<String> friendIcons = response.component3();
+            for (int i=0; i<friendNames.size(); i++) {
+                getIconAndSave(friendNames.get(i), friendIcons.get(i));
             }
         });
         String username = getIntent().getStringExtra("username");
@@ -90,5 +113,49 @@ public class UserActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    private Handler handler = new Handler(Looper.myLooper()) {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    FriendRecord friendRecord = (FriendRecord) msg.obj;
+                    friendRecord.saveOrUpdate();
+                    break;
+            }
+        }
+    };
+
+    public void getIconAndSave(final String friendName, final String friendIcon) {
+        //开启一个线程用于联网
+        new Thread(() -> {
+            String path = "http://8.140.133.34:7262/" + friendIcon;
+            Bitmap bitmap = null;
+            try {
+                //通过HTTP请求下载图片
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(10000);
+                //获取返回码
+                int code = connection.getResponseCode();
+                if (code == 200) {
+                    InputStream inputStream = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                    inputStream.close();
+                } else {
+                    Log.d("HttpError", "下载图片失败");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap == null) return;
+            Message msg = new Message();
+            msg.what = 0;
+            msg.obj = new FriendRecord(friendName, FileUtil.bitmap2byte(bitmap));
+            handler.sendMessage(msg);
+        }).start();
     }
 }

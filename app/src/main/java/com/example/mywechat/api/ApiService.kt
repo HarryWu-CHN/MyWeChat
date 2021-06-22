@@ -200,7 +200,7 @@ data class ChatRecordBody(
 
 @JsonClass(generateAdapter = true)
 data class GroupCreateRequest(
-        val groupName : String,
+        val groupName : String?,
         val membersName : List<String>,
 )
 
