@@ -29,6 +29,8 @@ import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.litepal.LitePal;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -74,6 +76,8 @@ public class UserActivity extends AppCompatActivity {
             List<String> friendIcons = response.component3();
             UserInfo userInfo = new UserInfo(username);
             for (int i=0; i<friendNames.size(); i++) {
+                FriendRecord friendRecord = LitePal.where("friendName = ?", friendNames.get(i)).findFirst(FriendRecord.class);
+                if (friendRecord != null) continue;
                 getIconAndSave(friendNames.get(i), friendIcons.get(i));
                 userInfo.addFriend(friendNames.get(i));
             }
