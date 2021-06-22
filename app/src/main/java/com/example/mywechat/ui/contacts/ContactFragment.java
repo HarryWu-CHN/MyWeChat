@@ -141,10 +141,6 @@ public class ContactFragment extends Fragment {
             if (msg.what == 0) {
                 LinkedList<Contact> contacts = (LinkedList<Contact>) msg.obj;
                 recyclerView.setAdapter(new ContactAdapter(contacts));
-                for (Contact contact : contacts) {
-                    FriendRecord friendRecord = new FriendRecord(contact.getNickname(), FileUtil.Bitmap2Bytes(contact.getAvatarIcon()));
-                    friendRecord.save();
-                }
             }
         }
     };

@@ -34,6 +34,7 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.InviteHold
         Contact contact = invite.get(position);
 
         holder.getFriendNickName().setText(contact.getNickname());
+        holder.getFriendAvatar().setImageBitmap(contact.getAvatarIcon());
     }
 
     @Override

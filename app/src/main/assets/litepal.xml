@@ -3,7 +3,7 @@
     <!--数据库名称-->
     <dbname value="MyWeChatDb" />
     <!--数据库版本-->
-    <version value="4" />
+    <version value="5" />
 
     <!--映射模型-->
     <list>

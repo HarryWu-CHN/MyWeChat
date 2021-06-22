@@ -1,5 +1,7 @@
 package com.example.mywechat.ui.Group;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -54,7 +56,8 @@ public class NewGroupActivity extends AppCompatActivity {
         UserInfo userInfo = LitePal.where("username = ?", username).findFirst(UserInfo.class);
         for (String friendName : userInfo.getFriendNames()) {
             FriendRecord friendRecord = LitePal.where("friendName = ?", friendName).findFirst(FriendRecord.class);
-            contacts.add(new Contact( friendName, FileUtil.BytesToBitmap(friendRecord.getFriendIcon()) ));
+            Bitmap bitmap = BitmapFactory.decodeFile(friendRecord.getIconPath());
+            contacts.add(new Contact( friendName, bitmap ));
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);

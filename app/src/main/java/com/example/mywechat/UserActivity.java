@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -28,12 +29,16 @@ import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -122,7 +127,6 @@ public class UserActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     FriendRecord friendRecord = (FriendRecord) msg.obj;
-                    friendRecord.assignBaseObjId(1);
                     friendRecord.save();
                     break;
             }
@@ -153,9 +157,25 @@ public class UserActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (bitmap == null) return;
+            String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + "MyWeChat" + File.separator + "pictures";
+            String uuid = UUID.randomUUID().toString();
+            File file = new File(storagePath);
+            file.mkdirs();
+            file = new File(storagePath + File.separator
+                    + uuid + ".png");
+            try {
+                FileOutputStream fout = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fout);
+                fout.flush();
+                fout.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
             Message msg = new Message();
             msg.what = 0;
-            msg.obj = new FriendRecord(friendName, FileUtil.Bitmap2Bytes(bitmap));
+            msg.obj = new FriendRecord(friendName, file.getAbsolutePath());
             handler.sendMessage(msg);
         }).start();
     }
