@@ -99,10 +99,14 @@ public class FileUtil {
         return"com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public static byte[] bitmap2byte(Bitmap bitmap){
+    public static byte[] Bitmap2Bytes(Bitmap bitmap){
         if (bitmap == null) return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return baos.toByteArray();
+    }
+
+    public static Bitmap BytesToBitmap(byte[] bis){
+        return BitmapFactory.decodeByteArray(bis, 0, bis.length);
     }
 }

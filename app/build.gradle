@@ -29,9 +29,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding {
-        enabled = true
-    }
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -50,7 +47,7 @@ dependencies {
     def lifecycle_version = "2.3.1"
     def scarlet='0.1.12'
 
-    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
     implementation 'com.squareup.moshi:moshi-kotlin:1.11.0'
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
@@ -131,5 +128,5 @@ dependencies {
     // litePal
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //Android SQLite操作框架
-    implementation 'org.litepal.guolindev:core:3.1.1'
+    implementation 'org.litepal.guolindev:core:3.2.3'
 }
