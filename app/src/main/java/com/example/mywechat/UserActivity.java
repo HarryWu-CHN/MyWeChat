@@ -209,6 +209,7 @@ public class UserActivity extends AppCompatActivity {
             }
             if (bitmap == null) return;
             File file = SaveBitmap2Png(bitmap);
+            if (file == null) return;
             userInfo.setUserIcon(file.getAbsolutePath());
             userInfo.saveOrUpdate();
         }).start();
