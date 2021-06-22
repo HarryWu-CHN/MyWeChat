@@ -41,6 +41,16 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
         this.mName = mName;
     }
 
+    public void updateDiscoverUser(String userName, String nickName, Bitmap avatar) {
+        for (Discover discover : this.data) {
+            if (discover.getUsername().equals(userName)) {
+                discover.setNickname(nickName);
+                discover.setAvatarIcon(avatar);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public void updateDiscoverData(String discoverId, ArrayList<Bitmap> bitmaps) {
         for (Discover discover : this.data) {
             if (discover.getDiscoverId().equals(discoverId)) {
@@ -214,8 +224,13 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
     }
 
     private void initBasicView(DiscoverViewHolder holder, Discover discover) {
-        holder.getAvatar().setImageResource(discover.getAvatarIcon());
-        holder.getNickname().setText(discover.getNickname());
+        if (discover.getAvatarIcon() != null) {
+            holder.getAvatar().setImageBitmap(discover.getAvatarIcon());
+        }
+        if (discover.getNickname() != null) {
+            holder.getNickname().setText(discover.getNickname());
+        }
+
         holder.getPostText().setText(discover.getText());
         holder.getPublishedTime().setText(discover.getPublishedTime());
 
