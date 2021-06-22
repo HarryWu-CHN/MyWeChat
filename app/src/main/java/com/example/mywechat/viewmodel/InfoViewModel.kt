@@ -22,7 +22,7 @@ class InfoViewModel @Inject constructor(
         private val passwordEditRepository: PasswordEditRepository,
 ) : ViewModel() {
     private val userEditResult = MutableLiveData<Boolean?>(null)
-    private val userInfoLiveData = MutableLiveData<UserGetResponse?>(null)
+    public val userInfoLiveData = MutableLiveData<UserGetResponse?>(null)
     val passwordEditResult = MutableLiveData<Boolean?>(null)
 
     private suspend fun passwordEdit(old_p : String, new_p:String) {
