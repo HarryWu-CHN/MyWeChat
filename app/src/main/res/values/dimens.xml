@@ -3,4 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="icon_like_width">25dp</dimen>
+    <dimen name="icon_like_height">20dp</dimen>
+    <dimen name="icon_msg_width">20dp</dimen>
+    <dimen name="icon_msg_height">20dp</dimen>
 </resources>

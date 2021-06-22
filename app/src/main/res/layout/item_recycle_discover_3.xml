@@ -100,18 +100,20 @@
 
             <ImageButton
                 android:id="@+id/likeButton"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:layout_width="@dimen/icon_like_width"
+                android:layout_height="@dimen/icon_like_height"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 app:srcCompat="@drawable/icon_like_blue" />
 
             <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/icon_msg_width"
+                android:layout_height="@dimen/icon_msg_height"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 app:srcCompat="@drawable/icon_comment" />
         </LinearLayout>
 
@@ -141,9 +143,10 @@
 
                 <ImageView
                     android:id="@+id/icon_like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/icon_like_width"
+                    android:layout_height="@dimen/icon_like_height"
                     android:layout_gravity="center_vertical"
+                    android:scaleType="centerInside"
                     app:srcCompat="@drawable/icon_like_blue" />
 
                 <TextView

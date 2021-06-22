@@ -7,6 +7,6 @@
         android:title="添加好友" />
     <item
         android:id="@+id/newGroupItem"
-        android:icon="@drawable/icon_message"
+        android:icon="@drawable/icon_people"
         android:title="新建群聊" />
 </menu>
