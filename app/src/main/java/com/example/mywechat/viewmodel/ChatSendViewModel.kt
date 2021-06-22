@@ -1,5 +1,6 @@
 package com.example.mywechat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,11 @@ class ChatSendViewModel @Inject constructor(
         private val chatRepository: ChatRepository,
         private val wsRepository: WSRepository
 ) : ViewModel() {
+    init {
+        viewModelScope.launch {
+            observeNewMsg()
+        }
+    }
     val liveData = MutableLiveData<ChatSendResponse?>(null)
     fun chatSend(sendTo : String, msgType : String, msg : String?, file : File?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -45,9 +51,10 @@ class ChatSendViewModel @Inject constructor(
         }
     }
     val newMsgLiveData = MutableLiveData<NewMessage?>(null)
-    fun observeNewMsg() {
+    private fun observeNewMsg() {
         viewModelScope.launch(Dispatchers.IO) {
             wsRepository.newMessage().consumeEach {
+                Log.d("new message", it.toString())
                 for (newMsg in it) {
                     newMsgLiveData.postValue(newMsg)
                 }

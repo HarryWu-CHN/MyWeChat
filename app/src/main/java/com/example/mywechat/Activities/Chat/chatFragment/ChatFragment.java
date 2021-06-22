@@ -118,6 +118,7 @@ public class ChatFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ChatFragment newInstance() {
         return new ChatFragment();
+
     }
 
     @Override
@@ -240,6 +241,7 @@ public class ChatFragment extends Fragment {
         });
         // 发送消息成功的回调
         chatSendViewModel.getLiveData().observe(requireActivity(), response -> {
+
             if (response == null || !response.component1()) {
                 return;
             }
@@ -275,12 +277,12 @@ public class ChatFragment extends Fragment {
                 chatAdapter.addData(data.size(), bubble);
         });
         // 接收到WebSocket发来的新消息
-        chatSendViewModel.observeNewMsg();
+//        chatSendViewModel.observeNewMsg();
         chatSendViewModel.getNewMsgLiveData().observe(requireActivity(), response -> {
             if (response == null) return;
             SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String time = sdf.format(new Date().getTime());
-            if (response.component1() == 0 && response.getFrom().equals(sendTo)) {
+            if (response.getInfoType() == 0 && response.getFrom().equals(sendTo)) {
                 ChatBubble bubble = null;
                 switch (response.getMsgType()) {
                     case "0":
@@ -307,7 +309,7 @@ public class ChatFragment extends Fragment {
                         break;
                 }
             }
-            if (response.component1() == 0) {
+            if (response.getInfoType() == 0) {
                 Log.d("ChatFragment", "Receive New Msg" + response.toString());
                 ChatRecord chatRecord2 = LitePal.where("userName = ? and friendName = ?", username, sendTo).findFirst(ChatRecord.class);
                 chatRecord2.addAllYouNeed(response.getMsg(), response.getMsgType(), time, 0);

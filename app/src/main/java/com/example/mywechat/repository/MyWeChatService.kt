@@ -70,8 +70,8 @@ data class NewDiscover(
 
 @JsonClass(generateAdapter = true)
 data class NewMessage(
-        val infoType: Int,
         val from: String,
+        val infoType: Int,
         val msg: String,
         val msgType: String,
 )

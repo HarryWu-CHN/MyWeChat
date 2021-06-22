@@ -17,13 +17,16 @@ class WSRepository @Inject constructor(
     init {
         GlobalScope.launch(Dispatchers.IO) {
             myWeChatService.observeEvents().consumeEach {0
-                Log.d("webSocket event", "$it")
+                Log.d("webSocket event", it.toString())
             }
         }
     }
 
     fun newMessage() : ReceiveChannel<Array<NewMessage>> {
-        return myWeChatService.observeNewMessage()
+        val it = myWeChatService.observeNewMessage()
+        Log.d("Repository", "New message$it")
+        return it
+
     }
 
     fun newFriendApply() : ReceiveChannel<Array<NewFriendApply>> {
