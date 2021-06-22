@@ -45,6 +45,9 @@ interface ApiService {
     @POST("contact/waited")
     suspend fun contactWaited(@Body request: ContactWaitedText) : ContactFindResponse
 
+    @POST("contact/delete")
+    suspend fun contactDelete(@Body request: ChatRecordGetRequest) : BooleanResponse
+
     //群聊相关
     @POST("group/create")
     suspend fun groupCreate(@Body request: GroupCreateRequest) : BooleanResponse
@@ -92,6 +95,9 @@ interface ApiService {
 
     @POST("chat")
     suspend fun chatRecordGet(@Body request : ChatRecordGetRequest) : ChatRecordGetResponse
+
+    @POST("chat/delete")
+    suspend fun chatDelete(@Body request : ChatDeleteRequest) : BooleanResponse
 
     @Multipart
     @POST("discover/post")
@@ -225,6 +231,11 @@ data class ChatRecordBody(
         val read: Boolean,
         val senderName: String,
         val time: String
+)
+
+@JsonClass(generateAdapter = true)
+data class ChatDeleteRequest(
+        val sendTo: String
 )
 
 @JsonClass(generateAdapter = true)
