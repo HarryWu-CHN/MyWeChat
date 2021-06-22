@@ -1,10 +1,14 @@
 package com.example.mywechat.repository
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.example.mywechat.App
 import com.tinder.scarlet.WebSocket
+import io.reactivex.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.reactive.collect
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -14,12 +18,25 @@ import kotlin.coroutines.suspendCoroutine
 class WSRepository @Inject constructor(
         private val myWeChatService: MyWeChatService,
 ) {
+//    private val usernameLivedata = MutableLiveData<String?>(null)
+//    private val passwordLivedata = MutableLiveData<String?>(null)
     init {
         GlobalScope.launch(Dispatchers.IO) {
-            myWeChatService.observeEvents().consumeEach {0
+            myWeChatService.observeEvents().consumeEach {
                 Log.d("webSocket event", it.toString())
             }
+//            observeOnConnectionOpenedEvent().collect {
+//                myWeChatService.login(LoginRequest(
+//                        username = usernameLivedata.value.toString(),
+//                        password = passwordLivedata.value.toString(),
+//                ))
+//            }
         }
+
+    }
+
+    fun observeOnConnectionOpenedEvent(): ReceiveChannel<WebSocket.Event> {
+        return myWeChatService.observeEvents()
     }
 
     fun newMessage() : ReceiveChannel<Array<NewMessage>> {
@@ -55,6 +72,8 @@ class WSRepository @Inject constructor(
         return suspendCoroutine { continuation ->
             GlobalScope.launch(CoroutineExceptionHandler { _, throwable ->
             }) {
+//                usernameLivedata.postValue(username)
+//                passwordLivedata.postValue(password)
                 val channel = myWeChatService.observeLoginResponse()
                 channel.consumeEach {
                     Log.d("test1", it.toString())

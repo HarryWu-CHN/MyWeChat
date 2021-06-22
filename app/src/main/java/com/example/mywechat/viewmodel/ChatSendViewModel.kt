@@ -27,7 +27,7 @@ class ChatSendViewModel @Inject constructor(
         private val chatRepository: ChatRepository,
         private val wsRepository: WSRepository
 ) : ViewModel() {
-    init {
+        init {
         viewModelScope.launch {
             observeNewMsg()
         }

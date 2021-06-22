@@ -25,6 +25,8 @@ class InfoViewModel @Inject constructor(
     private val userInfoLiveData = MutableLiveData<UserGetResponse?>(null)
     val passwordEditResult = MutableLiveData<Boolean?>(null)
 
+
+
     private suspend fun passwordEdit(old_p : String, new_p:String) {
         passwordEditResult.postValue(null)
         try {

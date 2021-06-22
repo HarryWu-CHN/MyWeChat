@@ -27,6 +27,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
     private var username : String = ""
+    private var password : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -52,6 +53,7 @@ class LoginFragment : Fragment() {
                         }
                     }
                     username = binding.loginUsernameTextEdit.text.toString()
+                    password = binding.loginPasswordTextEdit.text.toString()
                     Log.d("LoginFragment", "login succeeded.")
                 }
                 Log.d("LoginFragment", "finished")
@@ -59,7 +61,7 @@ class LoginFragment : Fragment() {
         }
         loginViewModel.successfulLogin.observe(viewLifecycleOwner) {
             if(it.httpLogin and it.wsLogin) {
-                    (requireActivity() as MainActivity).jumpToUser(username)
+                    (requireActivity() as MainActivity).jumpToUser(username, password)
             }
 
         }

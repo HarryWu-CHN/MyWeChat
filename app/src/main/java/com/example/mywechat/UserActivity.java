@@ -49,7 +49,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class UserActivity extends AppCompatActivity {
     private NewFriendViewModel nfViewModel;
     private UserInfoViewModel userInfoViewModel;
-    private String username;
+    private String username = "";
+    private String password = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +67,13 @@ public class UserActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         username = getIntent().getStringExtra("username");
+        password = getIntent().getStringExtra("password");
         ((App) getApplication()).setUsername(username);
+
         userInfoViewModel = new ViewModelProvider(this).get(UserInfoViewModel.class);
+
+        userInfoViewModel.openReLogin(username, password);
+
         userInfoViewModel.userGet(username);
         userInfoViewModel.getLiveData().observe(this, response -> {
             if (response == null) return;

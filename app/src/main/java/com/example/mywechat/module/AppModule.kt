@@ -9,6 +9,7 @@ import com.example.mywechat.repository.MyWeChatService
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
+import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.ShutdownReason
 import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
@@ -49,6 +50,7 @@ class AppModule {
 //
 //        return builder.build()
 //    }
+
 
     @Provides
     @Singleton

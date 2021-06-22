@@ -13,9 +13,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun jumpToUser(username: String) {
+    fun jumpToUser(username: String, password: String) {
         val intent: Intent = Intent(this, UserActivity::class.java)
         intent.putExtra("username", username)
+        intent.putExtra("password", password)
         startActivity(intent)
         finish()
     }
