@@ -33,6 +33,7 @@ import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.ui.Group.GroupActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
+import com.example.mywechat.Util.FileUtil;
 
 import org.litepal.LitePal;
 
@@ -159,7 +160,7 @@ public class ContactFragment extends Fragment {
                 LinkedList<Contact> contacts = (LinkedList<Contact>) msg.obj;
                 recyclerView.setAdapter(new ContactAdapter(contacts));
                 for (Contact contact : contacts) {
-                    FriendRecord friendRecord = new FriendRecord(contact.getNickname(), bitmap2byte(contact.getAvatarIcon()));
+                    FriendRecord friendRecord = new FriendRecord(contact.getNickname(), FileUtil.bitmap2byte(contact.getAvatarIcon()));
                     friendRecord.save();
                 }
             }
@@ -206,13 +207,6 @@ public class ContactFragment extends Fragment {
             msg.obj = contacts;
             handler.sendMessage(msg);
         }).start();
-    }
-
-    private byte[] bitmap2byte(Bitmap bitmap){
-        if (bitmap == null) return null;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
     }
 
     /** TODO 保存bitmap到外部存储的方法法

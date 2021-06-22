@@ -13,6 +13,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class FileUtil {
@@ -96,5 +97,12 @@ public class FileUtil {
 
     private static boolean isGooglePhotosUri(Uri uri) {
         return"com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static byte[] bitmap2byte(Bitmap bitmap){
+        if (bitmap == null) return null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
     }
 }
