@@ -200,27 +200,24 @@ public class DiscoverFragment extends Fragment {
 
     private void initAdapterAndListener() {
         adapter = new DiscoverAdapter(discoverViewModel, ((App) getActivity().getApplication()).getUsername());
-        adapter.setOnItemClickListener(new DiscoverAdapter.onRecyclerItemClickerListener() {
-            @Override
-            public void onRecyclerItemClick(View view, String discoverType, Object data) {
-                switch (discoverType) {
-                    case "PHOTO":
-                        Bitmap bitmap = (Bitmap) data;
-                        previewImage.setImageBitmap(bitmap);
-                        previewDialog.setContentView(previewImage);
-                        previewDialog.show();
-                        break;
-                    case "VIDEO":
-                        Uri videoUri = (Uri) data;
-                        previewVideo.setVideoURI(videoUri);
-                        previewDialog.setContentView(previewVideo);
-                        previewDialog.show();
-                        previewVideo.start();
-                        break;
-                    default:
-                        // ignored
-                        break;
-                }
+        adapter.setOnItemClickListener((view, discoverType, data) -> {
+            switch (discoverType) {
+                case "PHOTO":
+                    Bitmap bitmap = (Bitmap) data;
+                    previewImage.setImageBitmap(bitmap);
+                    previewDialog.setContentView(previewImage);
+                    previewDialog.show();
+                    break;
+                case "VIDEO":
+                    Uri videoUri = (Uri) data;
+                    previewVideo.setVideoURI(videoUri);
+                    previewDialog.setContentView(previewVideo);
+                    previewDialog.show();
+                    previewVideo.start();
+                    break;
+                default:
+                    // ignored
+                    break;
             }
         });
     }

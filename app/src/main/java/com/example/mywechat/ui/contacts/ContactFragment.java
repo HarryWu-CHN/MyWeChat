@@ -31,6 +31,7 @@ import com.example.mywechat.Activities.NewFriend.FriendApplyActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
+import com.example.mywechat.ui.Group.GroupActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import org.litepal.LitePal;
@@ -53,6 +54,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ContactFragment extends Fragment {
 
     private Button friendApplyButton;
+    private Button myGroupButton;
     private RecyclerView recyclerView;
     private NewFriendViewModel NfViewModel;
     private String username;
@@ -84,9 +86,17 @@ public class ContactFragment extends Fragment {
         username = ((App) requireActivity().getApplication()).getUsername();
         NfViewModel = new ViewModelProvider(this)
                 .get(NewFriendViewModel.class);
+
         friendApplyButton = view.findViewById(R.id.friendApplyButton);
         friendApplyButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), FriendApplyActivity.class);
+            startActivity(intent);
+        });
+
+        // 测试
+        myGroupButton = view.findViewById(R.id.myGroupButton);
+        myGroupButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), GroupActivity.class);
             startActivity(intent);
         });
 

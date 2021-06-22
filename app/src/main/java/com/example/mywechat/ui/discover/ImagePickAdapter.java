@@ -29,14 +29,6 @@ public class ImagePickAdapter extends RecyclerView.Adapter<ImagePickAdapter.Imag
         this.listener = listener;
     }
 
-    public boolean isAdded() {
-        return isAdded;
-    }
-
-    public void setAdded(boolean added) {
-        isAdded = added;
-    }
-
     public void setImages(List<ImagePick> data) {
         mData = new ArrayList<>(data);
         if (getItemCount() < maxImgCount) {
