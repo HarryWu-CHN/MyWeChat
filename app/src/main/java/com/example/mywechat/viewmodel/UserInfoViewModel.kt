@@ -35,6 +35,7 @@ class UserInfoViewModel @Inject constructor(
     fun openReLogin(userName: String, password: String) {
         viewModelScope.launch {
             wsRepository.observeOnConnectionOpenedEvent().consumeEach {
+                Thread.sleep(100)
                 Log.d("reconnect...........", userName + password + it.toString().subSequence(0,18))
                 if (userName != "" && password != "" && it.toString().subSequence(0, 18) =="OnConnectionOpened") {
                     wsRepository.login(userName, password) {}
