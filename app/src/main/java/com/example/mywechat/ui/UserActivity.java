@@ -2,14 +2,18 @@ package com.example.mywechat.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -222,7 +226,7 @@ public class UserActivity extends AppCompatActivity {
     }
 
     public File SaveBitmap2Png(Bitmap bitmap) {
-        String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+        String storagePath = this.getExternalCacheDir().getAbsolutePath()
                 + File.separator + "MyWeChat" + File.separator + "pictures";
         String uuid = UUID.randomUUID().toString();
         File file = new File(storagePath);

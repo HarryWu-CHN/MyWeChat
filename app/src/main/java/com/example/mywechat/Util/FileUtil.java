@@ -21,8 +21,8 @@ import java.util.UUID;
 
 public class FileUtil {
 
-    public static File SaveBitmap2Png(Bitmap bitmap) {
-        String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+    public static File SaveBitmap2Png(Bitmap bitmap, Context context) {
+        String storagePath = context.getExternalCacheDir().getAbsolutePath()
                 + File.separator + "MyWeChat" + File.separator + "pictures";
         String uuid = UUID.randomUUID().toString();
         File file = new File(storagePath);

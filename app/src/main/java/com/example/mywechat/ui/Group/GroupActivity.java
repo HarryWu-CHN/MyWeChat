@@ -220,7 +220,7 @@ public class GroupActivity extends AppCompatActivity  {
                 e.printStackTrace();
             }
             if (bitmap == null) return;
-            File file = FileUtil.SaveBitmap2Png(bitmap);
+            File file = FileUtil.SaveBitmap2Png(bitmap, this);
             Message msg = new Message();
             msg.what = 0;
             msg.arg1 = arg1;

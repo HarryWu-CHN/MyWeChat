@@ -198,7 +198,7 @@ public class MineFragment extends Fragment {
                 e.printStackTrace();
             }
             if (bitmap == null) return;
-            File file = FileUtil.SaveBitmap2Png(bitmap);
+            File file = FileUtil.SaveBitmap2Png(bitmap, requireContext());
             Message msg = new Message();
             msg.what = 0;
             msg.arg1 = arg1;
