@@ -109,6 +109,7 @@ public class InfoActivity extends AppCompatActivity {
 
     private void initInfoButtons() {
         backButton.setOnClickListener(v -> {
+            /*
             List<Cookie> cookies = new ArrayList<>(sharedPreferences.getAll().size());
             for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
                 String serializedCookie = (String) entry.getValue();
@@ -118,6 +119,7 @@ public class InfoActivity extends AppCompatActivity {
                 }
             }
             Log.d("Cookies" , cookies.toString());
+            */
             finish();
         });
 
@@ -206,6 +208,10 @@ public class InfoActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         myAvatar.setImageBitmap(bitmap);
         File file = new File(imagePath);
+        UserInfo userinfo = LitePal.where("username = ?", userName).findFirst(UserInfo.class);
+        userinfo.setUserIcon(imagePath);
+        userinfo.save();
+        
         infoViewModel.callUserEdit(null, file);
     }
 

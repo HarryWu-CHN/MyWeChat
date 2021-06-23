@@ -66,20 +66,10 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/clearButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/mywechat_btn_bottom_line"
-        android:text="清空聊天记录"
-        android:textColor="@color/ALIZARIN"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <Button
         android:id="@+id/quitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:background="@drawable/mywechat_btn_borderless"
         android:text="退出群聊"
         android:textColor="@color/ALIZARIN"

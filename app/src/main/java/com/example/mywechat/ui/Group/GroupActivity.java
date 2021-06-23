@@ -41,7 +41,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class GroupActivity extends AppCompatActivity  {
     private ImageButton backToUserButton;
     private Button sendMessageButton;
-    private Button clearButton;
     private Button quitButton;
 
     private final int spanCount = 5;
@@ -103,7 +102,6 @@ public class GroupActivity extends AppCompatActivity  {
     private void initButtons() {
         backToUserButton = findViewById(R.id.backToUserButton);
         sendMessageButton = findViewById(R.id.sendMessageButton);
-        clearButton = findViewById(R.id.clearButton);
         quitButton = findViewById(R.id.quitButton);
 
         backToUserButton.setOnClickListener(v -> {
@@ -111,6 +109,9 @@ public class GroupActivity extends AppCompatActivity  {
         });
         sendMessageButton.setOnClickListener(v -> {
             sendMessageBtnClicked();
+        });
+        quitButton.setOnClickListener(v -> {
+            quitGroupBtnClicked();
         });
     }
 
@@ -121,6 +122,11 @@ public class GroupActivity extends AppCompatActivity  {
         bundle.putString("groupName", groupName);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void quitGroupBtnClicked() {
+        groupViewModel.groupExit(groupId);
+        finish();
     }
 
     private void initRecyclerView() {

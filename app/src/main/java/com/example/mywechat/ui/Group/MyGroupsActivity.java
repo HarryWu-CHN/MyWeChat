@@ -54,8 +54,6 @@ public class MyGroupsActivity extends AppCompatActivity  {
         myGroupsRecyclerView.setAdapter(adapter);
 
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
-        groupViewModel.getGroups();
-        groups = new ArrayList<>();
         groupViewModel.getGroupsData().observe(this, response ->{
             if (response == null) {
                 return;
@@ -70,6 +68,7 @@ public class MyGroupsActivity extends AppCompatActivity  {
                 adapter.setGroups(groups);
                 return;
             }
+            groups = new ArrayList<>();
             for (int i = 0; i < groupIds.size(); i++) {
                 groups.add(new Group(groupIds.get(i), groupNames.get(i)));
                 download.add(new Pair<>(groupIds.get(i), creatorIcons.get(i)));
@@ -84,6 +83,12 @@ public class MyGroupsActivity extends AppCompatActivity  {
         backToContactButton.setOnClickListener(v -> {
             finish();
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        groupViewModel.getGroups();
     }
 
     @SuppressLint("HandlerLeak")
