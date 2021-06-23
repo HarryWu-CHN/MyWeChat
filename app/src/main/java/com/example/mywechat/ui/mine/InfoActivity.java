@@ -29,25 +29,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mywechat.Activities.Chat.ChatActivity;
-import com.example.mywechat.App;
 import com.example.mywechat.R;
-import com.example.mywechat.api.UserGetResponse;
 import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.viewmodel.InfoViewModel;
-import com.example.mywechat.viewmodel.InfoViewModel;
-import com.example.mywechat.R;
-import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 
 import org.litepal.LitePal;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
-import okhttp3.Cookie;
 
 @AndroidEntryPoint
 public class InfoActivity extends AppCompatActivity {

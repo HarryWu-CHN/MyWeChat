@@ -2,7 +2,7 @@ package com.example.mywechat.ui.discover;
 
 import android.graphics.Bitmap;
 
-import com.example.mywechat.ui.comment.Comment;
+import com.example.mywechat.ui.discover.comment.Comment;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.NewFriend;
+package com.example.mywechat.ui.NewFriend;
 
 public class FriendApply {
     private String friendName;

@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.NewFriend;
+package com.example.mywechat.ui.NewFriend;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -10,20 +10,15 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
-import com.example.mywechat.api.ContactFindResponse;
-import com.example.mywechat.repository.FriendRepository;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import java.io.IOException;
@@ -33,8 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

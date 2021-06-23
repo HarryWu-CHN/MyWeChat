@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Chat.ChatActivity">
+    tools:context=".ui.Chat.ChatActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -40,7 +40,7 @@
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:name="com.example.mywechat.Activities.Chat.chatFragment.ChatFragment"
+        android:name="com.example.mywechat.ui.Chat.chatFragment.ChatFragment"
         android:id="@+id/chatFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"

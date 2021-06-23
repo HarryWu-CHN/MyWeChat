@@ -1,4 +1,4 @@
-package com.example.mywechat.ui.comment;
+package com.example.mywechat.ui.discover.comment;
 
 public class Comment {
     private String nickName;

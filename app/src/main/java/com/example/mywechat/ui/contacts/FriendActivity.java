@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.ui.contacts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.ui.Chat.ChatActivity;
+import com.example.mywechat.R;
 import com.example.mywechat.viewmodel.ChatSendViewModel;
-import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

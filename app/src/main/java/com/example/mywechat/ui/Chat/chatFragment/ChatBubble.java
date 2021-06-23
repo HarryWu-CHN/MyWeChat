@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.Chat.chatFragment;
+package com.example.mywechat.ui.Chat.chatFragment;
 
 import android.graphics.Bitmap;
 

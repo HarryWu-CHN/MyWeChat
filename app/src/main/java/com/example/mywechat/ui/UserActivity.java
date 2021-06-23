@@ -1,4 +1,4 @@
-package com.example.mywechat;
+package com.example.mywechat.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -21,11 +21,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mywechat.Util.FileUtil;
+import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.model.UserInfo;
 import com.example.mywechat.ui.Group.NewGroupActivity;
-import com.example.mywechat.Activities.NewFriend.NewFriendActivity;
+import com.example.mywechat.ui.NewFriend.NewFriendActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.example.mywechat.viewmodel.UserInfoViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,7 +33,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.litepal.LitePal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

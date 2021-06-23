@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.FriendActivity;
 import com.example.mywechat.R;
 
 import java.io.ByteArrayOutputStream;

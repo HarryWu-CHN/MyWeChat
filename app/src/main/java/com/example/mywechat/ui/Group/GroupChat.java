@@ -10,8 +10,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.mywechat.Activities.Chat.chatFragment.ChatAdapter;
-import com.example.mywechat.Activities.Chat.chatFragment.ChatBubble;
+import com.example.mywechat.ui.Chat.chatFragment.ChatAdapter;
+import com.example.mywechat.ui.Chat.chatFragment.ChatBubble;
 import com.example.mywechat.App;
 import com.example.mywechat.BuildConfig;
 import com.example.mywechat.Util.FileUtil;

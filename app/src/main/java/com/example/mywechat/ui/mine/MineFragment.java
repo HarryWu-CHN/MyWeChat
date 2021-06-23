@@ -88,7 +88,9 @@ public class MineFragment extends Fragment {
 
         userName = ((App) getActivity().getApplication()).getUsername();
         myUserName.setText(userName);
-        UserInfo userInfo = LitePal.where("username = ?", userName).findFirst(UserInfo.class);
+        UserInfo userInfo = null;
+        if (userName != null)
+            userInfo = LitePal.where("username = ?", userName).findFirst(UserInfo.class);
 
         infoViewModel.getUserInfoLiveData().observe(getViewLifecycleOwner(), response -> {
             if (response == null) {

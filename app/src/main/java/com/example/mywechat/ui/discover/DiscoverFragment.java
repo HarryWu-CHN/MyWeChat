@@ -39,7 +39,7 @@ import com.example.mywechat.R;
 import com.example.mywechat.api.DiscoverComment;
 import com.example.mywechat.api.DiscoverInfo;
 import com.example.mywechat.model.FriendRecord;
-import com.example.mywechat.ui.comment.Comment;
+import com.example.mywechat.ui.discover.comment.Comment;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
 import com.example.mywechat.viewmodel.UserInfoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,7 +55,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
-import kotlin.Suppress;
 
 @AndroidEntryPoint
 public class DiscoverFragment extends Fragment {

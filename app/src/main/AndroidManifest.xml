@@ -21,10 +21,10 @@
             android:label="@string/title_activity_group_chat"
             android:theme="@style/Theme.MyWeChat.NoActionBar"></activity>
         <activity
-            android:name=".Activities.Chat.ChatActivity"
+            android:name=".ui.Chat.ChatActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".UserActivity"
+            android:name=".ui.UserActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".ui.discover.NewDiscoverActivity"
@@ -33,16 +33,16 @@
             android:name=".ui.mine.InfoActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".FriendActivity"
+            android:name=".ui.contacts.FriendActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".Activities.NewFriend.NewFriendActivity"
+            android:name=".ui.NewFriend.NewFriendActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".Activities.NewFriend.FriendApplyActivity"
+            android:name=".ui.NewFriend.FriendApplyActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
-            android:name=".Activities.NewFriend.SendFriendApplyActivity"
+            android:name=".ui.NewFriend.SendFriendApplyActivity"
             android:theme="@style/Theme.MyWeChat" />
         <activity
             android:name=".ui.Group.NewGroupActivity"

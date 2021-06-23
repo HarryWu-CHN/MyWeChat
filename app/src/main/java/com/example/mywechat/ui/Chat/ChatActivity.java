@@ -1,7 +1,6 @@
-package com.example.mywechat.Activities.Chat;
+package com.example.mywechat.ui.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,8 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.mywechat.R;
-
-import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

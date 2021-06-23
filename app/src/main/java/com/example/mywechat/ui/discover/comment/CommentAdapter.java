@@ -1,4 +1,4 @@
-package com.example.mywechat.ui.comment;
+package com.example.mywechat.ui.discover.comment;
 
 import android.view.LayoutInflater;
 import android.view.View;

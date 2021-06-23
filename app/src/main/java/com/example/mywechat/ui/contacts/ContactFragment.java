@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
@@ -28,12 +26,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.Activities.NewFriend.FriendApplyActivity;
+import com.example.mywechat.ui.NewFriend.FriendApplyActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.model.UserInfo;
-import com.example.mywechat.ui.Group.GroupActivity;
 import com.example.mywechat.ui.Group.MyGroupsActivity;
 import com.example.mywechat.viewmodel.NewFriendViewModel;
 import com.example.mywechat.Util.FileUtil;
@@ -41,15 +38,12 @@ import com.example.mywechat.Util.FileUtil;
 import org.litepal.LitePal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -84,16 +78,15 @@ public class ContactFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        username = ((App) requireActivity().getApplication()).getUsername();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         showActionBar(view);
-        username = ((App) requireActivity().getApplication()).getUsername();
+
         NfViewModel = new ViewModelProvider(this)
                 .get(NewFriendViewModel.class);
-
         friendApplyButton = view.findViewById(R.id.friendApplyButton);
         friendApplyButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), FriendApplyActivity.class);

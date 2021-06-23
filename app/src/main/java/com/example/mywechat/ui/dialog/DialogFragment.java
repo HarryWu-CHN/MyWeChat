@@ -20,14 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.ui.Chat.ChatActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.R;
 import com.example.mywechat.model.ChatRecord;
 import com.example.mywechat.model.DialogRecord;
 import com.example.mywechat.model.FriendRecord;
 import com.example.mywechat.viewmodel.ChatSendViewModel;
-import com.example.mywechat.viewmodel.NewFriendViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;

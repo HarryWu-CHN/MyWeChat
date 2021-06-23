@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.Chat.chatFragment;
+package com.example.mywechat.ui.Chat.chatFragment;
 
 
 import android.annotation.SuppressLint;
@@ -41,7 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.example.mywechat.Activities.Chat.ChatActivity;
+import com.example.mywechat.ui.Chat.ChatActivity;
 import com.example.mywechat.App;
 import com.example.mywechat.BuildConfig;
 import com.example.mywechat.R;

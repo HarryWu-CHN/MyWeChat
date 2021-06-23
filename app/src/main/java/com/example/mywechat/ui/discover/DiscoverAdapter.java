@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
-import com.example.mywechat.ui.comment.CommentAdapter;
+import com.example.mywechat.ui.discover.comment.CommentAdapter;
 import com.example.mywechat.viewmodel.DiscoverViewModel;
 
 import java.util.ArrayList;

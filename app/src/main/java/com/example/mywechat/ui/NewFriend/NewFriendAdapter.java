@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.NewFriend;
+package com.example.mywechat.ui.NewFriend;
 
 import android.content.Intent;
 import android.view.LayoutInflater;

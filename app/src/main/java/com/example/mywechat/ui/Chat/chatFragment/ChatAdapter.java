@@ -1,4 +1,4 @@
-package com.example.mywechat.Activities.Chat.chatFragment;
+package com.example.mywechat.ui.Chat.chatFragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mywechat.R;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 

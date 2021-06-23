@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mywechat.FriendActivity;
+import com.example.mywechat.ui.contacts.FriendActivity;
 import com.example.mywechat.R;
 import com.example.mywechat.Util.FileUtil;
 import com.example.mywechat.model.FriendRecord;
